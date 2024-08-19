@@ -28,14 +28,19 @@ const SignUp = () => {
     e.preventDefault();
 
     // Form validation
+    if (!formData.companyName || !formData.companyEmail || !formData.password || !formData.confirmPassword || !formData.address || !formData.phoneNumber || !formData.documents) {
+      toast.error("All fields are required!", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+      return;
+    }
+
     if (formData.password !== formData.confirmPassword) {
       toast.error("Passwords do not match!", {
         position: toast.POSITION.TOP_CENTER,
       });
       return;
     }
-
-    // Add further form validation logic if needed
 
     // Show success notification
     toast.success("Company created successfully!", {
@@ -128,7 +133,9 @@ const SignUp = () => {
             required
           />
         </div>
-        <button type="submit" className="signup-button"onClick={() => navigate('/dashboard')}>Sign Up</button>
+        <button type="submit" className="signup-button">
+          Sign Up
+        </button>
       </form>
     </div>
   );

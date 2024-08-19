@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './login.css';
 import { useNavigate } from 'react-router-dom';
+
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -9,8 +10,13 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // Form validation
     if (email === 'punchbiz@kongu.edu' && password === 'admin') {
       setNotification('Login successful');
+      
+      // Navigate to the dashboard after successful login
+      navigate('/dashboard');
     } else {
       setNotification('Login failed');
     }
@@ -42,7 +48,9 @@ const Login = () => {
             required 
           />
         </div>
-        <button type="submit" className="login-button"onClick={() => navigate('/dashboard')}>Login</button>
+        <button type="submit" className="login-button">
+          Login
+        </button>
       </form>
       <button 
         className="signup-button" 
