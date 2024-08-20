@@ -23,44 +23,48 @@ const Login = () => {
   };
 
   return (
-    <div className="login-container">
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="input-container">
-          <label>Email</label>
-          <input 
-            type="email" 
-            placeholder="Enter your email" 
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required 
-            pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[eE][dD][uU]$"
-            title="Please enter a valid .edu email address"
-          />
-        </div>
-        <div className="input-container">
-          <label>Password</label>
-          <input 
-            type="password" 
-            placeholder="Enter your password" 
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required 
-          />
-        </div>
-        <button type="submit" className="login-button">
-          Login
+    <div className="login-wrapper">
+      <div className="login-box">
+        <h2 className="login-title">Login</h2>
+        <form onSubmit={handleSubmit}>
+          <div className="input-field">
+            <label className="input-label">Email</label>
+            <input 
+              type="email" 
+              className="input-control"
+              placeholder="Enter your email" 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required 
+              pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[eE][dD][uU]$"
+              title="Please enter a valid .edu email address"
+            />
+          </div>
+          <div className="input-field">
+            <label className="input-label">Password</label>
+            <input 
+              type="password" 
+              className="input-control"
+              placeholder="Enter your password" 
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required 
+            />
+          </div>
+          <button type="submit" className="btn btn-login">
+            Login
+          </button>
+        </form>
+        <button 
+          className="btn btn-signup" 
+          onClick={() => navigate('/sign-up')}
+        >
+          Sign Up
         </button>
-      </form>
-      <button 
-        className="signup-button" 
-        onClick={() => navigate('/sign-up')}
-      >
-        Sign Up
-      </button>
-      
-      {/* Display the notification */}
-      {notification && <p>{notification}</p>}
+        
+        {/* Display the notification */}
+        {notification && <p className="notification">{notification}</p>}
+      </div>
     </div>
   );
 };
