@@ -1,0 +1,11 @@
+
+.items-container {
+    display: flex;
+  }
+  
+  .items-content {
+    margin-left: 200px; /* Adjust this to match the width of your Navbar */
+    padding: 20px;
+    flex: 1;
+  }
+  
