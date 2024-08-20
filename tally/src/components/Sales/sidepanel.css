@@ -6,7 +6,7 @@
     box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.1);
     position: fixed;
     top: 60px; /* Adjust if needed */
-    left: 200px; /* Position it to the right of the main Navbar */
+    left: 130px; /* Position it to the right of the main Navbar */
     height: calc(100vh - 60px); /* Adjust height to fill the remaining viewport */
     overflow-y: auto; /* Add scroll if needed */
   }
