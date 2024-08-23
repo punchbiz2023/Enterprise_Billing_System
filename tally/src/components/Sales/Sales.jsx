@@ -1,16 +1,16 @@
 import React from 'react';
-import Navbar from '../Navbar/Navbar'; // Import the Navbar component
-import SidePanel from './sidepanel'; // Import the SidePanel component
-import './sales.css'; // Optional: Add CSS for styling the Sales page
+import Navbar from '../Navbar/Navbar';
+import SidePanel from './sidepanel';
+import './sales.css';
 
 const Sales = () => {
   return (
     <div className="sales-container">
-      <Navbar />
+      
       <SidePanel />
       <div className="sales-content">
         <h1>Sales Page</h1>
-        {/* Add your sales content here */}
+        
       </div>
     </div>
   );

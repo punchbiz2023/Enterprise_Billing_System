@@ -9,6 +9,9 @@ import Header from './components/Header/Header.jsx';
 import Navbar from './components/Navbar/Navbar.jsx';
 import Customer from './components/Customer/Customer.jsx'
 import CustomerForm from './components/Customer/CustomerForm.jsx'
+import Purchase from './components/Purchase/Purchase.jsx';
+import Vendor from './components/Vendor/Vendor.jsx'
+import VendorForm from './components/Vendor/VendorForm.jsx'
 
 function App() {
   return (
@@ -21,9 +24,11 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/dashboard/items" element={<Items />} />
         <Route path="/dashboard/sales" element={<Sales />} />
+        <Route path="/dashboard/purchase" element={<Purchase />} />
         <Route path="/dashboard/sales/customers" element={<Customer/>} />
         <Route path="/dashboard/sales/customers/form" element={<CustomerForm/>} />
-
+        <Route path='/dashboard/purchase/vendors' element={<Vendor/>} />
+        <Route path='/dashboard/purchase/vendors/form' element={<VendorForm/>} />
       </Routes>
     </Router>
   );
