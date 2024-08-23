@@ -1,12 +1,12 @@
 /* src/components/sales/SidePanel.css */
 .side-panel {
-    width: 200px;
+    width: 150px;
     background-color: #f8f9fa; /* Light gray background */
     padding: 20px;
     box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.1);
     position: fixed;
-    top: 60px; /* Adjust if needed */
-    left: 130px; /* Position it to the right of the main Navbar */
+    top: 70px; /* Adjust if needed */
+    left: 100px; /* Position it to the right of the main Navbar */
     height: calc(100vh - 60px); /* Adjust height to fill the remaining viewport */
     overflow-y: auto; /* Add scroll if needed */
   }

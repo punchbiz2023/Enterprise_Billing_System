@@ -5,6 +5,12 @@
   align-items: center;
   min-height: 100vh;
   background-color: #f5f5f5;
+  position: absolute;
+  top:0px;
+  left:0px;
+  z-index:1000;
+  width:100vw;
+  height:100vh;
 }
 
 /* Styles for the login box */

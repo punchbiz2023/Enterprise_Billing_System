@@ -11,7 +11,13 @@ body, html {
   }
   
   .signup-container {
-    width: 400px;
+    position: absolute;
+    top:0px;
+    left:0px;
+    z-index:1000;
+    width:100vw;
+    height:100vh;
+    
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 8px;

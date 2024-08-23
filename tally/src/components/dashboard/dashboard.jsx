@@ -5,9 +5,9 @@ import './dashboard.css'; // CSS for the Dashboard layout
 const Dashboard = () => {
   return (
     <div className="dashboard-container">
-      <Navbar />
+      
       <div className="dashboard-content">
-        {/* Content of the dashboard will be rendered here */}
+        
       </div>
     </div>
   );

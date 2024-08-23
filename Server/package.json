@@ -1,0 +1,23 @@
+{
+  "type": "module",
+  "scripts": {
+    "migrate": "cd drizzle && tsx ./migrations.js",
+    "dev": "nodemon Cust.js"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^0.9.4",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "drizzle-orm": "^0.33.0",
+    "express": "^4.19.2",
+    "jsx": "^0.9.89",
+    "mysql2": "^3.11.0",
+    "pg": "^8.12.0",
+    "postgres": "^3.4.4",
+    "postgresql": "^0.0.1",
+    "tsx": "^4.17.0"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^0.24.0"
+  }
+}

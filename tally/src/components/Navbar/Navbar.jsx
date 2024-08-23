@@ -8,7 +8,7 @@ import './Navbar.css';
 const Navbar = () => {
   return (
     <div className="navbar">
-      <h2>Menu</h2>
+      
       <ul>
         <li><Link to="/dashboard/items"><CiBoxList className='h-8 w-8'></CiBoxList></Link></li>
         <li><Link to="/dashboard/sales"><CiShoppingCart className='h-8 w-8'></CiShoppingCart></Link></li>

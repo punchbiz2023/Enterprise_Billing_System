@@ -1,14 +1,16 @@
-/* src/components/navbar/Navbar.css */
+
 .navbar {
     height: 100vh;
-    width: 130px;
-    background-color: #007bff; /* Blue background */
+    width: 100px;
+    background-color: #007bff; 
     color: white;
     padding: 20px;
     box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.1);
     position: fixed;
-    top: 0;
-    left: 0;
+    top: 70px; 
+    left: 0px; 
+    height: calc(100vh - 60px); 
+    overflow-y: auto;
     z-index: 1000;
   }
   
@@ -37,10 +39,10 @@
   }
   
   .navbar ul li a:hover {
-    background-color: #0056b3; /* Darker blue for hover effect */
+    background-color: #0056b3; 
   }
   
-  /* Optional: white variant for other contexts */
+  
   .white-navbar {
     background-color: white;
     color: #007bff;
