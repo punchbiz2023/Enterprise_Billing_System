@@ -12,7 +12,7 @@ import CustomerForm from './components/Customer/CustomerForm.jsx'
 import Purchase from './components/Purchase/Purchase.jsx';
 import Vendor from './components/Vendor/Vendor.jsx'
 import VendorForm from './components/Vendor/VendorForm.jsx'
-
+import Order from './components/Order/Order.jsx';
 function App() {
   return (
     <Router>
@@ -29,8 +29,9 @@ function App() {
         <Route path="/dashboard/sales/customers/form" element={<CustomerForm/>} />
         <Route path='/dashboard/purchase/vendors' element={<Vendor/>} />
         <Route path='/dashboard/purchase/vendors/form' element={<VendorForm/>} />
+        <Route path='/dashboard/sales/order' element={<Order/>} />
       </Routes>
-    </Router>
+    </Router> 
   );
 }
 
