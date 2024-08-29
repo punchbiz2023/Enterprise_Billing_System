@@ -52,7 +52,7 @@ const Customer = () => {
             <div className="flex mb-4">
                 <Link
                     to="/dashboard/sales/customers/form"
-                    className="inline-block px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 mr-2"
+                    className="inline-block px-5 py-2 bg-blue-500 text-white rounded hover:bg-blue-600  ml-40 mt-6"
                 >
                     Add Customer
                 </Link>

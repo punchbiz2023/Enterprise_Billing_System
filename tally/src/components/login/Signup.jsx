@@ -57,7 +57,7 @@ const SignUp = () => {
     <div className='page-container'>
       <div className="signup-container">
         <ToastContainer />
-        <h2 className='pb-8'>Sign Up</h2>
+        <h1 className='pb-8 text-black font-bold'>Sign Up</h1>
         <form onSubmit={handleSubmit} className="form-grid">
           <div className="input-container">
             <label>Company Name</label>
@@ -126,6 +126,30 @@ const SignUp = () => {
               className="input-box"
               name="phoneNumber"
               placeholder="Enter phone number"
+              value={formData.phoneNumber}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="input-container">
+            <label>GST Number</label>
+            <input
+              type="tel"
+              className="input-box"
+              name="gstNumber"
+              placeholder="Enter GST number"
+              value={formData.phoneNumber}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="input-container">
+            <label>PAN Number</label>
+            <input
+              type="tel"
+              className="input-box"
+              name="panNumber"
+              placeholder="Enter PAN number"
               value={formData.phoneNumber}
               onChange={handleChange}
               required

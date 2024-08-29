@@ -9,7 +9,7 @@ const Header = () => {
 
   return (
     <>
-      <div className='h-[70px] w-full fixed bg-[#113946] top-0 left-0 flex justify-between items-center px-5'>
+      <div className='h-[70px] w-full fixed bg-[#fffff0] top-0 left-0 flex justify-between items-center px-5'>
         <div className="relative w-32 h-8">
           <img 
             src={logo} 
@@ -20,15 +20,15 @@ const Header = () => {
         </div>
         <div className='flex space-x-4'>
           <CiBellOn 
-            className={`text-white w-10 h-10 cursor-pointer ${selectedIcon === 'bell' ? 'bg-[#FFF2D8]' : ''}`}
+            className={`text-black w-10 h-10 cursor-pointer ${selectedIcon === 'bell' ? 'bg-[#000080]' : ''}`}
             onClick={() => setSelectedIcon('bell')} 
           />
           <CiSettings 
-            className={`text-white w-10 h-10 cursor-pointer ${selectedIcon === 'settings' ? 'text-[#FFF2D8]' : ''}`}
+            className={`text-black w-10 h-10 cursor-pointer ${selectedIcon === 'settings' ? 'text-[#000080]' : ''}`}
             onClick={() => setSelectedIcon('settings')} 
           />
           <CiUser 
-            className={`text-white w-10 h-10 cursor-pointer ${selectedIcon === 'user' ? 'text-[#FFF2D8]' : ''}`}
+            className={`text-black w-10 h-10 cursor-pointer ${selectedIcon === 'user' ? 'text-[#000080]' : ''}`}
             onClick={() => setSelectedIcon('user')} 
           />
         </div>
