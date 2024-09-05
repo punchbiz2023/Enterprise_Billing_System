@@ -8,6 +8,15 @@ CREATE TABLE IF NOT EXISTS "user" (
 	"amount_to_be_received" numeric NOT NULL
 );
 --> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "items" (
+	"sno" serial PRIMARY KEY NOT NULL,
+	"name" text NOT NULL,
+	"rate" numeric NOT NULL,
+	"type" text NOT NULL,
+	"unit" text NOT NULL,
+	"description" text
+);
+--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "vendor" (
 	"sno" serial PRIMARY KEY NOT NULL,
 	"name" text NOT NULL,
