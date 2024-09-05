@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import Navbar from '../Navbar/Navbar';
-import './items.css';
+import './Items.css';
 
 const Items = () => {
   const [items, setItems] = useState([]);
@@ -47,24 +47,10 @@ const Items = () => {
     }
   };
 
-  const handleTypeClick = () => {
-    const uniqueTypes = Array.from(new Set(items.map(item => item.type)));
-    const currentIndex = uniqueTypes.indexOf(selectedType);
-    const nextIndex = (currentIndex + 1) % (uniqueTypes.length + 1); // +1 to include the 'All' state
-    const newType = nextIndex < uniqueTypes.length ? uniqueTypes[nextIndex] : null;
-
-    setSelectedType(newType);
-    setClickCount(prev => prev + 1);
-  };
-
-  const filteredItems = selectedType
-    ? items.filter(item => item.type === selectedType)
-    : items;
-
   return (
     <div className="flex ml-20">
       <Navbar />
-      <div className="w-3/4 p-6 mt-[5%] ml-[10%]">
+      <div className="w-4/5 p-6 mt-20 ml-20"> {/* Added margin-left */}
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-xl font-bold">Items</h1>
           <div className="flex space-x-4">
@@ -98,12 +84,7 @@ const Items = () => {
                 <th className="py-2 px-4 border-b"></th>
                 <th className="py-2 px-4 border-b">Name</th>
                 <th className="py-2 px-4 border-b">Rate</th>
-                <th
-                  className="py-2 px-4 border-b cursor-pointer"
-                  onClick={handleTypeClick}
-                >
-                  Type
-                </th>
+                <th className="py-2 px-4 border-b">Type</th>
                 <th className="py-2 px-4 border-b">Unit</th>
                 <th className="py-2 px-4 border-b">Description</th>
               </tr>
@@ -115,14 +96,14 @@ const Items = () => {
                     Loading Items...
                   </td>
                 </tr>
-              ) : filteredItems.length === 0 ? (
+              ) : items.length === 0 ? (
                 <tr>
                   <td colSpan="7" className="py-2 px-4 text-center text-gray-500">
                     No Items found
                   </td>
                 </tr>
               ) : (
-                filteredItems.map((item, index) => (
+                items.map((item, index) => (
                   <tr key={item.id || index} className="hover:bg-gray-100">
                     <td className="py-2 px-4 border-b">
                       {showCheckboxes && (
@@ -134,11 +115,11 @@ const Items = () => {
                         />
                       )}
                     </td>
-                    <td className="py-2 px-4 text-center border-b">{item.name}</td>
-                    <td className="py-2 px-4 text-center border-b">{item.rate}</td>
-                    <td className="py-2 px-4 text-center border-b">{item.type}</td>
-                    <td className="py-2 px-4 text-center border-b">{item.unit}</td>
-                    <td className="py-2 px-4 text-center border-b">{item.description}</td>
+                    <td className="py-2 px-4 border-b">{item.name}</td>
+                    <td className="py-2 px-4 border-b">{item.rate}</td>
+                    <td className="py-2 px-4 border-b">{item.type}</td>
+                    <td className="py-2 px-4 border-b">{item.unit}</td>
+                    <td className="py-2 px-4 border-b">{item.description}</td>
                   </tr>
                 ))
               )}
