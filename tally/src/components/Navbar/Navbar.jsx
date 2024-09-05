@@ -11,7 +11,7 @@ const Navbar = () => {
       <div className='inner-div bg-[#2F4F4F]'>
         <ul className="flex flex-col items-center">
           <li className="flex flex-col items-center mb-4">
-            <Link to="/dashboard/items">
+            <Link to="/dashboard">
               <CiBoxList className='text-white ml-1 h-8 w-8' />
               <span className="text-white text-xs mt-1">Dashboard</span>
             </Link>
