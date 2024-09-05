@@ -36,8 +36,8 @@ const Customer = () => {
     
         try {
             await axios.delete('http://localhost:3001/api/customers', { data: { ids: selectedCustomers } });
-            fetchCustomers();  // Refresh customer list after deletion
-            setSelectedCustomers([]);  // Clear selected customers
+            fetchCustomers();  
+            setSelectedCustomers([]);
         } catch (error) {
             console.error('Error deleting customers:', error.response ? error.response.data : error.message);
         }
