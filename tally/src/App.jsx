@@ -13,6 +13,7 @@ import Purchase from './components/Purchase/Purchase.jsx';
 import Vendor from './components/Vendor/Vendor.jsx'
 import VendorForm from './components/Vendor/VendorForm.jsx'
 import Order from './components/Order/Order.jsx';
+import ItemForm from './components/Items/ItemForm.jsx';
 function App() {
   return (
     <Router>
@@ -23,6 +24,8 @@ function App() {
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/dashboard/items" element={<Items />} />
+        <Route path="/dashboard/items/form" element={<ItemForm />} />
+        
         <Route path="/dashboard/sales" element={<Sales />} />
         <Route path="/dashboard/purchase" element={<Purchase />} />
         <Route path="/dashboard/sales/customers" element={<Customer/>} />

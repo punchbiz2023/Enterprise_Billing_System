@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import SidePanel from '../Sales/sidepanel';
 
 const Customer = () => {
     const [customers, setCustomers] = useState([]);
@@ -42,8 +43,6 @@ const Customer = () => {
             console.error('Error deleting customers:', error.response ? error.response.data : error.message);
         }
     };
-
-
 
     return (
         <div className="flex">
