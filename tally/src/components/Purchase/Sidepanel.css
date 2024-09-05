@@ -1,40 +1,39 @@
-/* src/components/sales/SidePanel.css */
 .side-panel {
-    width: 150px;
-    background-color: #f8f9fa; /* Light gray background */
-    padding: 20px;
-    box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.1);
-    position: fixed;
-    top: 70px; /* Adjust if needed */
-    left: 100px; /* Position it to the right of the main Navbar */
-    height: calc(100vh - 60px); /* Adjust height to fill the remaining viewport */
-    overflow-y: auto; /* Add scroll if needed */
-  }
-  
-  .side-panel h3 {
-    margin-top: 0;
-  }
-  
-  .side-panel ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-  }
-  
-  .side-panel ul li {
-    margin: 15px 0;
-  }
-  
-  .side-panel ul li a {
-    color: #007bff;
-    text-decoration: none;
-    display: block;
-    padding: 10px;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-  }
-  
-  .side-panel ul li a:hover {
-    background-color: #e9ecef; /* Light gray for hover effect */
-  }
-  
+  width: 150px;
+  background-color: #4F4F4F;
+  padding: 20px;
+  box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 70px; /* Adjust if needed */
+  left: 100px; /* Position it to the left edge of the viewport */
+  height: calc(100vh - 60px); /* Adjust height to fill the remaining viewport */
+  overflow-y: auto; /* Add scroll if needed */
+}
+
+.side-panel ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.side-panel ul li {
+  margin: 15px 0;
+}
+
+.side-panel ul li a {
+  color: #ffffff;
+  text-decoration: none;
+  display: block;
+  padding: 10px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.side-panel ul li a.active {
+  background-color: #007bff; /* Highlight color for active link */
+  color: #ffffff; /* Ensure text color is readable */
+}
+
+.side-panel ul li a:hover {
+  background-color:#3399ff; /* Light gray for hover effect */
+}
