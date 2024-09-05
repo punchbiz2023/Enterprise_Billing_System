@@ -8,10 +8,14 @@ const Items = () => {
   const [items, setItems] = useState([]);
   const [dataLoaded, setDataLoaded] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
+  const [sortOrder, setSortOrder] = useState('asc');
+  const [selectedType, setSelectedType] = useState(null); // State to track the currently selected type
+  const [clickCount, setClickCount] = useState(0); // State to track click count
 
   useEffect(() => {
     fetchItems();
   }, []);
+
   const fetchItems = async () => {
     try {
       const response = await axios.get('http://localhost:3001/api/items');
@@ -23,7 +27,6 @@ const Items = () => {
       console.error('Error fetching Item data:', error.response ? error.response.data : error.message);
     }
   };
-
 
   const handleCheckboxChange = (itemId) => {
     setSelectedItems(prevSelected =>
@@ -45,10 +48,24 @@ const Items = () => {
     }
   };
 
+  const handleTypeClick = () => {
+    const uniqueTypes = Array.from(new Set(items.map(item => item.type)));
+    const currentIndex = uniqueTypes.indexOf(selectedType);
+    const nextIndex = (currentIndex + 1) % (uniqueTypes.length + 1); // +1 to include the 'All' state
+    const newType = nextIndex < uniqueTypes.length ? uniqueTypes[nextIndex] : null;
+
+    setSelectedType(newType);
+    setClickCount(prev => prev + 1);
+  };
+
+  const filteredItems = selectedType
+    ? items.filter(item => item.type === selectedType)
+    : items;
+
   return (
     <div className='flex ml-20'>
       <Navbar />
-      <div className="w-4/5 p-6  mt-16">
+      <div className="w-4/5 p-6 mt-16">
         <h1 className="text-xl font-bold mb-4">Items</h1>
 
         <div className="flex mb-4">
@@ -75,10 +92,14 @@ const Items = () => {
                 <th className="py-2 px-4 border-b"></th>
                 <th className="py-2 px-4 border-b">Name</th>
                 <th className="py-2 px-4 border-b">Rate</th>
-                <th className="py-2 px-4 border-b">Type</th>
+                <th
+                  className="py-2 px-4 border-b cursor-pointer"
+                  onClick={handleTypeClick}
+                >
+                  Type
+                </th>
                 <th className="py-2 px-4 border-b">Unit</th>
                 <th className="py-2 px-4 border-b">Description</th>
-                
               </tr>
             </thead>
             <tbody>
@@ -88,14 +109,14 @@ const Items = () => {
                     Loading Items...
                   </td>
                 </tr>
-              ) : items.length === 0 ? (
+              ) : filteredItems.length === 0 ? (
                 <tr>
                   <td colSpan="7" className="py-2 px-4 text-center text-gray-500">
                     No Items found
                   </td>
                 </tr>
               ) : (
-                items.map((item, index) => (
+                filteredItems.map((item, index) => (
                   <tr key={item.id || index} className="hover:bg-gray-100">
                     <td className="py-2 px-4 border-b">
                       <input
@@ -105,13 +126,11 @@ const Items = () => {
                         checked={selectedItems.includes(item.sno)}
                       />
                     </td>
-
                     <td className="py-2 px-4 border-b">{item.name}</td>
                     <td className="py-2 px-4 border-b">{item.rate}</td>
                     <td className="py-2 px-4 border-b">{item.type}</td>
                     <td className="py-2 px-4 border-b">{item.unit}</td>
                     <td className="py-2 px-4 border-b">{item.description}</td>
-                    
                   </tr>
                 ))
               )}
