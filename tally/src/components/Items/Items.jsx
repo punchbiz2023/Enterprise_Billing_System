@@ -47,6 +47,20 @@ const Items = () => {
     }
   };
 
+  const handleTypeClick = () => {
+    const uniqueTypes = Array.from(new Set(items.map(item => item.type)));
+    const currentIndex = uniqueTypes.indexOf(selectedType);
+    const nextIndex = (currentIndex + 1) % (uniqueTypes.length + 1); // +1 to include the 'All' state
+    const newType = nextIndex < uniqueTypes.length ? uniqueTypes[nextIndex] : null;
+
+    setSelectedType(newType);
+    setClickCount(prev => prev + 1);
+  };
+
+  const filteredItems = selectedType
+    ? items.filter(item => item.type === selectedType)
+    : items;
+
   return (
     <div className="flex ml-20">
       <Navbar />
@@ -84,7 +98,12 @@ const Items = () => {
                 <th className="py-2 px-4 border-b"></th>
                 <th className="py-2 px-4 border-b">Name</th>
                 <th className="py-2 px-4 border-b">Rate</th>
-                <th className="py-2 px-4 border-b">Type</th>
+                <th
+                  className="py-2 px-4 border-b cursor-pointer"
+                  onClick={handleTypeClick}
+                >
+                  Type
+                </th>
                 <th className="py-2 px-4 border-b">Unit</th>
                 <th className="py-2 px-4 border-b">Description</th>
               </tr>
@@ -96,14 +115,14 @@ const Items = () => {
                     Loading Items...
                   </td>
                 </tr>
-              ) : items.length === 0 ? (
+              ) : filteredItems.length === 0 ? (
                 <tr>
                   <td colSpan="7" className="py-2 px-4 text-center text-gray-500">
                     No Items found
                   </td>
                 </tr>
               ) : (
-                items.map((item, index) => (
+                filteredItems.map((item, index) => (
                   <tr key={item.id || index} className="hover:bg-gray-100">
                     <td className="py-2 px-4 border-b">
                       {showCheckboxes && (
