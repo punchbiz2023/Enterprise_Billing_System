@@ -1,7 +1,7 @@
 import express from 'express';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
-import { CustTable, VendTable } from './drizzle/schema.js'; // Import both tables
+import { CustTable, VendTable, Items} from './drizzle/schema.js';
 import { eq } from 'drizzle-orm';
 
 import dotenv from 'dotenv';
@@ -16,6 +16,8 @@ app.use(cors());
 const client = postgres(process.env.DATABASE_URL);
 const db = drizzle(client, { schema: { CustTable }, logger: true });
 const db2 = drizzle(client, { schema: { VendTable }, logger: true });
+const db3 = drizzle(client, { schema: { Items }, logger: true });
+
 
 app.get('/api/customers', async (req, res) => {
   try {
@@ -61,7 +63,7 @@ app.post('/api/customers', async (req, res) => {
 });
 
 app.delete('/api/customers', async (req, res) => {
-  const { ids } = req.body; // Expecting an array of customer IDs to delete
+  const { ids } = req.body;
 
   try {
     for (const id of ids) {
@@ -74,6 +76,11 @@ app.delete('/api/customers', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+
+//vendor
+
+
 
 app.get('/api/vendor', async (req, res) => {
   try {
@@ -119,11 +126,11 @@ app.post('/api/vendor', async (req, res) => {
 });
 
 app.delete('/api/vendor', async (req, res) => {
-  const { ids } = req.body; // Expecting an array of vendor IDs to delete
+  const { ids } = req.body;
 
   try {
     for (const id of ids) {
-      await db2.delete(VendTable).where(eq(VendTable.sno, id)); // Corrected to use VendTable
+      await db2.delete(VendTable).where(eq(VendTable.sno, id));
     }
 
     res.status(200).json({ message: 'Vendors deleted successfully' });
@@ -132,6 +139,66 @@ app.delete('/api/vendor', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+
+//Items
+
+app.post('/api/items', async (req, res) => {
+  const { name, rate, type, unit, description } = req.body;  
+  try {
+    const [newItem] = await db3
+      .insert(Items)
+      .values({
+        name,
+        rate: Number(rate),
+        type, 
+        unit,
+        description,
+      })
+      .returning();
+
+    res.status(201).json(newItem);
+  } catch (error) {
+    console.error('Error adding item:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+app.get('/api/items', async (req, res) => {
+  try {
+    const items = await db3
+      .select({
+        sno: Items.sno,
+        name: Items.name,
+        rate: Items.rate,
+        type: Items.type,
+        unit: Items.unit,
+        description: Items.description,
+      })
+      .from(Items);
+
+    res.json(items);
+  } catch (error) {
+    console.error('Error fetching items:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+app.delete('/api/items', async (req, res) => {
+  const { ids } = req.body;
+  try {
+    for (const id of ids) {
+      await db3.delete(Items).where(eq(Items.sno, id));
+    }
+    res.status(200).json({ message: 'Item deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting Item:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { CiBoxList, CiShoppingCart } from "react-icons/ci";
+import { CiBoxList, CiShoppingCart,CiBag1 } from "react-icons/ci";
 import { IoBagOutline } from "react-icons/io5";
 import { BsGraphUp } from "react-icons/bs";
 import './Navbar.css';
@@ -18,7 +18,7 @@ const Navbar = () => {
           </li>
           <li className="flex flex-col items-center mb-4">
             <Link to="/dashboard/items">
-              <CiShoppingCart className='text-white mr-3 h-8 w-8' />
+              <CiBag1 className='text-white mr-3 h-8 w-8' />
               <span className="text-white text-xs mt-1">Items</span>
             </Link>
           </li>

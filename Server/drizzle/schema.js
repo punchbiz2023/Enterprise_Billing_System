@@ -20,3 +20,12 @@ export const VendTable = pgTable('vendor', {
   amountToBeReceived: numeric('amount_to_be_received').notNull()
 });
 
+export const Items = pgTable('items', {
+  sno: serial('sno').primaryKey(),
+  name: text('name').notNull(),
+  rate: numeric("rate").notNull(), 
+  type: text("type").notNull(),
+  unit: text('unit').notNull(),
+  description: text('description')
+});
+
