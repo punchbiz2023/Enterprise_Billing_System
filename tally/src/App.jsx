@@ -17,30 +17,47 @@ import Estimate from './components/Estimate/Estimate.jsx';
 import ItemForm from './components/Items/ItemForm.jsx';
 import ExpenseForm from './components/Expenses/expenses.jsx';
 
+// Layout with Header and Navbar
+function MainLayout({ children }) {
+  return (
+    <>
+      <Header />
+      <Navbar />
+      <div>{children}</div>
+    </>
+  );
+}
+
+// Layout without Header and Navbar
+function AuthLayout({ children }) {
+  return <div>{children}</div>;
+}
+
 function App() {
   return (
     <Router>
-      <Header />
-      <Navbar />
       <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/sign-up" element={<SignUp />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/dashboard/items" element={<Items />} />
-        <Route path="/dashboard/items/form" element={<ItemForm />} />
-        <Route path="/dashboard/sales" element={<Customer />} />
-        <Route path="/dashboard/purchase" element={<Vendor />} />
-        <Route path="/dashboard/sales/customers" element={<Customer/>} />
-        <Route path="/dashboard/sales/customers/form" element={<CustomerForm/>} />
-        <Route path='/dashboard/purchase/vendors' element={<Vendor/>} />
-        <Route path='/dashboard/purchase/vendors/form' element={<VendorForm/>} />
-        <Route path='/dashboard/sales/order' element={<Order/>} />
-        <Route path='/dashboard/purchase/expense'element={<ExpenseForm/>} />
-       
-        <Route path='/dashboard/sales/estimate' element={<Estimate />} />
+        {/* Routes without Header and Navbar */}
+        <Route path="/" element={<AuthLayout><Login /></AuthLayout>} />
+        <Route path="/sign-up" element={<AuthLayout><SignUp /></AuthLayout>} />
+
+        {/* Routes with Header and Navbar */}
+        <Route path="/dashboard" element={<MainLayout><Dashboard /></MainLayout>} />
+        <Route path="/dashboard/items" element={<MainLayout><Items /></MainLayout>} />
+        <Route path="/dashboard/items/form" element={<MainLayout><ItemForm /></MainLayout>} />
+        <Route path="/dashboard/sales" element={<MainLayout><Customer /></MainLayout>} />
+        <Route path="/dashboard/purchase" element={<MainLayout><Vendor /></MainLayout>} />
+        <Route path="/dashboard/sales/customers" element={<MainLayout><Customer /></MainLayout>} />
+        <Route path="/dashboard/sales/customers/form" element={<MainLayout><CustomerForm /></MainLayout>} />
+        <Route path="/dashboard/purchase/vendors" element={<MainLayout><Vendor /></MainLayout>} />
+        <Route path="/dashboard/purchase/vendors/form" element={<MainLayout><VendorForm /></MainLayout>} />
+        <Route path="/dashboard/sales/order" element={<MainLayout><Order /></MainLayout>} />
+        <Route path="/dashboard/purchase/expense" element={<MainLayout><ExpenseForm /></MainLayout>} />
+        <Route path="/dashboard/sales/estimate" element={<MainLayout><Estimate /></MainLayout>} />
       </Routes>
-    </Router> 
+    </Router>
   );
 }
 
 export default App;
+
