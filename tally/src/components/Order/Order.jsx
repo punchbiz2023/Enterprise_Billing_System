@@ -1,4 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
 
 const Order = () => {
   const [order, setOrder] = useState({
@@ -12,12 +15,55 @@ const Order = () => {
   const [rows, setRows] = useState([
     { itemDetails: '', quantity: '1.00', rate: '0.00', discount: '0', amount: '0.00' },
   ]);
+  const navigate = useNavigate();
+
+  const [items, setItems] = useState([])
+  const [customer, setCustomer] = useState([])
+  const [dataLoaded, setDataLoaded] = useState(false);
+
+
+  useEffect(() => {
+    fetchCustomers();
+    fetchItems();
+  }, [])
+
+  const fetchCustomers = async () => {
+    try {
+      const response = await axios.get('http://localhost:3001/api/customers');
+      if (response.data) {
+        setCustomer(response.data);
+        setDataLoaded(true);
+        console.log(response.data);
+
+      }
+    } catch (error) {
+      console.error('Error fetching customer data:', error.response ? error.response.data : error.message);
+    }
+  };
+
+  const fetchItems = async () => {
+    try {
+      const response = await axios.get('http://localhost:3001/api/items');
+      if (response.data) {
+        setItems(response.data);
+        setDataLoaded(true);
+      }
+    } catch (error) {
+      console.error('Error fetching Item data:', error.response ? error.response.data : error.message);
+    }
+  };
+
 
   const handleRowChange = (index, e) => {
     const { name, value } = e.target;
-    const newRows = [...rows];
-    newRows[index] = { ...newRows[index], [name]: value };
-    setRows(newRows);
+
+    if (value == "new item") {
+      navigate('/dashboard/items/form')
+    } else {  
+      const newRows = [...rows];
+      newRows[index] = { ...newRows[index], [name]: value };
+      setRows(newRows);
+    }
   };
 
   const addNewRow = () => {
@@ -29,29 +75,44 @@ const Order = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setOrder((prevOrder) => ({
-      ...prevOrder,
-      [name]: value,
-    }));
+
+    if (value === 'new customer') {
+      navigate('/dashboard/sales/customers/form');
+    } else {
+      setOrder((prevOrder) => ({
+        ...prevOrder,
+        [name]: value,
+      }));
+    }
   };
+
+
+
 
   return (
     <div className="max-w-5xl mx-auto p-10 bg-white shadow-lg rounded-lg mt-10">
       <h2 className="text-3xl font-semibold mb-8 text-gray-700">New Sales Order</h2>
       <form className="space-y-6">
         {/* Customer Name */}
+
         <div className="grid grid-cols-2 gap-6">
           <div className="flex flex-col">
-            <label className="text-gray-700 mb-2">Customer Name*</label>
-            <input
-              type="text"
+            <label className="text-gray-700 mb-2">Customer Name</label>
+            <select
               name="customerName"
               value={order.customerName}
               onChange={handleChange}
-              placeholder="Select or add a customer"
               className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
-            />
+            >
+              <option value="" hidden>--Select a customer--</option>
+              <option value='new customer' className='text-blue-500'>Add new Customer</option>
+              {customer.map((cust) => (
+                <option key={cust.id} value={cust.name}>
+                  {cust.name}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className="flex flex-col">
@@ -113,8 +174,9 @@ const Order = () => {
               value={order.paymentTerms}
               onChange={handleChange}
               className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
             >
-              <option value="Payment Terms">--Payment Terms--</option>
+              <option value="" hidden>--Payment Terms--</option>
               <option value="Due on Receipt">Due on Receipt</option>
               <option value="Net 30">Net 30</option>
               <option value="Net 60">Net 60</option>
@@ -171,14 +233,21 @@ const Order = () => {
             {rows.map((row, index) => (
               <tr key={index}>
                 <td className="px-4 py-2 border-t">
-                  <input
-                    type="text"
+                  <select
                     name="itemDetails"
                     value={row.itemDetails}
                     onChange={(e) => handleRowChange(index, e)}
                     className="border border-gray-300 p-2 w-full rounded-md focus:outline-none"
-                    placeholder="Type or click to select an item"
-                  />
+                  >
+                    <option value="" hidden>--Select an item--</option>
+                    <option value='new item' className='text-blue-500'>Add new Item</option>
+
+                    {items.map((item) => (
+                      <option key={item.id} value={item.name}>
+                        {item.name}
+                      </option>
+                    ))}
+                  </select>
                 </td>
                 <td className="px-4 py-2 border-t text-right">
                   <input
@@ -219,10 +288,11 @@ const Order = () => {
               </tr>
             ))}
           </tbody>
+
         </table>
 
         <div className="flex justify-between items-center mt-4">
-          <button type="button" onClick={addNewRow} className="text-blue-500 font-semibold">
+          <button type="button" onClick={addNewRow} className="text-blue-500 font-semibold hover:text-blue-700 hover:bg-white">
             Add New Row
           </button>
         </div>
