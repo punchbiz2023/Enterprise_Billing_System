@@ -63,7 +63,7 @@ const Customer = () => {
                     </Link>
                     <div className="flex space-x-4">
                         <button
-                            onClick={() => setShowCheckboxes(!showCheckboxes)} // Toggle checkboxes
+                            onClick={() => setShowCheckboxes(!showCheckboxes)} 
                             className={`inline-block px-5 py-2 rounded text-white ${showCheckboxes ? 'bg-gray-500 hover:bg-gray-600' : 'bg-red-500 hover:bg-red-600'}`}
                         >
                             {showCheckboxes ? 'Cancel' : 'Delete Customers'}

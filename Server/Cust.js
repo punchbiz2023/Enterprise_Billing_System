@@ -40,6 +40,7 @@ app.get('/api/customers', async (req, res) => {
   }
 });
 
+
 app.post('/api/customers', async (req, res) => {
   const { name, company, email, gstno, phone, amountToBeReceived } = req.body;
   try {

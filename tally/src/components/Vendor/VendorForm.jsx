@@ -29,7 +29,7 @@ const AddVendor = () => {
     };
 
     return (
-        <div className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-md mt-52">
+        <div className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-md mt-28">
             <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">Add New Vendor</h1>
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
