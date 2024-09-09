@@ -1,100 +1,10 @@
-
-
-.page-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 50vw;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #2F4F4F;  
-  z-index: 1000;
+/* Prevent autofill color changes */
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0px 1000px white inset !important; /* Change 'white' to match the background */
+  -webkit-text-fill-color: #000000 !important; /* Keep the text color consistent */
 }
 
-.signup-container {
-  width: 100%;
-  max-width: 700px;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  background-color: #fffff0;
-  text-align: center;
-}
-
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 15px;
-}
-
-.input-box {
-  background-color: #2F4F4F;
-  color: #FFFFFF;
-}
-
-h2 {
-  margin-bottom: 20px;
-}
-
-.input-container {
-  margin-bottom: 15px;
-  text-align: left;
-}
-
-.input-container label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-}
-
-.input-container input {
-  width: 100%;
-  padding: 8px;
-  box-sizing: border-box;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.signup-button-container {
-  grid-column: span 2;
-  display: flex;
-  justify-content: center;
-}
-
-.signup-button {
-  width: 50%;
-  padding: 10px;
-  margin-top: 15px;
-  border: none;
-  border-radius: 50px;
-  color: #fff;
-  background-color: #56ACA2;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.signup-button:hover {
-  background-color: #107c70;
-}
-
-button:focus {
-  outline: none;
-}
-
-input[type="file"] {
-  padding: 5px;
-  grid-column: span 2; /* Make the file input span both columns */
-}
-
-
-input:-webkit-autofill,
-input:-webkit-autofill:hover,
-input:-webkit-autofill:focus,
-input:-webkit-autofill:active {
-  -webkit-box-shadow: 0 0 0 1000px #113946 inset !important;
-  -webkit-text-fill-color: #ffffff !important;
-  transition: background-color 5000s ease-in-out 0s;
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0px 1000px white inset !important;
+  -webkit-text-fill-color: #000000 !important;
 }
