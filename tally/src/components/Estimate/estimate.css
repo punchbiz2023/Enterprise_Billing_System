@@ -39,9 +39,9 @@
 }
 
 .form-group select:hover {
-  border-color: #007bff; 
+  border-color: #222324; 
   background-color: #f0f8ff; 
-  color: #0066cc;
+  color: #1d1d1e;
 }
 
 .form-group select:focus {
@@ -58,7 +58,7 @@
 }
 
 .form-group select option:hover {
-  background-color: #007bff;
+  background-color: #5e97d1;
   color: white;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
@@ -69,7 +69,7 @@
 }
 
 .items-section table {
-  background-color: #e0f7fa;
+  background-color: #f0f0f0; /* Changed to light grey */
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 20px;
@@ -88,7 +88,7 @@
 }
 
 .items-section td:hover {
-  background-color: #b2ebf2;
+  background-color: #d9e4e7;
 }
 
 .items-section input {
@@ -121,7 +121,7 @@
 }
 
 .subtotal-container {
-  background-color: #e0f7fa;
+  background-color: #f0f0f0; /* Changed to light grey */
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -136,8 +136,7 @@
 }
 
 .subtotal-container .summary div {
-  
   font-weight: bold;
   font-size: 18px;
-  color: #006064;
+  color: #353636;
 }
