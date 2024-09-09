@@ -17,6 +17,7 @@ import Estimate from './components/Estimate/Estimate.jsx';
 import ItemForm from './components/Items/ItemForm.jsx';
 import ExpenseForm from './components/Expenses/expenses.jsx';
 import PurchaseOrder from './components/PurchaseOrder/PurchaseOrder.jsx';
+import Project from './components/Project/Project.jsx';
 
 // Layout with Header and Navbar
 function MainLayout({ children }) {
@@ -55,6 +56,8 @@ function App() {
         <Route path="/dashboard/sales/order" element={<MainLayout><Order /></MainLayout>} />
         <Route path="/dashboard/purchase/expense" element={<MainLayout><ExpenseForm /></MainLayout>} />
         <Route path="/dashboard/sales/estimate" element={<MainLayout><Estimate /></MainLayout>} />
+        <Route path="/dashboard/projects/form" element={<MainLayout><Project /></MainLayout>} />
+        <Route path="/dashboard/purchase/order" element={<MainLayout><PurchaseOrder /></MainLayout>} />
       </Routes>
     </Router>
   );

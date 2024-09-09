@@ -8,6 +8,7 @@ const Estimate = () => {
   const [customers, setCustomers] = useState([]);
   const [quoteNumber, setQuoteNumber] = useState('');
   const [quoteDate, setQuoteDate] = useState('');
+  const [reference, setReference] = useState('');
   const [expiryDate, setExpiryDate] = useState('');
   const [salesperson, setSalesperson] = useState('');
   const [salespeople, setSalespeople] = useState([]);
@@ -140,6 +141,35 @@ const Estimate = () => {
         </div>
 
         <div className="form-group">
+          <label>Quote#</label>
+          <input type="text" value={quoteNumber} onChange={(e) => setQuoteNumber(e.target.value)} />
+        </div>
+
+        
+        <div className="form-group">
+          <label>Reference#</label>
+          <input
+            type="text/number"
+            value={reference}
+            onChange={(e) => setReference(e.target.value)}
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Quote Date*</label>
+          <input
+            type="date"
+            value={quoteDate}
+            onChange={(e) => setQuoteDate(e.target.value)}
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Expiry Date</label>
+          <input type="date" value={expiryDate} onChange={(e) => setExpiryDate(e.target.value)} />
+        </div>
+
+        <div className="form-group">
           <label>Salesperson</label>
           <select value={salesperson} onChange={(e) => handleDropdownChange(e, setSalesperson, 'sales/salespersons')}>
             <option value="">Select a salesperson</option>
@@ -161,8 +191,19 @@ const Estimate = () => {
           </select>
         </div>
 
+        
+        <div className="form-group">
+          <label>Subject</label>
+          <input
+            type="text"
+            value={subject}
+            onChange={(e) => setSubject(e.target.value)}
+            placeholder="Let your customer know what this quote is for"
+          />
+        </div>
+
         <div className="items-section">
-          <label>Item Table</label>
+          <label className="text-l font-semibold mb-6 text-gray-700">Item Table</label>
           <table>
             <thead>
               <tr>
@@ -226,14 +267,14 @@ const Estimate = () => {
         </div>
 
         <div className="subtotal-section">
-          <h2 className="text-lg font-semibold mb-4">Subtotal Details</h2>
+          <h2 className="text-xl font-semibold mb-6 text-gray-700">Subtotal Details</h2>
           <div className="subtotal-container">
             <div className="summary">
               <div>Subtotal: ₹ {calculateSubtotal().toFixed(2)}</div>
               <br />
             </div>
 
-            <label>Select Tax:</label>
+            <label className="text-xl font-semibold mb-6 text-gray-700">Select Tax:</label>
             <input
               type="radio"
               id="tds"
@@ -272,7 +313,7 @@ const Estimate = () => {
             </div>
 
             <div className="form-group">
-              <label>Adjustment</label>
+              <label className="text-xl font-semibold mb-6 text-gray-700">Adjustment</label>
               <div>
                 <input
                   type="radio"
