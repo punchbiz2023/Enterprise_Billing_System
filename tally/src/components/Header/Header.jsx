@@ -20,7 +20,7 @@ const Header = () => {
         </div>
         <div className='flex space-x-4'>
           <CiBellOn 
-            className={`text-black w-10 h-10 cursor-pointer ${selectedIcon === 'bell' ? 'bg-[#000080]' : ''}`}
+            className={`text-black w-10 h-10 cursor-pointer ${selectedIcon === 'bell' ? 'text-[#000080]' : ''}`}
             onClick={() => setSelectedIcon('bell')} 
           />
           <CiSettings 

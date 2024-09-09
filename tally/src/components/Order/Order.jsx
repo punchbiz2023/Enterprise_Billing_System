@@ -36,112 +36,125 @@ const Order = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-10 bg-white shadow-md rounded-md min-h-[1000px]">
-      <h2 className="text-2xl font-semibold mb-10 mt-20 text-gray-700">New Sales Order</h2>
+    <div className="max-w-5xl mx-auto p-10 bg-white shadow-lg rounded-lg mt-10">
+      <h2 className="text-3xl font-semibold mb-8 text-gray-700">New Sales Order</h2>
       <form className="space-y-6">
-        <div className="flex flex-col">
-          <label className="text-gray-700 mb-2">Customer Name*</label>
-          <input
-            type="text"
-            name="customerName"
-            value={order.customerName}
-            onChange={handleChange}
-            placeholder="Select or add a customer"
-            className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
+        {/* Customer Name */}
+        <div className="grid grid-cols-2 gap-6">
+          <div className="flex flex-col">
+            <label className="text-gray-700 mb-2">Customer Name*</label>
+            <input
+              type="text"
+              name="customerName"
+              value={order.customerName}
+              onChange={handleChange}
+              placeholder="Select or add a customer"
+              className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+
+          <div className="flex flex-col">
+            <label className="text-gray-700 mb-2">Sales Order</label>
+            <input
+              type="text"
+              name="salesOrderNumber"
+              value={order.salesOrderNumber}
+              onChange={handleChange}
+              className="border border-gray-300 p-3 rounded-md bg-gray-100"
+              readOnly
+            />
+          </div>
         </div>
 
-        <div className="flex flex-col">
-          <label className="text-gray-700 mb-2">Sales Order</label>
-          <input
-            type="text"
-            name="salesOrderNumber"
-            value={order.salesOrderNumber}
-            onChange={handleChange}
-            className="border border-gray-300 p-3 rounded-md bg-gray-100 cursor-not-allowed"
-            readOnly
-          />
+        {/* Reference & Sales Order Date */}
+        <div className="grid grid-cols-2 gap-6">
+          <div className="flex flex-col">
+            <label className="text-gray-700 mb-2">Reference</label>
+            <input
+              type="text"
+              name="reference"
+              value={order.reference}
+              onChange={handleChange}
+              className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          <div className="flex flex-col">
+            <label className="text-gray-700 mb-2">Sales Order Date</label>
+            <input
+              type="date"
+              name="salesOrderDate"
+              value={order.salesOrderDate}
+              onChange={handleChange}
+              className="border border-gray-300 p-3 rounded-md bg-gray-100 cursor-not-allowed"
+              readOnly
+            />
+          </div>
         </div>
 
-        <div className="flex flex-col">
-          <label className="text-gray-700 mb-2">Reference</label>
-          <input
-            type="text"
-            name="reference"
-            value={order.reference}
-            onChange={handleChange}
-            className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+        {/* Expected Shipment Date & Payment Terms */}
+        <div className="grid grid-cols-2 gap-6">
+          <div className="flex flex-col">
+            <label className="text-gray-700 mb-2">Expected Shipment Date</label>
+            <input
+              type="date"
+              name="expectedShipmentDate"
+              value={order.expectedShipmentDate}
+              onChange={handleChange}
+              className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          <div className="flex flex-col">
+            <label className="text-gray-700 mb-2">Payment Terms</label>
+            <select
+              name="paymentTerms"
+              value={order.paymentTerms}
+              onChange={handleChange}
+              className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="Payment Terms">--Payment Terms--</option>
+              <option value="Due on Receipt">Due on Receipt</option>
+              <option value="Net 30">Net 30</option>
+              <option value="Net 60">Net 60</option>
+            </select>
+          </div>
         </div>
 
-        <div className="flex flex-col">
-          <label className="text-gray-700 mb-2">Sales Order Date</label>
-          <input
-            type="date"
-            name="salesOrderDate"
-            value={order.salesOrderDate}
-            onChange={handleChange}
-            className="border border-gray-300 p-3 rounded-md bg-gray-100 cursor-not-allowed"
-            readOnly
-          />
-        </div>
+        {/* Delivery Method & Salesperson */}
+        <div className="grid grid-cols-2 gap-6">
+          <div className="flex flex-col">
+            <label className="text-gray-700 mb-2">Delivery Method</label>
+            <select
+              name="deliveryMethod"
+              value={order.deliveryMethod}
+              onChange={handleChange}
+              className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="Select">--Select Delivery Method--</option>
+              <option value="Courier">Courier</option>
+              <option value="Pickup">Pickup</option>
+            </select>
+          </div>
 
-        <div className="flex flex-col">
-          <label className="text-gray-700 mb-2">Expected Shipment Date</label>
-          <input
-            type="date"
-            name="expectedShipmentDate"
-            value={order.expectedShipmentDate}
-            onChange={handleChange}
-            className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-
-        <div className="flex flex-col">
-          <label className="text-gray-700 mb-2">Payment Terms</label>
-          <select
-            name="paymentTerms"
-            value={order.paymentTerms}
-            onChange={handleChange}
-            className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="Payment Terms">--Payment Terms--</option>
-            <option value="Due on Receipt">Due on Receipt</option>
-            <option value="Net 30">Net 30</option>
-            <option value="Net 60">Net 60</option>
-          </select>
-        </div>
-
-        <div className="flex flex-col">
-          <label className="text-gray-700 mb-2">Delivery Method</label>
-          <select
-            name="deliveryMethod"
-            value={order.deliveryMethod}
-            onChange={handleChange}
-            className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="Select">--Select Delivery Method--</option>
-            <option value="Courier">Courier</option>
-            <option value="Pickup">Pickup</option>
-          </select>
-        </div>
-
-        <div className="flex flex-col">
-          <label className="text-gray-700 mb-2">Salesperson</label>
-          <select
-            name="salesperson"
-            value={order.salesperson}
-            onChange={handleChange}
-            className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">Select or Add Salesperson</option>
-            <option value="John Doe">John Doe</option>
-            <option value="Jane Smith">Jane Smith</option>
-          </select>
+          <div className="flex flex-col">
+            <label className="text-gray-700 mb-2">Salesperson</label>
+            <select
+              name="salesperson"
+              value={order.salesperson}
+              onChange={handleChange}
+              className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">Select or Add Salesperson</option>
+              <option value="John Doe">John Doe</option>
+              <option value="Jane Smith">Jane Smith</option>
+            </select>
+          </div>
         </div>
       </form>
 
+      {/* Item Table */}
       <div className="mt-10">
         <h3 className="text-xl font-semibold mb-6 text-gray-700">Item Table</h3>
         <table className="min-w-full bg-white border border-gray-300 rounded-md">
@@ -209,9 +222,12 @@ const Order = () => {
         </table>
 
         <div className="flex justify-between items-center mt-4">
-          <button type="button" onClick={addNewRow} className="text-blue-500 font-semibold">Add New Row</button>
+          <button type="button" onClick={addNewRow} className="text-blue-500 font-semibold">
+            Add New Row
+          </button>
         </div>
 
+        {/* Summary */}
         <div className="mt-10">
           <h3 className="text-xl font-semibold mb-6 text-gray-700">Summary</h3>
           <div className="flex justify-between items-center">
@@ -227,6 +243,8 @@ const Order = () => {
             <div>0.00</div>
           </div>
         </div>
+
+        {/* Notes */}
         <div className="mt-10">
           <h3 className="text-xl font-semibold mb-6 text-gray-700">Notes</h3>
           <textarea
@@ -235,6 +253,7 @@ const Order = () => {
           ></textarea>
         </div>
 
+        {/* Terms & Conditions */}
         <div className="mt-10">
           <h3 className="text-xl font-semibold mb-6 text-gray-700">Terms & Conditions</h3>
           <textarea
@@ -242,6 +261,7 @@ const Order = () => {
             placeholder="Enter the terms and conditions of your business to be displayed in your transaction"
           ></textarea>
         </div>
+
         <button
           type="submit"
           className="col-span-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
