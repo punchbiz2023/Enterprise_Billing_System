@@ -101,15 +101,17 @@ const Items = () => {
               <tr className="bg-gray-200">
                 <th className="py-2 px-4 border-b text-center"></th>
                 <th className="py-2 px-4 border-b text-center">Name</th>
-                <th className="py-2 px-4 border-b text-center">Rate</th>
                 <th
                   className="py-2 px-4 border-b cursor-pointer text-center"
                   onClick={handleTypeClick}
                 >
                   Type
                 </th>
+                <th className="py-2 px-4 border-b text-center">Selling Price</th>
+                <th className="py-2 px-4 border-b text-center">Cost Price</th>
                 <th className="py-2 px-4 border-b text-center">Unit</th>
-                <th className="py-2 px-4 border-b text-center">Description</th>
+                <th className="py-2 px-4 border-b text-center">Sales Description</th>
+                <th className="py-2 px-4 border-b text-center">Purchase Description</th>
               </tr>
             </thead>
             <tbody>
@@ -126,21 +128,25 @@ const Items = () => {
                   </td>
                 </tr>
               ) : (
-                filteredItems.map((item, index) => (
-                  <tr key={item.id || index} className="hover:bg-gray-100">
+                filteredItems.map((item) => (
+                  <tr key={item.sno} className="hover:bg-gray-100">
                     <td className="py-2 px-2 border-b text-center">
-                      {showCheckboxes && <input
-                        type="checkbox"
-                        className="form-checkbox"
-                        onChange={() => handleCheckboxChange(item.sno)}
-                        checked={selectedItems.includes(item.sno)}
-                      />}
+                      {showCheckboxes && (
+                        <input
+                          type="checkbox"
+                          className="form-checkbox"
+                          onChange={() => handleCheckboxChange(item.sno)}
+                          checked={selectedItems.includes(item.sno)}
+                        />
+                      )}
                     </td>
-                    <td className="py-2  border-b text-center">{item.name}</td>
-                    <td className="py-2 px-6 border-b text-center">{item.rate}</td>
-                    <td className="py-2 px-6 border-b text-center">{item.type}</td>
-                    <td className="py-2 px-6 border-b text-center">{item.unit}</td>
-                    <td className="py-2 px-12 border-b text-center">{item.description}</td>
+                    <td className="py-2 px-4 border-b text-center">{item.name}</td>
+                    <td className="py-2 px-4 border-b text-center">{item.type}</td>
+                    <td className="py-2 px-4 border-b text-center">{item.salesprice}</td>
+                    <td className="py-2 px-4 border-b text-center">{item.costprice}</td>
+                    <td className="py-2 px-4 border-b text-center">{item.unit}</td>
+                    <td className="py-2 px-4 border-b text-center">{item.salesdescription}</td>
+                    <td className="py-2 px-4 border-b text-center">{item.purchasedescription}</td>
                   </tr>
                 ))
               )}
@@ -150,6 +156,7 @@ const Items = () => {
       </div>
     </div>
   );
+
 
 
 };

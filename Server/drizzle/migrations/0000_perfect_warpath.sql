@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS "user" (
+CREATE TABLE IF NOT EXISTS "customer" (
 	"sno" serial PRIMARY KEY NOT NULL,
 	"name" text NOT NULL,
 	"company" text NOT NULL,
@@ -11,10 +11,26 @@ CREATE TABLE IF NOT EXISTS "user" (
 CREATE TABLE IF NOT EXISTS "items" (
 	"sno" serial PRIMARY KEY NOT NULL,
 	"name" text NOT NULL,
-	"rate" numeric NOT NULL,
 	"type" text NOT NULL,
 	"unit" text NOT NULL,
-	"description" text
+	"salesprice" numeric NOT NULL,
+	"costprice" numeric NOT NULL,
+	"salesdescription" text,
+	"purchasedescription" text,
+	"salesaccount" text NOT NULL,
+	"purchaseaccount" text NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "users" (
+	"sno" serial PRIMARY KEY NOT NULL,
+	"name" text NOT NULL,
+	"mail" text NOT NULL,
+	"password" text NOT NULL,
+	"address" text NOT NULL,
+	"phone" numeric NOT NULL,
+	"gst" text NOT NULL,
+	"pan" text NOT NULL,
+	"docs" text
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "vendor" (

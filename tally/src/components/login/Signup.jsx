@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './Signup.css';
+import axios from 'axios'
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -12,9 +13,21 @@ const SignUp = () => {
     password: '',
     confirmPassword: '',
     address: '',
-    phoneNumber: '',
+    phone: '',
+    gst:'',
+    pan:'',
     documents: null,
   });
+
+  const postUser = async (e) => {
+    e.preventDefault();
+    try {
+        await axios.post('http://localhost:3001/api/sign-up', formData);
+        
+    } catch (error) {
+        console.error('Error adding customer:', error.response ? error.response.data : error.message);
+    }
+  }
 
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
@@ -28,7 +41,7 @@ const SignUp = () => {
     e.preventDefault();
 
 
-    if (!formData.companyName || !formData.companyEmail || !formData.password || !formData.confirmPassword || !formData.address || !formData.phoneNumber || !formData.documents) {
+    if (!formData.companyName || !formData.companyEmail || !formData.password || !formData.confirmPassword || !formData.address || !formData.phone || !formData.documents) {
       toast.error("All fields are required!", {
         position: toast.POSITION.TOP_CENTER,
       });
@@ -124,9 +137,9 @@ const SignUp = () => {
             <input
               type="tel"
               className="input-box"
-              name="phoneNumber"
+              name="phone"
               placeholder="Enter phone number"
-              value={formData.phoneNumber}
+              value={formData.phone}
               onChange={handleChange}
               required
             />
@@ -136,9 +149,9 @@ const SignUp = () => {
             <input
               type="tel"
               className="input-box"
-              name="gstNumber"
+              name="gst"
               placeholder="Enter GST number"
-              value={formData.phoneNumber}
+              value={formData.gst}
               onChange={handleChange}
               required
             />
@@ -148,9 +161,9 @@ const SignUp = () => {
             <input
               type="tel"
               className="input-box"
-              name="panNumber"
+              name="pan"
               placeholder="Enter PAN number"
-              value={formData.phoneNumber}
+              value={formData.pan}
               onChange={handleChange}
               required
             />
@@ -167,7 +180,7 @@ const SignUp = () => {
 
         </form>
         <div className="signup-button-container">
-          <button type="submit" className="signup-button">
+          <button type="submit" className="signup-button" onClick={postUser}>
             Sign Up
           </button>
         </div>

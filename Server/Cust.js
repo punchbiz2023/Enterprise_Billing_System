@@ -1,7 +1,7 @@
 import express from 'express';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
-import { CustTable, VendTable, Items} from './drizzle/schema.js';
+import { CustTable, VendTable, Items, Users } from './drizzle/schema.js';
 import { eq } from 'drizzle-orm';
 
 import dotenv from 'dotenv';
@@ -17,6 +17,34 @@ const client = postgres(process.env.DATABASE_URL);
 const db = drizzle(client, { schema: { CustTable }, logger: true });
 const db2 = drizzle(client, { schema: { VendTable }, logger: true });
 const db3 = drizzle(client, { schema: { Items }, logger: true });
+const db4 = drizzle(client, { schema: { Users }, logger: true });
+
+
+app.post('/api/sign-up', async (req, res) => {
+  const { companyName, companyEmail, password, address, phone, gst, pan } = req.body;
+
+  try {
+    const [newUser] = await db4
+      .insert(Users)
+      .values({
+        name: companyName,
+        mail: companyEmail,
+        password,
+        address,
+        phone: Number(phone),
+        gst: Number(gst),
+        pan: Number(pan),
+      })
+      .returning();
+
+    res.status(201).json(newUser);
+  } catch (error) {
+    console.error('Error adding user:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
 
 
 app.get('/api/customers', async (req, res) => {
@@ -81,7 +109,6 @@ app.delete('/api/customers', async (req, res) => {
 //vendor
 
 
-
 app.get('/api/vendor', async (req, res) => {
   try {
     const vendors = await db2
@@ -142,18 +169,33 @@ app.delete('/api/vendor', async (req, res) => {
 
 
 //Items
-
 app.post('/api/items', async (req, res) => {
-  const { name, rate, type, unit, description } = req.body;  
+  const {
+    name,
+    unit,
+    sellingPrice,
+    costPrice,
+    salesAccount,
+    purchaseAccount,
+    descriptionSales,
+    descriptionPurchase,
+    preferredVendor,
+    type
+  } = req.body;
+
   try {
     const [newItem] = await db3
       .insert(Items)
       .values({
         name,
-        rate: Number(rate),
-        type, 
         unit,
-        description,
+        salesprice: Number(sellingPrice),
+        costprice: Number(costPrice),
+        salesaccount: salesAccount,
+        purchaseaccount: purchaseAccount,
+        salesdescription: descriptionSales,
+        purchasedescription: descriptionPurchase,
+        type,
       })
       .returning();
 
@@ -171,19 +213,22 @@ app.get('/api/items', async (req, res) => {
       .select({
         sno: Items.sno,
         name: Items.name,
-        rate: Items.rate,
+        salesprice: Items.salesprice,
+        costprice: Items.costprice,
         type: Items.type,
         unit: Items.unit,
-        description: Items.description,
+        salesdescription: Items.salesdescription,
+        purchasedescription: Items.purchasedescription,
       })
       .from(Items);
 
     res.json(items);
   } catch (error) {
-    console.error('Error fetching items:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error('Error fetching items:', error.message, error.stack);
+    res.status(500).json({ error: 'Internal Server Error', details: error.message });
   }
 });
+
 
 
 app.delete('/api/items', async (req, res) => {

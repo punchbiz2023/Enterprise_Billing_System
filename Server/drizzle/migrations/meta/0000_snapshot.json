@@ -1,11 +1,11 @@
 {
-  "id": "1392f1b9-7d6f-467c-9690-263ce9f12749",
+  "id": "abb943a1-b05b-431b-a611-cfd2c15a02b3",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.user": {
-      "name": "user",
+    "public.customer": {
+      "name": "customer",
       "schema": "",
       "columns": {
         "sno": {
@@ -72,12 +72,6 @@
           "primaryKey": false,
           "notNull": true
         },
-        "rate": {
-          "name": "rate",
-          "type": "numeric",
-          "primaryKey": false,
-          "notNull": true
-        },
         "type": {
           "name": "type",
           "type": "text",
@@ -90,8 +84,102 @@
           "primaryKey": false,
           "notNull": true
         },
-        "description": {
-          "name": "description",
+        "salesprice": {
+          "name": "salesprice",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "costprice": {
+          "name": "costprice",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "salesdescription": {
+          "name": "salesdescription",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "purchasedescription": {
+          "name": "purchasedescription",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "salesaccount": {
+          "name": "salesaccount",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "purchaseaccount": {
+          "name": "purchaseaccount",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.users": {
+      "name": "users",
+      "schema": "",
+      "columns": {
+        "sno": {
+          "name": "sno",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "mail": {
+          "name": "mail",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "password": {
+          "name": "password",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "address": {
+          "name": "address",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "phone": {
+          "name": "phone",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "gst": {
+          "name": "gst",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "pan": {
+          "name": "pan",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "docs": {
+          "name": "docs",
           "type": "text",
           "primaryKey": false,
           "notNull": false
