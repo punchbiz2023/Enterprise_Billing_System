@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 const ItemForm = () => {
     const [formState, setFormState] = useState({
         newItem: {
-            name: '',
+            sno: '',
             unit: '',
             sellingPrice: '',
             costPrice: '',
@@ -79,16 +79,29 @@ const ItemForm = () => {
                     </div>
                 </div>
                 <div>
-                    <label className="block text-sm font-medium text-gray-700">Unit</label>
-                    <input
-                        type="text"
-                        name="unit"
-                        value={formState.newItem.unit}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                        required
-                    />
-                </div>
+    <label className="block text-sm font-medium text-gray-700">Unit</label>
+    <select
+        name="unit"
+        value={formState.newItem.unit}
+        onChange={handleInputChange}
+        className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+        required
+    >
+        <option value="BOX">BOX - box</option>
+        <option value="CMS">CMS - cm</option>
+        <option value="DOZ">DOZ - dz</option>
+        <option value="FTS">FTS - ft</option>
+        <option value="GMS">GMS - g</option>
+        <option value="KGS">KGS - kg</option>
+        <option value="KME">KME - km</option>
+        <option value="LBS">LBS - lb</option>
+        <option value="MGS">MGS - mg</option>
+        <option value="MLT">MLT - ml</option>
+        <option value="MTR">MTR - m</option>
+        <option value="PCS">PCS - pcs</option>
+    </select>
+</div>
+
 
                 {/* Sales Information */}
                 <div className="border-t pt-4">

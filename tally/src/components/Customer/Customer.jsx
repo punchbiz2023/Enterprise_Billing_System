@@ -87,9 +87,11 @@ const Customer = () => {
                                 <th className="py-2 px-4 border-b">Name</th>
                                 <th className="py-2 px-4 border-b">Company</th>
                                 <th className="py-2 px-4 border-b">Email</th>
-                                <th className="py-2 px-4 border-b">GST Number</th>
                                 <th className="py-2 px-4 border-b">Phone</th>
-                                <th className="py-2 px-4 border-b">Opening Amount</th>
+                                <th className="py-2 px-4 border-b">GST Number</th>
+                                <th className="py-2 px-4 border-b">Opening Balance</th>
+                                
+                                
                             </tr>
                         </thead>
                         <tbody>
@@ -107,7 +109,7 @@ const Customer = () => {
                                 </tr>
                             ) : (
                                 customers.map((customer, index) => (
-                                    <tr key={customer.id || index} className="hover:bg-gray-100">
+                                    <tr key={customer.sno || index} className="hover:bg-gray-100">
                                         <td className="py-2 px-4 border-b">
                                             {showCheckboxes && (
                                                 <input
@@ -124,7 +126,9 @@ const Customer = () => {
                                         <td className="py-2 px-4 text-center border-b">{customer.email}</td>
                                         <td className="py-2 px-4 text-center border-b">{customer.gstno}</td>
                                         <td className="py-2 px-4 text-center border-b">{customer.phone}</td>
-                                        <td className="py-2 px-4 text-center border-b">{customer.amount}</td>
+                                        <td className="py-2 px-4 text-center border-b">{customer.openingBalance}</td>
+
+                                        
                                     </tr>
                                 ))
                             )}
