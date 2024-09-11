@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './Signup.css';
-import axios from 'axios'
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -13,21 +12,11 @@ const SignUp = () => {
     password: '',
     confirmPassword: '',
     address: '',
-    phone: '',
-    gst:'',
-    pan:'',
+    phoneNumber: '',
+    gstNumber: '',
+    panNumber: '',
     documents: null,
   });
-
-  const postUser = async (e) => {
-    e.preventDefault();
-    try {
-        await axios.post('http://localhost:3001/api/sign-up', formData);
-        
-    } catch (error) {
-        console.error('Error adding customer:', error.response ? error.response.data : error.message);
-    }
-  }
 
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
@@ -40,8 +29,7 @@ const SignUp = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-
-    if (!formData.companyName || !formData.companyEmail || !formData.password || !formData.confirmPassword || !formData.address || !formData.phone || !formData.documents) {
+    if (!formData.companyName || !formData.companyEmail || !formData.password || !formData.confirmPassword || !formData.address || !formData.phoneNumber || !formData.gstNumber || !formData.panNumber || !formData.documents) {
       toast.error("All fields are required!", {
         position: toast.POSITION.TOP_CENTER,
       });
@@ -139,10 +127,10 @@ const SignUp = () => {
             <label className="block text-sm font-medium text-gray-700">Phone Number</label>
             <input
               type="tel"
-              className="input-box"
-              name="phone"
+              className="w-full px-4 py-2 text-sm text-gray-700 bg-gray-50 border border-gray-300 rounded"
+              name="phoneNumber"
               placeholder="Enter phone number"
-              value={formData.phone}
+              value={formData.phoneNumber}
               onChange={handleChange}
               required
             />
@@ -151,11 +139,11 @@ const SignUp = () => {
           <div className="space-y-1">
             <label className="block text-sm font-medium text-gray-700">GST Number</label>
             <input
-              type="tel"
-              className="input-box"
-              name="gst"
+              type="text"
+              className="w-full px-4 py-2 text-sm text-gray-700 bg-gray-50 border border-gray-300 rounded"
+              name="gstNumber"
               placeholder="Enter GST number"
-              value={formData.gst}
+              value={formData.gstNumber}
               onChange={handleChange}
               required
             />
@@ -164,11 +152,11 @@ const SignUp = () => {
           <div className="space-y-1">
             <label className="block text-sm font-medium text-gray-700">PAN Number</label>
             <input
-              type="tel"
-              className="input-box"
-              name="pan"
+              type="text"
+              className="w-full px-4 py-2 text-sm text-gray-700 bg-gray-50 border border-gray-300 rounded"
+              name="panNumber"
               placeholder="Enter PAN number"
-              value={formData.pan}
+              value={formData.panNumber}
               onChange={handleChange}
               required
             />
@@ -185,13 +173,12 @@ const SignUp = () => {
             />
           </div>
 
+          <div className="mt-6">
+            <button type="submit" className="w-full py-3 text-white bg-blue-500 rounded-full hover:bg-blue-600 focus:outline-none">
+              Sign Up
+            </button>
+          </div>
         </form>
-        <div className="signup-button-container">
-          <button type="submit" className="signup-button" onClick={postUser}>
-            Sign Up
-          </button>
-        </div>
-
       </div>
     </div>
   );

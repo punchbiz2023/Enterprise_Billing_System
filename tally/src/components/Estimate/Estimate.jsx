@@ -22,7 +22,8 @@ const Estimate = () => {
   const [adjustment, setAdjustment] = useState(0);
   const [adjustmentType, setAdjustmentType] = useState('add');
 
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
+
   useEffect(() => {
     const fetchCustomers = async () => {
       try {
@@ -77,31 +78,14 @@ const Estimate = () => {
     setItems(items.filter((_, i) => i !== index));
   };
 
-
-
   const handleItemChange = (index, field, value) => {
-    if (field === 'item') {
-      if (value === 'new item') {
-        navigate('/dashboard/items/form'); 
-      } else {
-        const selectedItem = availableItems.find(it => it.name === value);
-        if (selectedItem) {
-          const newItems = [...items];
-          newItems[index].item = value;
-          newItems[index].rate = selectedItem.rate;
-          setItems(newItems);
-        }
-      }
-    } else {
-      const newItems = [...items];
-      newItems[index][field] = value;
-      setItems(newItems);
-    }
+    const newItems = [...items];
+    newItems[index][field] = value;
+    setItems(newItems);
   };
-  
 
   const calculateSubtotal = () => {
-    return items.reduce((sum, item) => sum + (item.quantity * item.rate - item.discount), 0);
+    return items.reduce((sum, item) => sum + (item.quantity * item.rate * (1 - item.discount / 100)), 0);
   };
 
   const calculateTaxAmount = () => {
@@ -113,7 +97,7 @@ const Estimate = () => {
     const subtotal = calculateSubtotal();
     const taxAmount = subtotal * (tax / 100);
     const adjustedValue = adjustmentType === 'add' ? Number(adjustment) : -Number(adjustment);
-    return (subtotal - taxAmount + adjustedValue).toFixed(2);
+    return (subtotal + taxAmount + adjustedValue).toFixed(2);
   };
 
   const handleDropdownChange = (e, setter, redirectPath) => {
@@ -145,23 +129,14 @@ const Estimate = () => {
           <input type="text" value={quoteNumber} onChange={(e) => setQuoteNumber(e.target.value)} />
         </div>
 
-        
         <div className="form-group">
           <label>Reference#</label>
-          <input
-            type="text/number"
-            value={reference}
-            onChange={(e) => setReference(e.target.value)}
-          />
+          <input type="text" value={reference} onChange={(e) => setReference(e.target.value)} />
         </div>
 
         <div className="form-group">
           <label>Quote Date*</label>
-          <input
-            type="date"
-            value={quoteDate}
-            onChange={(e) => setQuoteDate(e.target.value)}
-          />
+          <input type="date" value={quoteDate} onChange={(e) => setQuoteDate(e.target.value)} />
         </div>
 
         <div className="form-group">
@@ -191,7 +166,6 @@ const Estimate = () => {
           </select>
         </div>
 
-        
         <div className="form-group">
           <label>Subject</label>
           <input
@@ -210,7 +184,7 @@ const Estimate = () => {
                 <th>Item Details</th>
                 <th>Quantity</th>
                 <th>Rate</th>
-                <th>Discount</th>
+                <th>Discount (%)</th>
                 <th>Amount</th>
                 <th>Actions</th>
               </tr>
@@ -235,6 +209,7 @@ const Estimate = () => {
                       type="number"
                       value={item.quantity}
                       onChange={(e) => handleItemChange(index, 'quantity', e.target.value)}
+                      min="0"
                     />
                   </td>
                   <td>
@@ -242,6 +217,7 @@ const Estimate = () => {
                       type="number"
                       value={item.rate}
                       onChange={(e) => handleItemChange(index, 'rate', e.target.value)}
+                      min="0"
                     />
                   </td>
                   <td>
@@ -249,13 +225,12 @@ const Estimate = () => {
                       type="number"
                       value={item.discount}
                       onChange={(e) => handleItemChange(index, 'discount', e.target.value)}
+                      min="0"
                     />
                   </td>
-                  <td>{(item.quantity * item.rate - item.discount).toFixed(2)}</td>
+                  <td>{(item.quantity * item.rate * (1 - item.discount / 100)).toFixed(2)}</td>
                   <td>
-                    <button type="button" onClick={() => removeItem(index)}>
-                      Remove
-                    </button>
+                    <button type="button" onClick={() => removeItem(index)}>Remove</button>
                   </td>
                 </tr>
               ))}
@@ -360,8 +335,3 @@ const Estimate = () => {
 };
 
 export default Estimate;
-
-
-
-
-
