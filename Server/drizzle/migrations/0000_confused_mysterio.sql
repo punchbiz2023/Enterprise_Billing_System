@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS "customer" (
 	"mail" text NOT NULL,
 	"gstno" text NOT NULL,
 	"phone" text NOT NULL,
-	"amount_to_be_received" numeric NOT NULL
+	"opening_amount" numeric NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "items" (

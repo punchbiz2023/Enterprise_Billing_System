@@ -57,7 +57,7 @@ app.get('/api/customers', async (req, res) => {
         email: CustTable.mail,
         gstno: CustTable.gstno,
         phone: CustTable.phone,
-        amount: CustTable.amountToBeReceived,
+        amount: CustTable.openingamount,
       })
       .from(CustTable);
 
@@ -70,7 +70,7 @@ app.get('/api/customers', async (req, res) => {
 
 
 app.post('/api/customers', async (req, res) => {
-  const { name, company, email, gstno, phone, amountToBeReceived } = req.body;
+  const { name, company, email, gstno, phone, openingamount } = req.body;
   try {
     const [newCustomer] = await db
       .insert(CustTable)
@@ -80,7 +80,7 @@ app.post('/api/customers', async (req, res) => {
         mail: email,
         gstno,
         phone,
-        amountToBeReceived: Number(amountToBeReceived),
+        openingamount: Number(openingamount),
       })
       .returning();
 
@@ -120,7 +120,7 @@ app.get('/api/vendor', async (req, res) => {
         email: VendTable.mail,
         gstno: VendTable.gstno,
         phone: VendTable.phone,
-        amount: VendTable.amountToBeReceived,
+        amount: VendTable.openingamount,
       })
       .from(VendTable);
 
@@ -132,7 +132,7 @@ app.get('/api/vendor', async (req, res) => {
 });
 
 app.post('/api/vendor', async (req, res) => {
-  const { name, company, email, gstno, phone, amountToBeReceived } = req.body;
+  const { name, company, email, gstno, phone, openingamount } = req.body;
   try {
     const [newVendor] = await db2
       .insert(VendTable)
@@ -142,7 +142,7 @@ app.post('/api/vendor', async (req, res) => {
         mail: email,
         gstno,
         phone,
-        amountToBeReceived: Number(amountToBeReceived),
+        openingamount: Number(openingamount),
       })
       .returning();
 

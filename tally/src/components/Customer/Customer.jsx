@@ -89,7 +89,7 @@ const Customer = () => {
                                 <th className="py-2 px-4 border-b">Email</th>
                                 <th className="py-2 px-4 border-b">GST Number</th>
                                 <th className="py-2 px-4 border-b">Phone</th>
-                                <th className="py-2 px-4 border-b">Amount to be Received</th>
+                                <th className="py-2 px-4 border-b">Opening Amount</th>
                             </tr>
                         </thead>
                         <tbody>

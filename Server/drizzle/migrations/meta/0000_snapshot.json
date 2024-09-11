@@ -1,5 +1,5 @@
 {
-  "id": "abb943a1-b05b-431b-a611-cfd2c15a02b3",
+  "id": "2458810f-74aa-4248-8e52-108dfd2b8785",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -44,8 +44,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "amount_to_be_received": {
-          "name": "amount_to_be_received",
+        "opening_amount": {
+          "name": "opening_amount",
           "type": "numeric",
           "primaryKey": false,
           "notNull": true

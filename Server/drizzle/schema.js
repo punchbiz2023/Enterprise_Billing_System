@@ -7,7 +7,7 @@ export const CustTable = pgTable('customer', {
   mail: text('mail').notNull(),
   gstno: text('gstno').notNull(),
   phone: text('phone').notNull(),
-  amountToBeReceived: numeric('amount_to_be_received').notNull()
+  openingamount: numeric('opening_amount').notNull()
 });
 
 export const VendTable = pgTable('vendor', {
