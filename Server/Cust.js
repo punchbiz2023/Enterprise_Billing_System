@@ -57,7 +57,7 @@ app.get('/api/customers', async (req, res) => {
         email: CustTable.mail,
         gstno: CustTable.gstno,
         phone: CustTable.phone,
-        amount: CustTable.amountToBeReceived,
+        amount: CustTable.openingBalance,
       })
       .from(CustTable);
 
@@ -70,7 +70,7 @@ app.get('/api/customers', async (req, res) => {
 
 
 app.post('/api/customers', async (req, res) => {
-  const { name, company, email, gstno, phone, amountToBeReceived } = req.body;
+  const { name, company, email, gstno, phone, openingBalance } = req.body;
   try {
     const [newCustomer] = await db
       .insert(CustTable)
@@ -80,7 +80,7 @@ app.post('/api/customers', async (req, res) => {
         mail: email,
         gstno,
         phone,
-        amountToBeReceived: Number(amountToBeReceived),
+        openingBalance: Number(openingBalance),
       })
       .returning();
 

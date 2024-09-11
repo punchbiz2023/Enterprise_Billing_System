@@ -18,7 +18,7 @@ import ItemForm from './components/Items/ItemForm.jsx';
 import ExpenseForm from './components/Expenses/expenses.jsx';
 import PurchaseOrder from './components/PurchaseOrder/PurchaseOrder.jsx';
 import Project from './components/Project/Project.jsx';
-
+import ItemDetails from './components/Items/ItemDetails.jsx';
 // Layout with Header and Navbar
 function MainLayout({ children }) {
   return (
@@ -58,6 +58,8 @@ function App() {
         <Route path="/dashboard/sales/estimate" element={<MainLayout><Estimate /></MainLayout>} />
         <Route path="/dashboard/projects/form" element={<MainLayout><Project /></MainLayout>} />
         <Route path="/dashboard/purchase/order" element={<MainLayout><PurchaseOrder /></MainLayout>} />
+        <Route path="/dashboard/items/:id" element={<MainLayout><ItemDetails /></MainLayout>} />
+        <Route path="/items/:id" element={<MainLayout><ItemDetails /></MainLayout>} />
       </Routes>
     </Router>
   );
