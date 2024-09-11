@@ -19,8 +19,10 @@ const Estimate = () => {
   const [availableItems, setAvailableItems] = useState([]);
   const [taxType, setTaxType] = useState('');
   const [tax, setTax] = useState(0);
+  const [customTax, setCustomTax] = useState('');
   const [adjustment, setAdjustment] = useState(0);
   const [adjustmentType, setAdjustmentType] = useState('add');
+  const [showCustomTax, setShowCustomTax] = useState(false);
 
   const navigate = useNavigate();
 
@@ -90,14 +92,15 @@ const Estimate = () => {
 
   const calculateTaxAmount = () => {
     const subtotal = calculateSubtotal();
-    return (subtotal * (tax / 100)).toFixed(2);
+    const taxValue = showCustomTax ? customTax : tax;
+    return (subtotal * (taxValue / 100)).toFixed(2);
   };
 
   const calculateTotal = () => {
     const subtotal = calculateSubtotal();
-    const taxAmount = subtotal * (tax / 100);
+    const taxAmount = calculateTaxAmount();
     const adjustedValue = adjustmentType === 'add' ? Number(adjustment) : -Number(adjustment);
-    return (subtotal + taxAmount + adjustedValue).toFixed(2);
+    return (subtotal - Number(taxAmount) + adjustedValue).toFixed(2);
   };
 
   const handleDropdownChange = (e, setter, redirectPath) => {
@@ -106,6 +109,17 @@ const Estimate = () => {
       navigate(`/dashboard/${redirectPath}/form`);
     } else {
       setter(value);
+    }
+  };
+
+  const handleTaxChange = (e) => {
+    const value = e.target.value;
+    if (value === '') {
+      setShowCustomTax(true);
+      setTax(0);
+    } else {
+      setShowCustomTax(false);
+      setTax(Number(value));
     }
   };
 
@@ -236,9 +250,7 @@ const Estimate = () => {
               ))}
             </tbody>
           </table>
-          <button className="font-semibold text-blue-700" type="button" onClick={addNewItem}>
-            Add New Row
-          </button>
+          <button type="button" onClick={addNewItem}>Add New Item</button>
         </div>
 
         <div className="subtotal-section">
@@ -269,8 +281,8 @@ const Estimate = () => {
             />
             <label htmlFor="tcs">TCS</label>
             <br/><br/>
-
-            <select value={tax} onChange={(e) => setTax(Number(e.target.value))}>
+            <div className="form-group">
+            <select value={showCustomTax ? '' : tax} onChange={handleTaxChange}>
               <option value="">Select Tax</option>
               <option value="5">Commission or Brokerage [5%]</option>
               <option value="3.75">Commission or Brokerage (Reduced) [3.75%]</option>
@@ -282,41 +294,39 @@ const Estimate = () => {
               <option value="0.75">Payment of contractors HUF/Indiv (Reduced) [0.75%]</option>
               <option value="10">Professional Fees [10%]</option>
               <option value="7.5">Professional Fees (Reduced) [7.5%]</option>
+              <option value="">Others</option>
             </select>
+
+            {showCustomTax && (
+              <input
+                type="number"
+                value={customTax}
+                onChange={(e) => setCustomTax(e.target.value)}
+                min="0"
+                placeholder="Enter custom tax percentage"
+              />
+            )}
+            </div>
+
             <div className="summary">
               <div>Tax Amount: ₹ {calculateTaxAmount()}</div><br/>
             </div>
 
             <div className="form-group">
-              <label className="text-xl font-semibold mb-6 text-gray-700">Adjustment</label>
-              <div>
-                <input
-                  type="radio"
-                  id="add"
-                  name="adjustmentType"
-                  value="add"
-                  checked={adjustmentType === 'add'}
-                  onChange={() => setAdjustmentType('add')}
-                />
-                <label htmlFor="add">Add</label>
+          <label>Adjustment</label>
+          <select value={adjustmentType} onChange={(e) => setAdjustmentType(e.target.value)}>
+            <option value="add">Add</option>
+            <option value="subtract">Subtract</option>
+          </select>
 
-                <input
-                  type="radio"
-                  id="subtract"
-                  name="adjustmentType"
-                  value="subtract"
-                  checked={adjustmentType === 'subtract'}
-                  onChange={() => setAdjustmentType('subtract')}
-                />
-                <label htmlFor="subtract">Subtract</label>
-              </div>
-              <input
-                type="number"
-                value={adjustment}
-                onChange={(e) => setAdjustment(e.target.value)}
-                placeholder="Adjustment amount"
-              />
-            </div>
+          <input
+            type="number"
+            value={adjustment}
+            onChange={(e) => setAdjustment(e.target.value)}
+            placeholder="Adjustment amount"
+            min="0"
+          />
+        </div>
 
             <div className="summary">
               <div>Total: ₹ {calculateTotal()}</div>
