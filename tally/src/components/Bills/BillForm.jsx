@@ -215,7 +215,6 @@ const BillForm = () => {
             type="text"
             className="border p-2 w-full"
             value={formData.subTotal}
-            readOnly
           />
         </div>
         <div>
@@ -246,6 +245,15 @@ const BillForm = () => {
             className="border p-2 w-full"
             value={formData.adjustment}
             onChange={(e) => setFormData({ ...formData, adjustment: e.target.value })}
+          />
+        </div>
+        <div>
+          <label className="font-medium">Grand Total</label>
+          <input
+            type="text"
+            className="border p-2 w-full"
+            value={formData.grandTotal}
+           
           />
         </div>
       </div>
