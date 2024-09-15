@@ -120,7 +120,7 @@ app.get('/api/vendor', async (req, res) => {
         email: VendTable.mail,
         gstno: VendTable.gstno,
         phone: VendTable.phone,
-        amount: VendTable.openingamount,
+        amount: VendTable.amountToBeReceived,
       })
       .from(VendTable);
 

@@ -88,7 +88,7 @@ const AddVendor = () => {
                     />
                 </div>
                 <div>
-                    <label className="block text-sm font-medium text-gray-700">Amount to be Received</label>
+                    <label className="block text-sm font-medium text-gray-700">Amount to be Paid</label>
                     <input
                         type="number"
                         name="amountToBeReceived"
