@@ -13,7 +13,6 @@ const ItemDetails = () => {
       try {
         const response = await axios.get('http://localhost:3001/api/items');
         console.log(response.data); // Check if the data is fetched
-
         // Filter the item based on the id
         const fetchedItem = response.data.find(item => item.sno === parseInt(id));
         setItem(fetchedItem);

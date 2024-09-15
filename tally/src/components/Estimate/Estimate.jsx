@@ -114,7 +114,7 @@ const Estimate = () => {
 
   const handleTaxChange = (e) => {
     const value = e.target.value;
-    if (value === '') {
+    if (value === 'Others') {
       setShowCustomTax(true);
       setTax(0);
     } else {
@@ -282,8 +282,8 @@ const Estimate = () => {
             <label htmlFor="tcs">TCS</label>
             <br/><br/>
             <div className="form-group">
-            <select value={showCustomTax ? '' : tax} onChange={handleTaxChange}>
-              <option value="">Select Tax</option>
+            <select value={showCustomTax ? 'Others' : tax} onChange={handleTaxChange}>
+              <option value="" disabled>Select Tax</option>
               <option value="5">Commission or Brokerage [5%]</option>
               <option value="3.75">Commission or Brokerage (Reduced) [3.75%]</option>
               <option value="10">Dividend [10%]</option>
@@ -294,7 +294,7 @@ const Estimate = () => {
               <option value="0.75">Payment of contractors HUF/Indiv (Reduced) [0.75%]</option>
               <option value="10">Professional Fees [10%]</option>
               <option value="7.5">Professional Fees (Reduced) [7.5%]</option>
-              <option value="">Others</option>
+              <option value="Others">Others</option>
             </select>
 
             {showCustomTax && (
