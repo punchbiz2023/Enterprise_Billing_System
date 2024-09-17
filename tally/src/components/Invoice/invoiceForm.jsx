@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-// import jsPDF from 'jspdf';
-// import 'jspdf-autotable';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 const InvoiceForm = () => {
   
@@ -67,13 +67,14 @@ const InvoiceForm = () => {
   const handleItemChange = (index, field, value) => {
     const newItems = [...items];
     newItems[index][field] = value;
-    if (field === 'rate' || field === 'quantity' || field === 'gst' || field === 'sgst') {
+    if (field === 'rate' || field === 'quantity' || field === 'discount'|| field === 'gst' || field === 'sgst') {
       // Update amount based on new rate, quantity, GST, and SGST
       const rate = newItems[index].rate;
       const quantity = newItems[index].quantity;
+      const discount = parseFloat(newItems[index].discount) || 0;
       const gst = newItems[index].gst;
       const sgst = newItems[index].sgst;
-      newItems[index].amount = (quantity * rate * (1 + gst / 100) * (1 + sgst / 100)).toFixed(2);
+      newItems[index].amount = (quantity * rate * (1 - discount / 100)* (1 + gst / 100) * (1 + sgst / 100)).toFixed(2);
     }
     setItems(newItems);
   };
