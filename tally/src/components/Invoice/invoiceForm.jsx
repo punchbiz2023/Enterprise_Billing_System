@@ -4,7 +4,7 @@ import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 
 const InvoiceForm = () => {
-  // State for invoice form fields
+  
   const [salespersons, setSalespersons] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newSalesperson, setNewSalesperson] = useState({ name: '', mail: '' });
