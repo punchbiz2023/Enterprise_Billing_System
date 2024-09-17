@@ -46,20 +46,23 @@ app.post('/api/sign-up', async (req, res) => {
 
 
 
-
 app.get('/api/customers', async (req, res) => {
   try {
-    const customers = await db
-      .select({
-        sno: CustTable.sno,
-        name: CustTable.name,
-        company: CustTable.company,
-        email: CustTable.mail,
-        gstno: CustTable.gstno,
-        phone: CustTable.phone,
-        amount: CustTable.openingamount,
-      })
-      .from(CustTable);
+    const customers = await db.select().from(CustTable);
+
+    // // Parse JSON fields
+    // customers.forEach(customer => {
+    //   try {
+    //     customer.billaddress = JSON.parse(customer.billaddress);
+    //   } catch (e) {
+    //     customer.billaddress = {};
+    //   }
+    //   try {
+    //     customer.shipaddress = JSON.parse(customer.shipaddress);
+    //   } catch (e) {
+    //     customer.shipaddress = {};
+    //   }
+    // });
 
     res.json(customers);
   } catch (error) {
@@ -69,18 +72,46 @@ app.get('/api/customers', async (req, res) => {
 });
 
 
+
 app.post('/api/customers', async (req, res) => {
-  const { name, company, email, gstno, phone, openingamount } = req.body;
+  const {
+    customerType,
+    name,
+    company,
+    dispname,
+    mail,
+    workphone,
+    mobilephone,
+    panno,
+    gstno,
+    currency,
+    openingbalance,
+    paymentterms,
+    billaddress,
+    shipaddress
+  } = req.body;
+
   try {
+    // Ensure `openingbalance` is converted to a number
+    const openingBalanceNumber = parseFloat(openingbalance);
+
     const [newCustomer] = await db
       .insert(CustTable)
       .values({
+        type: customerType,
         name,
         company,
-        mail: email,
+        dispname,
+        mail,
+        workphone,
+        mobilephone,
+        panno,
         gstno,
-        phone,
-        openingamount: Number(openingamount),
+        currency,
+        openingbalance: openingBalanceNumber,
+        paymentterms,
+        billaddress, // Use directly
+        shipaddress, // Use directly
       })
       .returning();
 
@@ -90,6 +121,9 @@ app.post('/api/customers', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+
+
 
 app.delete('/api/customers', async (req, res) => {
   const { ids } = req.body;

@@ -1,11 +1,19 @@
 CREATE TABLE IF NOT EXISTS "customer" (
 	"sno" serial PRIMARY KEY NOT NULL,
+	"type" text NOT NULL,
 	"name" text NOT NULL,
 	"company" text NOT NULL,
+	"dispname" text NOT NULL,
 	"mail" text NOT NULL,
+	"workphone" text NOT NULL,
+	"mobilephone" text NOT NULL,
+	"panno" text NOT NULL,
 	"gstno" text NOT NULL,
-	"phone" text NOT NULL,
-	"opening_amount" numeric NOT NULL
+	"currency" text NOT NULL,
+	"openingbalance" numeric NOT NULL,
+	"paymentterms" text NOT NULL,
+	"billaddress" json NOT NULL,
+	"shipaddress" json NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "items" (

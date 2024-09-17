@@ -1,5 +1,5 @@
 {
-  "id": "58c6b757-30a2-47f9-8b1f-c15b17b33d15",
+  "id": "b83a581c-0870-4e11-a9d2-890c8891e651",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -14,6 +14,12 @@
           "primaryKey": true,
           "notNull": true
         },
+        "type": {
+          "name": "type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
         "name": {
           "name": "name",
           "type": "text",
@@ -26,8 +32,32 @@
           "primaryKey": false,
           "notNull": true
         },
+        "dispname": {
+          "name": "dispname",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
         "mail": {
           "name": "mail",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "workphone": {
+          "name": "workphone",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "mobilephone": {
+          "name": "mobilephone",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "panno": {
+          "name": "panno",
           "type": "text",
           "primaryKey": false,
           "notNull": true
@@ -38,15 +68,33 @@
           "primaryKey": false,
           "notNull": true
         },
-        "phone": {
-          "name": "phone",
+        "currency": {
+          "name": "currency",
           "type": "text",
           "primaryKey": false,
           "notNull": true
         },
-        "opening_amount": {
-          "name": "opening_amount",
+        "openingbalance": {
+          "name": "openingbalance",
           "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "paymentterms": {
+          "name": "paymentterms",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "billaddress": {
+          "name": "billaddress",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "shipaddress": {
+          "name": "shipaddress",
+          "type": "json",
           "primaryKey": false,
           "notNull": true
         }
