@@ -121,14 +121,14 @@ const Vendor = () => {
 
                                         <td className="py-2 px-4 text-center border-b">
                                             <Link to={`/dashboard/purchase/vendors/${vendor.sno}`} className="text-blue-500 hover:underline">
-                                                {vendor.name}
+                                                {vendor.dispname}
                                             </Link>
                                         </td>
                                         <td className="py-2 px-4 text-center border-b">{vendor.company}</td>
-                                        <td className="py-2 px-4 text-center border-b">{vendor.email}</td>
+                                        <td className="py-2 px-4 text-center border-b">{vendor.mail}</td>
                                         <td className="py-2 px-4 text-center border-b">{vendor.gstno}</td>
-                                        <td className="py-2 px-4 text-center border-b">{vendor.phone}</td>
-                                        <td className="py-2 px-4 text-center border-b">{vendor.amount}</td>
+                                        <td className="py-2 px-4 text-center border-b">{vendor.workphone}</td>
+                                        <td className="py-2 px-4 text-center border-b">{vendor.openingbalance}</td>
                                     </tr>
                                 ))
                             )}

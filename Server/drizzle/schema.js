@@ -22,10 +22,17 @@ export const VendTable = pgTable('vendor', {
   sno: serial('sno').primaryKey(),
   name: text('name').notNull(),
   company: text('company').notNull(),
+  dispname: text('dispname').notNull(),
   mail: text('mail').notNull(),
+  workphone: text('workphone').notNull(),
+  mobilephone: text('mobilephone').notNull(),
+  panno: text('panno').notNull(),
   gstno: text('gstno').notNull(),
-  phone: text('phone').notNull(),
-  amountToBeReceived: numeric('amount_to_be_received').notNull()
+  currency: text('currency').notNull(),
+  openingbalance: numeric('openingbalance').notNull(),
+  paymentterms: text('paymentterms').notNull(),
+  billaddress: json('billaddress').notNull(),
+  shipaddress: json('shipaddress').notNull(),
 });
 
 export const Items = pgTable('items', {

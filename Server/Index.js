@@ -49,21 +49,6 @@ app.post('/api/sign-up', async (req, res) => {
 app.get('/api/customers', async (req, res) => {
   try {
     const customers = await db.select().from(CustTable);
-
-    // // Parse JSON fields
-    // customers.forEach(customer => {
-    //   try {
-    //     customer.billaddress = JSON.parse(customer.billaddress);
-    //   } catch (e) {
-    //     customer.billaddress = {};
-    //   }
-    //   try {
-    //     customer.shipaddress = JSON.parse(customer.shipaddress);
-    //   } catch (e) {
-    //     customer.shipaddress = {};
-    //   }
-    // });
-
     res.json(customers);
   } catch (error) {
     console.error('Error fetching customers:', error);
@@ -146,17 +131,7 @@ app.delete('/api/customers', async (req, res) => {
 
 app.get('/api/vendor', async (req, res) => {
   try {
-    const vendors = await db2
-      .select({
-        sno: VendTable.sno,
-        name: VendTable.name,
-        company: VendTable.company,
-        email: VendTable.mail,
-        gstno: VendTable.gstno,
-        phone: VendTable.phone,
-        amount: VendTable.amountToBeReceived,
-      })
-      .from(VendTable);
+    const vendors = await db2.select().from(VendTable);
 
     res.json(vendors);
   } catch (error) {
@@ -166,17 +141,41 @@ app.get('/api/vendor', async (req, res) => {
 });
 
 app.post('/api/vendor', async (req, res) => {
-  const { name, company, email, gstno, phone, openingamount } = req.body;
+  const {
+    name,
+    company,
+    dispname,
+    mail,
+    workphone,
+    mobilephone,
+    panno,
+    gstno,
+    currency,
+    openingbalance,
+    paymentterms,
+    billaddress,
+    shipaddress
+  } = req.body;
+
   try {
+    const openingBalanceNumber = parseFloat(openingbalance);
+
     const [newVendor] = await db2
       .insert(VendTable)
       .values({
         name,
         company,
-        mail: email,
+        dispname,
+        mail,
+        workphone,
+        mobilephone,
+        panno,
         gstno,
-        phone,
-        openingamount: Number(openingamount),
+        currency,
+        openingbalance: openingBalanceNumber,
+        paymentterms,
+        billaddress, // Use directly
+        shipaddress, // Use directly
       })
       .returning();
 

@@ -45,8 +45,15 @@ CREATE TABLE IF NOT EXISTS "vendor" (
 	"sno" serial PRIMARY KEY NOT NULL,
 	"name" text NOT NULL,
 	"company" text NOT NULL,
+	"dispname" text NOT NULL,
 	"mail" text NOT NULL,
+	"workphone" text NOT NULL,
+	"mobilephone" text NOT NULL,
+	"panno" text NOT NULL,
 	"gstno" text NOT NULL,
-	"phone" text NOT NULL,
-	"amount_to_be_received" numeric NOT NULL
+	"currency" text NOT NULL,
+	"openingbalance" numeric NOT NULL,
+	"paymentterms" text NOT NULL,
+	"billaddress" json NOT NULL,
+	"shipaddress" json NOT NULL
 );
