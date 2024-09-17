@@ -1,23 +1,38 @@
-import { pgTable, serial, text, numeric } from 'drizzle-orm/pg-core';
+import { pgTable, serial, text, numeric, json } from 'drizzle-orm/pg-core';
 
 export const CustTable = pgTable('customer', {
   sno: serial('sno').primaryKey(),
+  type: text('type').notNull(),
   name: text('name').notNull(),
   company: text('company').notNull(),
+  dispname: text('dispname').notNull(),
   mail: text('mail').notNull(),
+  workphone: text('workphone').notNull(),
+  mobilephone: text('mobilephone').notNull(),
+  panno: text('panno').notNull(),
   gstno: text('gstno').notNull(),
-  phone: text('phone').notNull(),
-  openingamount: numeric('opening_amount').notNull()
+  currency: text('currency').notNull(),
+  openingbalance: numeric('openingbalance').notNull(),
+  paymentterms: text('paymentterms').notNull(),
+  billaddress: json('billaddress').notNull(),
+  shipaddress: json('shipaddress').notNull(),
 });
 
 export const VendTable = pgTable('vendor', {
   sno: serial('sno').primaryKey(),
   name: text('name').notNull(),
   company: text('company').notNull(),
+  dispname: text('dispname').notNull(),
   mail: text('mail').notNull(),
+  workphone: text('workphone').notNull(),
+  mobilephone: text('mobilephone').notNull(),
+  panno: text('panno').notNull(),
   gstno: text('gstno').notNull(),
-  phone: text('phone').notNull(),
-  amountToBeReceived: numeric('amount_to_be_received').notNull()
+  currency: text('currency').notNull(),
+  openingbalance: numeric('openingbalance').notNull(),
+  paymentterms: text('paymentterms').notNull(),
+  billaddress: json('billaddress').notNull(),
+  shipaddress: json('shipaddress').notNull(),
 });
 
 export const Items = pgTable('items', {

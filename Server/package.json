@@ -2,7 +2,7 @@
   "type": "module",
   "scripts": {
     "migrate": "cd drizzle && tsx ./migrations.js",
-    "dev": "nodemon Cust.js"
+    "dev": "nodemon Index.js"
   },
   "dependencies": {
     "@neondatabase/serverless": "^0.9.4",

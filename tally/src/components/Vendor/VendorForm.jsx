@@ -6,16 +6,48 @@ const AddVendor = () => {
     const [newVendor, setNewVendor] = useState({
         name: '',
         company: '',
-        email: '',
+        dispname: '',
+        mail: '',
+        workphone: '',
+        mobilephone: '',
+        panno: '',
         gstno: '',
-        phone: '',
-        amountToBeReceived: ''
+        currency: 'INR',
+        openingbalance: '',
+        paymentterms: 'Due on Receipt',
+        billaddress: {
+            doorNo: '',
+            street: '',
+            city: '',
+            state: '',
+            country: '',
+            pinCode: ''
+        },
+        shipaddress: {
+            doorNo: '',
+            street: '',
+            city: '',
+            state: '',
+            country: '',
+            pinCode: ''
+        }
     });
     const navigate = useNavigate();
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setNewVendor({ ...newVendor, [name]: value });
+    };
+
+    const handleAddressChange = (e, type) => {
+        const { name, value } = e.target;
+        setNewVendor(prevState => ({
+            ...prevState,
+            [type]: {
+                ...prevState[type],
+                [name]: value,
+            },
+        }));
     };
 
     const handleSubmit = async (e) => {
@@ -29,26 +61,38 @@ const AddVendor = () => {
     };
 
     return (
-        <div className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-md mt-28">
+        <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md mt-28">
             <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">Add New Vendor</h1>
             <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                    <label className="block text-sm font-medium text-gray-700">Name</label>
-                    <input
-                        type="text"
-                        name="name"
-                        value={newVendor.name}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                        required
-                    />
+               
+                <div className="flex space-x-4">
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">Name</label>
+                        <input
+                            type="text"
+                            name="name"
+                            value={newVendor.name}
+                            onChange={handleInputChange}
+                            className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                        />
+                    </div>
                 </div>
                 <div>
-                    <label className="block text-sm font-medium text-gray-700">Company</label>
+                    <label className="block text-sm font-medium text-gray-700">Company Name</label>
                     <input
                         type="text"
                         name="company"
                         value={newVendor.company}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                    />
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-gray-700">Display Name</label>
+                    <input
+                        type="text"
+                        name="dispname"
+                        value={newVendor.dispname}
                         onChange={handleInputChange}
                         className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                         required
@@ -58,52 +102,133 @@ const AddVendor = () => {
                     <label className="block text-sm font-medium text-gray-700">Email</label>
                     <input
                         type="email"
-                        name="email"
-                        value={newVendor.email}
+                        name="mail"
+                        value={newVendor.mail}
                         onChange={handleInputChange}
                         className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                         required
                     />
                 </div>
+                <div className="flex space-x-4">
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">Work Phone</label>
+                        <input
+                            type="text"
+                            name="workphone"
+                            value={newVendor.workphone}
+                            onChange={handleInputChange}
+                            className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">Mobile Phone</label>
+                        <input
+                            type="text"
+                            name="mobilephone"
+                            value={newVendor.mobilephone}
+                            onChange={handleInputChange}
+                            className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                        />
+                    </div>
+                </div>
                 <div>
-                    <label className="block text-sm font-medium text-gray-700">GST No</label>
+                    <label className="block text-sm font-medium text-gray-700">PAN</label>
+                    <input
+                        type="text"
+                        name="panno"
+                        value={newVendor.panno}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                    />
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-gray-700">GST Number</label>
                     <input
                         type="text"
                         name="gstno"
                         value={newVendor.gstno}
                         onChange={handleInputChange}
                         className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                        required
                     />
                 </div>
                 <div>
-                    <label className="block text-sm font-medium text-gray-700">Phone</label>
-                    <input
-                        type="text"
-                        name="phone"
-                        value={newVendor.phone}
+                    <label className="block text-sm font-medium text-gray-700">Currency</label>
+                    <select
+                        name="currency"
+                        value={newVendor.currency}
                         onChange={handleInputChange}
                         className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                        required
-                    />
+                    >
+                        <option value="INR">INR - Indian Rupee</option>
+                    </select>
                 </div>
                 <div>
-                    <label className="block text-sm font-medium text-gray-700">Amount to be Paid</label>
+                    <label className="block text-sm font-medium text-gray-700">Opening Balance</label>
                     <input
                         type="number"
-                        name="amountToBeReceived"
-                        value={newVendor.amountToBeReceived}
+                        name="openingbalance"
+                        value={newVendor.openingbalance}
                         onChange={handleInputChange}
                         className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                        required
                     />
                 </div>
-                <button
-                    type="submit"
-                    className="w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-                >
-                    Add Vendor
-                </button>
+                <div>
+                    <label className="block text-sm font-medium text-gray-700">Payment Terms</label>
+                    <select
+                        name="paymentterms"
+                        value={newVendor.paymentterms}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                    >
+                        <option value="Due on Receipt">Due on Receipt</option>
+                    </select>
+                </div>
+
+                <div>
+                    <h2 className="text-xl font-semibold text-gray-800 mt-8 mb-4">Billing Address</h2>
+                    <div className="space-y-4">
+                        {['doorNo', 'street', 'city', 'state', 'country', 'pinCode'].map((field) => (
+                            <div key={field}>
+                                <label className="block text-sm font-medium text-gray-700">{field}</label>
+                                <input
+                                    type="text"
+                                    name={field}
+                                    value={newVendor.billaddress[field] || ''}
+                                    onChange={(e) => handleAddressChange(e, 'billaddress')}
+                                    className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                                />
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                <div>
+                    <h2 className="text-xl font-semibold text-gray-800 mt-8 mb-4">Shipping Address</h2>
+                    <div className="space-y-4">
+                        {['doorNo', 'street', 'city', 'state', 'country', 'pinCode'].map((field) => (
+                            <div key={field}>
+                                <label className="block text-sm font-medium text-gray-700">{field}</label>
+                                <input
+                                    type="text"
+                                    name={field}
+                                    value={newVendor.shipaddress[field] || ''}
+                                    onChange={(e) => handleAddressChange(e, 'shipaddress')}
+                                    className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                                />
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+
+                <div className="text-center">
+                    <button
+                        type="submit"
+                        className="px-6 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700"
+                    >
+                        Add Vendor
+                    </button>
+                </div>
             </form>
         </div>
     );

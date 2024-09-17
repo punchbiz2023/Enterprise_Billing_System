@@ -46,21 +46,9 @@ app.post('/api/sign-up', async (req, res) => {
 
 
 
-
 app.get('/api/customers', async (req, res) => {
   try {
-    const customers = await db
-      .select({
-        sno: CustTable.sno,
-        name: CustTable.name,
-        company: CustTable.company,
-        email: CustTable.mail,
-        gstno: CustTable.gstno,
-        phone: CustTable.phone,
-        amount: CustTable.openingamount,
-      })
-      .from(CustTable);
-
+    const customers = await db.select().from(CustTable);
     res.json(customers);
   } catch (error) {
     console.error('Error fetching customers:', error);
@@ -69,18 +57,46 @@ app.get('/api/customers', async (req, res) => {
 });
 
 
+
 app.post('/api/customers', async (req, res) => {
-  const { name, company, email, gstno, phone, openingamount } = req.body;
+  const {
+    customerType,
+    name,
+    company,
+    dispname,
+    mail,
+    workphone,
+    mobilephone,
+    panno,
+    gstno,
+    currency,
+    openingbalance,
+    paymentterms,
+    billaddress,
+    shipaddress
+  } = req.body;
+
   try {
+    // Ensure `openingbalance` is converted to a number
+    const openingBalanceNumber = parseFloat(openingbalance);
+
     const [newCustomer] = await db
       .insert(CustTable)
       .values({
+        type: customerType,
         name,
         company,
-        mail: email,
+        dispname,
+        mail,
+        workphone,
+        mobilephone,
+        panno,
         gstno,
-        phone,
-        openingamount: Number(openingamount),
+        currency,
+        openingbalance: openingBalanceNumber,
+        paymentterms,
+        billaddress, // Use directly
+        shipaddress, // Use directly
       })
       .returning();
 
@@ -90,6 +106,9 @@ app.post('/api/customers', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+
+
 
 app.delete('/api/customers', async (req, res) => {
   const { ids } = req.body;
@@ -112,17 +131,7 @@ app.delete('/api/customers', async (req, res) => {
 
 app.get('/api/vendor', async (req, res) => {
   try {
-    const vendors = await db2
-      .select({
-        sno: VendTable.sno,
-        name: VendTable.name,
-        company: VendTable.company,
-        email: VendTable.mail,
-        gstno: VendTable.gstno,
-        phone: VendTable.phone,
-        amount: VendTable.amountToBeReceived,
-      })
-      .from(VendTable);
+    const vendors = await db2.select().from(VendTable);
 
     res.json(vendors);
   } catch (error) {
@@ -132,17 +141,41 @@ app.get('/api/vendor', async (req, res) => {
 });
 
 app.post('/api/vendor', async (req, res) => {
-  const { name, company, email, gstno, phone, openingamount } = req.body;
+  const {
+    name,
+    company,
+    dispname,
+    mail,
+    workphone,
+    mobilephone,
+    panno,
+    gstno,
+    currency,
+    openingbalance,
+    paymentterms,
+    billaddress,
+    shipaddress
+  } = req.body;
+
   try {
+    const openingBalanceNumber = parseFloat(openingbalance);
+
     const [newVendor] = await db2
       .insert(VendTable)
       .values({
         name,
         company,
-        mail: email,
+        dispname,
+        mail,
+        workphone,
+        mobilephone,
+        panno,
         gstno,
-        phone,
-        openingamount: Number(openingamount),
+        currency,
+        openingbalance: openingBalanceNumber,
+        paymentterms,
+        billaddress, // Use directly
+        shipaddress, // Use directly
       })
       .returning();
 
