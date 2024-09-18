@@ -1,13 +1,18 @@
+// customers.js
 import express from 'express';
-import { drizzle } from 'drizzle-orm/postgres-js';
-import { CustTable } from '../drizzle/schema.js';
 import { eq } from 'drizzle-orm';
+import { CustTable } from '../drizzle/schema.js';
+import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
+import dotenv from 'dotenv';
+
+dotenv.config({ path: './.env' });
 
 const router = express.Router();
 const client = postgres(process.env.DATABASE_URL);
 const db = drizzle(client, { schema: { CustTable }, logger: true });
 
+// GET customers
 router.get('/', async (req, res) => {
   try {
     const customers = await db.select().from(CustTable);
@@ -18,10 +23,28 @@ router.get('/', async (req, res) => {
   }
 });
 
+// POST new customer
 router.post('/', async (req, res) => {
-  const { customerType, name, company, dispname, mail, workphone, mobilephone, panno, gstno, currency, openingbalance, paymentterms, billaddress, shipaddress } = req.body;
+  const {
+    customerType,
+    name,
+    company,
+    dispname,
+    mail,
+    workphone,
+    mobilephone,
+    panno,
+    gstno,
+    currency,
+    openingbalance,
+    paymentterms,
+    billaddress,
+    shipaddress,
+  } = req.body;
+
   try {
     const openingBalanceNumber = parseFloat(openingbalance);
+
     const [newCustomer] = await db
       .insert(CustTable)
       .values({
@@ -38,9 +61,10 @@ router.post('/', async (req, res) => {
         openingbalance: openingBalanceNumber,
         paymentterms,
         billaddress,
-        shipaddress
+        shipaddress,
       })
       .returning();
+
     res.status(201).json(newCustomer);
   } catch (error) {
     console.error('Error adding customer:', error);
@@ -48,8 +72,10 @@ router.post('/', async (req, res) => {
   }
 });
 
+// DELETE customers
 router.delete('/', async (req, res) => {
   const { ids } = req.body;
+
   try {
     for (const id of ids) {
       await db.delete(CustTable).where(eq(CustTable.sno, id));
