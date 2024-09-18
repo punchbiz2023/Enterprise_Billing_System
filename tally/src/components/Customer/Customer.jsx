@@ -49,7 +49,7 @@ const Customer = () => {
     return (
         <div className="flex">
             <div className="w-1/5">
-                <SidePanel/>
+                <SidePanel />
             </div>
             <div className="w-4/5 p-6 mt-[4%] mr-[10%]">
                 <h1 className="text-xl font-bold mb-4">Customer List</h1>
@@ -63,7 +63,7 @@ const Customer = () => {
                     </Link>
                     <div className="flex space-x-4">
                         <button
-                            onClick={() => setShowCheckboxes(!showCheckboxes)} 
+                            onClick={() => setShowCheckboxes(!showCheckboxes)}
                             className={`inline-block px-5 py-2 rounded text-white ${showCheckboxes ? 'bg-gray-500 hover:bg-gray-600' : 'bg-red-500 hover:bg-red-600'}`}
                         >
                             {showCheckboxes ? 'Cancel' : 'Delete Customers'}
@@ -87,9 +87,11 @@ const Customer = () => {
                                 <th className="py-2 px-4 border-b">Name</th>
                                 <th className="py-2 px-4 border-b">Company</th>
                                 <th className="py-2 px-4 border-b">Email</th>
-                                <th className="py-2 px-4 border-b">GST Number</th>
                                 <th className="py-2 px-4 border-b">Phone</th>
-                                <th className="py-2 px-4 border-b">Amount to be Received</th>
+                                <th className="py-2 px-4 border-b">GST Number</th>
+                                <th className="py-2 px-4 border-b">Opening Balance</th>
+
+
                             </tr>
                         </thead>
                         <tbody>
@@ -107,7 +109,7 @@ const Customer = () => {
                                 </tr>
                             ) : (
                                 customers.map((customer, index) => (
-                                    <tr key={customer.id || index} className="hover:bg-gray-100">
+                                    <tr key={customer.sno || index} className="hover:bg-gray-100">
                                         <td className="py-2 px-4 border-b">
                                             {showCheckboxes && (
                                                 <input
@@ -119,12 +121,18 @@ const Customer = () => {
                                             )}
                                         </td>
 
-                                        <td className="py-2 px-4 text-center border-b">{customer.name}</td>
+                                        <td className="py-2 px-4 text-center border-b">
+                                            <Link to={`/dashboard/sales/customer/${customer.sno}`} className="text-blue-500 hover:underline">
+                                                {customer.dispname}
+                                            </Link>
+                                        </td>
                                         <td className="py-2 px-4 text-center border-b">{customer.company}</td>
-                                        <td className="py-2 px-4 text-center border-b">{customer.email}</td>
+                                        <td className="py-2 px-4 text-center border-b">{customer.mail}</td>
+                                        <td className="py-2 px-4 text-center border-b">{customer.workphone}</td>
                                         <td className="py-2 px-4 text-center border-b">{customer.gstno}</td>
-                                        <td className="py-2 px-4 text-center border-b">{customer.phone}</td>
-                                        <td className="py-2 px-4 text-center border-b">{customer.amount}</td>
+                                        <td className="py-2 px-4 text-center border-b">{customer.openingbalance}</td>
+
+
                                     </tr>
                                 ))
                             )}

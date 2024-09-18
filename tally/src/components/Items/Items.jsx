@@ -117,13 +117,13 @@ const Items = () => {
             <tbody>
               {!dataLoaded ? (
                 <tr>
-                  <td colSpan="6" className="py-2 px-4 text-center text-gray-500">
+                  <td colSpan="8" className="py-2 px-4 text-center text-gray-500">
                     Loading Items...
                   </td>
                 </tr>
               ) : filteredItems.length === 0 ? (
                 <tr>
-                  <td colSpan="6" className="py-2 px-4 text-center text-gray-500">
+                  <td colSpan="8" className="py-2 px-4 text-center text-gray-500">
                     No Items found
                   </td>
                 </tr>
@@ -140,7 +140,11 @@ const Items = () => {
                         />
                       )}
                     </td>
-                    <td className="py-2 px-4 border-b text-center">{item.name}</td>
+                    <td className="py-2 px-4 border-b text-center">
+                      <Link to={`/items/${item.sno}`} className="text-blue-500 hover:underline">
+                        {item.name}
+                      </Link>
+                    </td>
                     <td className="py-2 px-4 border-b text-center">{item.type}</td>
                     <td className="py-2 px-4 border-b text-center">{item.salesprice}</td>
                     <td className="py-2 px-4 border-b text-center">{item.costprice}</td>
@@ -156,9 +160,6 @@ const Items = () => {
       </div>
     </div>
   );
-
-
-
 };
 
 export default Items;

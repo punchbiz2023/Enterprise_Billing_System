@@ -33,8 +33,7 @@ const Order = () => {
       if (response.data) {
         setCustomer(response.data);
         setDataLoaded(true);
-        console.log(response.data);
-
+        // console.log(response.data);
       }
     } catch (error) {
       console.error('Error fetching customer data:', error.response ? error.response.data : error.message);
@@ -59,7 +58,7 @@ const Order = () => {
 
     if (value == "new item") {
       navigate('/dashboard/items/form')
-    } else {  
+    } else {
       const newRows = [...rows];
       newRows[index] = { ...newRows[index], [name]: value };
       setRows(newRows);
@@ -112,6 +111,7 @@ const Order = () => {
                   {cust.name}
                 </option>
               ))}
+
             </select>
           </div>
 
@@ -122,8 +122,8 @@ const Order = () => {
               name="salesOrderNumber"
               value={order.salesOrderNumber}
               onChange={handleChange}
-              className="border border-gray-300 p-3 rounded-md bg-gray-100"
-              readOnly
+              className="border border-gray-300 p-3 rounded-md "
+              
             />
           </div>
         </div>
@@ -148,7 +148,7 @@ const Order = () => {
               name="salesOrderDate"
               value={order.salesOrderDate}
               onChange={handleChange}
-              className="border border-gray-300 p-3 rounded-md bg-gray-100 cursor-not-allowed"
+              className="border border-gray-300 p-3 rounded-md  cursor-not-allowed"
               readOnly
             />
           </div>
@@ -247,6 +247,7 @@ const Order = () => {
                         {item.name}
                       </option>
                     ))}
+
                   </select>
                 </td>
                 <td className="px-4 py-2 border-t text-right">

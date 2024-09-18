@@ -49,7 +49,7 @@ const Vendor = () => {
     return (
         <div className="flex">
             <div className="w-1/5">
-                <SidePanel/>
+                <SidePanel />
             </div>
             <div className="w-4/5 p-6 mt-[4%] mr-[10%]">
                 <h1 className="text-xl font-bold mb-4">Vendor List</h1>
@@ -89,7 +89,7 @@ const Vendor = () => {
                                 <th className="py-2 px-4 border-b">Email</th>
                                 <th className="py-2 px-4 border-b">GST Number</th>
                                 <th className="py-2 px-4 border-b">Phone</th>
-                                <th className="py-2 px-4 border-b">Amount to be Received</th>
+                                <th className="py-2 px-4 border-b">Amount to be Paid</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -119,12 +119,16 @@ const Vendor = () => {
                                             )}
                                         </td>
 
-                                        <td className="py-2 px-4 text-center border-b">{vendor.name}</td>
+                                        <td className="py-2 px-4 text-center border-b">
+                                            <Link to={`/dashboard/purchase/vendors/${vendor.sno}`} className="text-blue-500 hover:underline">
+                                                {vendor.dispname}
+                                            </Link>
+                                        </td>
                                         <td className="py-2 px-4 text-center border-b">{vendor.company}</td>
-                                        <td className="py-2 px-4 text-center border-b">{vendor.email}</td>
+                                        <td className="py-2 px-4 text-center border-b">{vendor.mail}</td>
                                         <td className="py-2 px-4 text-center border-b">{vendor.gstno}</td>
-                                        <td className="py-2 px-4 text-center border-b">{vendor.phone}</td>
-                                        <td className="py-2 px-4 text-center border-b">{vendor.amount}</td>
+                                        <td className="py-2 px-4 text-center border-b">{vendor.workphone}</td>
+                                        <td className="py-2 px-4 text-center border-b">{vendor.openingbalance}</td>
                                     </tr>
                                 ))
                             )}

@@ -1,11 +1,33 @@
 CREATE TABLE IF NOT EXISTS "customer" (
 	"sno" serial PRIMARY KEY NOT NULL,
+	"type" text NOT NULL,
 	"name" text NOT NULL,
 	"company" text NOT NULL,
+	"dispname" text NOT NULL,
 	"mail" text NOT NULL,
+	"workphone" text NOT NULL,
+	"mobilephone" text NOT NULL,
+	"panno" text NOT NULL,
 	"gstno" text NOT NULL,
-	"phone" text NOT NULL,
-	"amount_to_be_received" numeric NOT NULL
+	"currency" text NOT NULL,
+	"openingbalance" numeric NOT NULL,
+	"paymentterms" text NOT NULL,
+	"billaddress" json NOT NULL,
+	"shipaddress" json NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "estimate" (
+	"sno" serial PRIMARY KEY NOT NULL,
+	"cname" text NOT NULL,
+	"quotenum" text NOT NULL,
+	"refnum" text,
+	"qdate" date NOT NULL,
+	"expdate" date NOT NULL,
+	"salesperson" text NOT NULL,
+	"project" text NOT NULL,
+	"subject" text,
+	"itemtable" json NOT NULL,
+	"subtotal" json NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "items" (
@@ -37,8 +59,15 @@ CREATE TABLE IF NOT EXISTS "vendor" (
 	"sno" serial PRIMARY KEY NOT NULL,
 	"name" text NOT NULL,
 	"company" text NOT NULL,
+	"dispname" text NOT NULL,
 	"mail" text NOT NULL,
+	"workphone" text NOT NULL,
+	"mobilephone" text NOT NULL,
+	"panno" text NOT NULL,
 	"gstno" text NOT NULL,
-	"phone" text NOT NULL,
-	"amount_to_be_received" numeric NOT NULL
+	"currency" text NOT NULL,
+	"openingbalance" numeric NOT NULL,
+	"paymentterms" text NOT NULL,
+	"billaddress" json NOT NULL,
+	"shipaddress" json NOT NULL
 );
