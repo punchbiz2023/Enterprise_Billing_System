@@ -50,6 +50,15 @@ const SidePanel = () => {
         </li>
         <li>
           <Link
+            to="/dashboard/sales/delivery"
+            className={`block ${activeLink === '/dashboard/sales/delivery' ? 'active' : ''}`}
+            onClick={() => handleLinkClick('/dashboard/sales/delivery')}
+          >
+            Delivery Challan
+          </Link>
+        </li>
+        <li>
+          <Link
             to="/dashboard/sales/payment-received"
             className={`block ${activeLink === '/dashboard/sales/payment-received' ? 'active' : ''}`}
             onClick={() => handleLinkClick('/dashboard/sales/payment-received')}

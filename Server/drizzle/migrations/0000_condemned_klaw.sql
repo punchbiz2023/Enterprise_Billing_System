@@ -16,6 +16,20 @@ CREATE TABLE IF NOT EXISTS "customer" (
 	"shipaddress" json NOT NULL
 );
 --> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "estimate" (
+	"sno" serial PRIMARY KEY NOT NULL,
+	"cname" text NOT NULL,
+	"quotenum" text NOT NULL,
+	"refnum" text,
+	"qdate" date NOT NULL,
+	"expdate" date NOT NULL,
+	"salesperson" text NOT NULL,
+	"project" text NOT NULL,
+	"subject" text,
+	"itemtable" json NOT NULL,
+	"subtotal" json NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "items" (
 	"sno" serial PRIMARY KEY NOT NULL,
 	"name" text NOT NULL,

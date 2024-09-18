@@ -1,5 +1,5 @@
 {
-  "id": "849a1eb1-0092-46b2-a649-9d08c3fcbbe6",
+  "id": "40436b19-9435-404f-ad55-88db6fd78cf4",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -94,6 +94,82 @@
         },
         "shipaddress": {
           "name": "shipaddress",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.estimate": {
+      "name": "estimate",
+      "schema": "",
+      "columns": {
+        "sno": {
+          "name": "sno",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "cname": {
+          "name": "cname",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "quotenum": {
+          "name": "quotenum",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "refnum": {
+          "name": "refnum",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "qdate": {
+          "name": "qdate",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "expdate": {
+          "name": "expdate",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "salesperson": {
+          "name": "salesperson",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "project": {
+          "name": "project",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "subject": {
+          "name": "subject",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "itemtable": {
+          "name": "itemtable",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "subtotal": {
+          "name": "subtotal",
           "type": "json",
           "primaryKey": false,
           "notNull": true

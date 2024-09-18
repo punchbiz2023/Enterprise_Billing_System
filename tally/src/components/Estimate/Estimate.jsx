@@ -36,23 +36,23 @@ const Estimate = () => {
       }
     };
 
-    const fetchSalespeople = async () => {
-      try {
-        const response = await axios.get('http://localhost:3001/api/salespeople');
-        setSalespeople(response.data);
-      } catch (error) {
-        console.error('Error fetching salesperson data:', error);
-      }
-    };
+    // const fetchSalespeople = async () => {
+    //   try {
+    //     const response = await axios.get('http://localhost:3001/api/salespeople');
+    //     setSalespeople(response.data);
+    //   } catch (error) {
+    //     console.error('Error fetching salesperson data:', error);
+    //   }
+    // };
 
-    const fetchProjects = async () => {
-      try {
-        const response = await axios.get('http://localhost:3001/api/projects');
-        setProjects(response.data);
-      } catch (error) {
-        console.error('Error fetching project data:', error);
-      }
-    };
+    // const fetchProjects = async () => {
+    //   try {
+    //     const response = await axios.get('http://localhost:3001/api/projects');
+    //     setProjects(response.data);
+    //   } catch (error) {
+    //     console.error('Error fetching project data:', error);
+    //   }
+    // };
 
     const fetchItems = async () => {
       try {
@@ -64,12 +64,15 @@ const Estimate = () => {
     };
 
     fetchCustomers();
-    fetchSalespeople();
-    fetchProjects();
+    // fetchSalespeople();
+    // fetchProjects();
     fetchItems();
 
-    const currentDate = new Date().toISOString().slice(0, 10);
+    const currentDate = new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+      .toISOString()
+      .slice(0, 10);
     setQuoteDate(currentDate);
+
   }, []);
 
   const addNewItem = () => {
@@ -81,9 +84,23 @@ const Estimate = () => {
   };
 
   const handleItemChange = (index, field, value) => {
-    const newItems = [...items];
-    newItems[index][field] = value;
-    setItems(newItems);
+    const updatedItems = [...items];
+  
+    if (field === 'item') {
+      const selectedItem = availableItems.find((it) => it.name === value);
+      updatedItems[index] = {
+        ...updatedItems[index],
+        item: value,
+        rate: selectedItem ? selectedItem.salesprice : 0, // Set the rate from the selected item
+      };
+    } else {
+      updatedItems[index][field] = value;
+    }
+    if (value === 'new item') {
+      navigate("/dashboard/items/form")
+    }
+  
+    setItems(updatedItems);
   };
 
   const calculateSubtotal = () => {
@@ -122,6 +139,35 @@ const Estimate = () => {
       setTax(Number(value));
     }
   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const estimateData = {
+      cname: customer,
+      quotenum: quoteNumber,
+      refnum: reference,
+      qdate: quoteDate,
+      expdate: expiryDate,
+      salesperson,
+      project: projectName,
+      subject,
+      itemtable: items,
+      subtotal: {
+        subtotal: calculateSubtotal(),
+        tax: calculateTaxAmount(),
+        adjustment: adjustmentType === 'add' ? adjustment : -adjustment,
+        total: calculateTotal(),
+      }
+    };
+  
+    try {
+      await axios.post('http://localhost:3001/api/estimates', estimateData);
+      navigate('/dashboard/estimates');
+    } catch (error) {
+      console.error('Error submitting estimate:', error);
+    }
+  };
+  
 
   return (
     <div className="estimate-container">
@@ -211,11 +257,11 @@ const Estimate = () => {
                       value={item.item}
                       onChange={(e) => handleItemChange(index, 'item', e.target.value)}
                     >
-                      <option value="">Select an item</option>
+                      <option value="" hidden>Select an item</option>
+                      <option value="new item" className='text-blue-500'>Add New Item</option>
                       {availableItems.map((it) => (
                         <option key={it.id} value={it.name}>{it.name}</option>
                       ))}
-                      <option value="new item">Add New Item</option>
                     </select>
                   </td>
                   <td>
@@ -335,8 +381,7 @@ const Estimate = () => {
         </div>
 
         <div className="actions">
-          <button type="button">Save as Draft</button>
-          <button type="button">Save and Send</button>
+          <button type="button" onClick={handleSubmit}>Save and Send</button>
           <button type="button">Cancel</button>
         </div>
       </form>

@@ -1,4 +1,4 @@
-import { pgTable, serial, text, numeric, json } from 'drizzle-orm/pg-core';
+import { pgTable, serial, text, numeric, json, date } from 'drizzle-orm/pg-core';
 
 export const CustTable = pgTable('customer', {
   sno: serial('sno').primaryKey(),
@@ -58,4 +58,18 @@ export const Users = pgTable('users',{
   gst: text('gst').notNull(),
   pan: text('pan').notNull(),
   docs: text('docs')
+})
+
+export const Estimate = pgTable('estimate',{
+  sno: serial('sno').primaryKey(),
+  cname: text('cname').notNull(),
+  quotenum: text('quotenum').notNull(),
+  refnum: text('refnum'),
+  qdate: date('qdate').notNull(),
+  expdate: date('expdate').notNull(),
+  salesperson: text('salesperson').notNull(),
+  project: text('project').notNull(),
+  subject: text('subject'),
+  itemtable: json('itemtable').notNull(),
+  subtotal: json('subtotal').notNull()
 })

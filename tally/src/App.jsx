@@ -23,6 +23,7 @@ import BillForm from './components/Bills/BillForm.jsx';
 import InvoiceForm from './components/Invoice/invoiceForm.jsx';
 import VendorDetails from './components/Vendor/VendorDetails.jsx';
 import CustomerDetails from './components/Customer/CustomerDetails.jsx';
+import Delivery from './components/DeliveryChallan/Delivery.jsx';
 // Layout with Header and Navbar
 function MainLayout({ children }) {
   return (
@@ -68,7 +69,8 @@ function App() {
         <Route path="/dashboard/sales/customer/:id" element={<MainLayout><CustomerDetails /></MainLayout>} />
         <Route path="/dashboard/purchase/bill" element={<MainLayout><BillForm /></MainLayout>} />
         <Route path="/dashboard/sales/invoice" element={<MainLayout><InvoiceForm /></MainLayout>} />
-
+        <Route path="/dashboard/sales/delivery" element={<MainLayout><Delivery /></MainLayout>} />
+        
       </Routes>
     </Router>
   );
