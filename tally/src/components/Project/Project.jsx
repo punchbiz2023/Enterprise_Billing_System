@@ -13,15 +13,16 @@ function Project() {
   const [revenueBudget, setRevenueBudget] = useState('');
   const [hoursBudgetType, setHoursBudgetType] = useState('');
   const [users, setUsers] = useState([]);
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState([{ name: '', description: '' }]);
   const [availableCustomers, setAvailableCustomers] = useState([]);
+  const [isFetchingCustomers, setIsFetchingCustomers] = useState(false); // Loading state
 
+  // Fetch available customers when component mounts
   useEffect(() => {
     const fetchCustomers = async () => {
       try {
-        const response = await fetch('http://localhost:3001/api/customers');
-        const data = await response.json();
-        setAvailableCustomers(data);
+        const response = await axios.get('http://localhost:3001/api/customers');
+        setAvailableCustomers(response.data);
       } catch (error) {
         console.error('Error fetching customers:', error);
       }
@@ -29,8 +30,6 @@ function Project() {
 
     fetchCustomers();
   }, []);
-
-  
 
   const addNewTask = () => {
     setTasks([...tasks, { name: '', description: '' }]);
@@ -52,11 +51,50 @@ function Project() {
     setTasks(newTasks);
   };
 
+  const addNewUser = async () => {
+    setIsFetchingCustomers(true); 
+
+    try {
+      const response = await axios.get('http://localhost:3001/api/customers');
+      setAvailableCustomers(response.data);
+      setUsers([...users, { name: '', email: '' }]); 
+    } catch (error) {
+      console.error('Error fetching customers:', error);
+    } finally {
+      setIsFetchingCustomers(false); 
+    }
+  };
+
+  const saveProject = async (e) => {
+    e.preventDefault();
+
+    const projectData = {
+      projectName,
+      projectCode,
+      customerName,
+      billingMethod,
+      totalProjectCost,
+      description,
+      costBudget,
+      revenueBudget,
+      hoursBudgetType,
+      users,
+      tasks,
+    };
+
+    try {
+      await axios.post('http://localhost:3001/api/projects', projectData);
+      alert('Project saved successfully!');
+    } catch (error) {
+      console.error('Error saving project:', error);
+    }
+  };
+
   return (
     <div className="new-project">
       <h2 className="text-2xl font-semibold mb-10 mt-20 text-gray-700">New Project</h2>
 
-      <form>
+      <form onSubmit={saveProject}>
         <div className="form-group">
           <label>Project Name*</label>
           <input
@@ -178,7 +216,7 @@ function Project() {
                   />
                 </td>
                 <td>
-                  <button type="button" onClick={() => removeUser(index)}>
+                  <button type="button" onClick={() => setUsers(users.filter((_, i) => i !== index))}>
                     Remove
                   </button>
                 </td>
@@ -186,7 +224,9 @@ function Project() {
             ))}
           </tbody>
         </table>
-        <button type="button" className="add-user" >Add User</button>
+        <button type="button" className="add-user" onClick={addNewUser} disabled={isFetchingCustomers}>
+          {isFetchingCustomers ? 'Fetching Customers...' : 'Add User'}
+        </button><br/><br/>
 
         <h3 className="text-l font-semibold mb-6 text-gray-700">Project Tasks</h3>
         <table>
@@ -227,10 +267,13 @@ function Project() {
             ))}
           </tbody>
         </table>
-        <button type="button" className="add-task" >Add Project Task</button>
+        <button type="button" className="add-task" onClick={addNewTask}>
+          Add Project Task
+        </button><br/>
+        <br/>
 
         <div className="form-actions">
-          <button type="submit" className='save'>Save and Select</button>
+          <button type="submit" className="save">Save and Select</button>
           <button type="button" className="cancel">Cancel</button>
         </div>
       </form>

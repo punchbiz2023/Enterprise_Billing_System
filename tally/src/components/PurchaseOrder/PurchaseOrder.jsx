@@ -162,7 +162,8 @@ const PurchaseOrder = () => {
             </div>
 
             <div className="tax-section">
-                <label>Tax Type</label>
+                <label>Tax Type</label><br/>
+                <br />
                 <select value={taxType} onChange={(e) => setTaxType(e.target.value)}>
                     <option value="Commission/Brokerage">Commission or Brokerage [5%]</option>
                     <option value="Commission/Brokerage_Reduced">Commission or Brokerage (Reduced) [3.75%]</option>

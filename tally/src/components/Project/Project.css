@@ -88,11 +88,13 @@
   }
   
   button.save {
+    padding: 10px 20px;
     background-color: #28a745;
     color: white;
   }
   
   button.cancel {
+    padding: 10px 20px;
     background-color: #dc3545;
     color: white;
   }

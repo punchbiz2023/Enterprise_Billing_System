@@ -275,7 +275,7 @@ const Estimate = () => {
                   <td>
                     <input
                       type="number"
-                      value={item.rate}
+                      value={item.salesprice}
                       onChange={(e) => handleItemChange(index, 'rate', e.target.value)}
                       min="0"
                     />
