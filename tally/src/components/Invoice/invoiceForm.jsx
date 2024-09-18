@@ -30,13 +30,16 @@ const InvoiceForm = () => {
   const [paymentReceived, setPaymentReceived] = useState(false);
   const [customers, setCustomers] = useState([]);
   const [customer, setCustomer] = useState('');
+  const [customerState, setCustomerState] = useState('');
+  const [isPaymentReceived, setIsPaymentReceived] = useState(false);
+  
 
   useEffect(() => {
     fetchCustomers();
     fetchSalespeople();
     fetchItems();
   }, []);
-
+    
   const fetchSalespeople = async () => {
     try {
       const response = await axios.get('http://localhost:3001/api/salespeople');
@@ -45,12 +48,30 @@ const InvoiceForm = () => {
       console.error('Error fetching salesperson data:', error);
     }
   };
+ 
+
   const fetchCustomers = async () => {
     try {
       const response = await axios.get('http://localhost:3001/api/customers');
-      setCustomers(response.data);
+      const customersWithState = response.data.map((cust) => ({
+        ...cust,
+        state: cust.billaddress.state, // Ensure the state is available from billaddress
+      }));
+      setCustomers(customersWithState);
     } catch (error) {
       console.error('Error fetching customer data:', error);
+    }
+  };
+  const handleDropdownChange = (e) => {
+    const selectedCustomerName = e.target.value;
+    setCustomer(selectedCustomerName);
+
+    // Find the selected customer and update the state with the customer's state
+    const selectedCustomer = customers.find((cust) => cust.name === selectedCustomerName);
+    if (selectedCustomer) {
+      setCustomerState(selectedCustomer.state); // Set customer state from the selected customer
+    } else {
+      setCustomerState(''); // Clear state if no customer is selected
     }
   };
   
@@ -75,7 +96,7 @@ const InvoiceForm = () => {
     link.click();
   };
   const handleCheckboxChange = (e) => {
-    setPaymentReceived(e.target.checked);
+    setIsPaymentReceived(e.target.checked);
   };
 
   const handleAddSalesperson = () => {
@@ -88,20 +109,68 @@ const InvoiceForm = () => {
   const handleItemChange = (index, field, value) => {
     const newItems = [...items];
     newItems[index][field] = value;
-    if (field === 'rate' || field === 'quantity' || field === 'discount'|| field === 'gst' || field === 'sgst') {
-      // Update amount based on new rate, quantity, GST, and SGST
-      const rate = newItems[index].rate;
-      const quantity = newItems[index].quantity;
-      const discount = parseFloat(newItems[index].discount) || 0;
-      const gst = newItems[index].gst;
-      const sgst = newItems[index].sgst;
-      newItems[index].amount = (quantity * rate * (1 - discount / 100)* (1 + gst / 100) * (1 + sgst / 100)).toFixed(2);
+
+    if (field === 'gst') {
+      const gst = parseFloat(value) || 0;
+      setGSTForState(index, gst);
     }
+
+    if (['rate', 'quantity', 'discount', 'gst', 'sgst', 'cgst', 'igst'].includes(field)) {
+      const rate = parseFloat(newItems[index].rate) || 0;
+      const quantity = parseFloat(newItems[index].quantity) || 0;
+      const discount = parseFloat(newItems[index].discount) || 0;
+      const gst = parseFloat(newItems[index].gst) || 0;
+      const sgst = parseFloat(newItems[index].sgst) || 0;
+      const cgst = parseFloat(newItems[index].cgst) || 0;
+      const igst = parseFloat(newItems[index].igst) || 0;
+
+      const baseAmount = rate * quantity;
+      const discountedAmount = baseAmount * (1 - discount / 100);
+
+      let totalAmount = discountedAmount;
+      if (customerState === 'Tamil Nadu') {
+        const sgstAmount = gst / 2;
+        const cgstAmount = gst / 2;
+        newItems[index].sgst = sgstAmount.toFixed(2);
+        newItems[index].cgst = cgstAmount.toFixed(2);
+        newItems[index].igst = '';
+        totalAmount = discountedAmount * (1 + sgstAmount / 100 + cgstAmount / 100);
+      } else {
+        newItems[index].igst = gst;
+        totalAmount = discountedAmount * (1 + gst / 100);
+      }
+
+      newItems[index].amount = totalAmount.toFixed(2);
+    }
+    
+    setItems(newItems);
+};
+
+  
+
+  const setGSTForState = (index, gst) => {
+    const newItems = [...items];
+    
+    if (customer.state === 'Tamil Nadu') {
+      const halfGST = gst / 2;
+      newItems[index].sgst = halfGST.toFixed(2);
+      newItems[index].cgst = halfGST.toFixed(2);
+      newItems[index].igst = '';  // Clear IGST for Tamil Nadu
+    } else {
+      newItems[index].sgst = '';  // Clear SGST
+      newItems[index].cgst = '';  // Clear CGST
+      newItems[index].igst = gst.toFixed(2);  // Set full GST as IGST
+    }
+  
     setItems(newItems);
   };
+  
+  
+  
+  
 
   const addNewItem = () => {
-    setItems([...items, { item: '', quantity: '', rate: '', discount: '', gst: '', sgst: '', amount: '' }]);
+    setItems([...items, { item: '', quantity: '', rate: '', discount: '', gst: '', sgst: '',cgst: '',igst: '', amount: '' }]);
   };
 
   const removeItem = (index) => {
@@ -109,45 +178,76 @@ const InvoiceForm = () => {
   };
 
   const calculateSubtotal = () => {
-    return items.reduce((sum, item) => sum + Number(item.amount), 0);
+    // Calculate subtotal from items
+    return items.reduce((acc, item) => {
+      const rate = parseFloat(item.rate) || 0;
+      const quantity = parseFloat(item.quantity) || 0;
+      const discount = parseFloat(item.discount) || 0;
+  
+      const baseAmount = rate * quantity;
+      const discountedAmount = baseAmount * (1 - discount / 100);
+  
+      return acc + discountedAmount;
+    }, 0).toFixed(2);
   };
 
   const calculateTaxAmount = () => {
-    let taxAmount = 0;
-  
-    // Iterate over each item to calculate tax based on item rate
-    items.forEach(item => {
-      const rate = Number(item.rate);
-      const quantity = Number(item.quantity);
-      const gst = Number(item.gst);
-      const sgst = Number(item.sgst);
-      const amount = (quantity * rate * (1 + gst / 100) * (1 + sgst / 100)).toFixed(2);
-  
-      if (taxType === 'TDS') {
-        taxAmount += (quantity * rate * (tax / 100)); // Calculate tax based on rate
-      } else if (taxType === 'TCS') {
-        taxAmount += (quantity * rate * (Number(customTax) / 100)); // Calculate tax based on customTax
-      }
-    });
-  
-    return taxAmount.toFixed(2); // Return the total tax amount
-  };
+  let taxAmount = 0;
+  const isTamilNadu = customer.state === 'Tamil Nadu';
+
+  items.forEach(item => {
+    const rate = Number(item.rate) || 0;
+    const quantity = Number(item.quantity) || 0;
+    const gst = Number(item.gst) || 0;
+
+    const baseAmount = rate * quantity;
+    let totalTax = 0;
+    const isTamilNadu = customer.state === 'Tamil Nadu';
+    if (isTamilNadu) {
+      const sgst = gst / 2;
+      const cgst = gst / 2;
+      const igst='';
+      totalTax = baseAmount * ((sgst + cgst) / 100);
+    } else {
+      const igst = gst;
+      totalTax = baseAmount * (igst / 100);
+    }
+
+    taxAmount += totalTax;
+  });
+
+  return taxAmount.toFixed(2);
+};
   
   
 
-  const calculateTotal = () => {
-    const subtotal = calculateSubtotal();
-    const taxAmount = calculateTaxAmount();
-    const adjustedValue = adjustmentType === 'add' ? Number(adjustment) : -Number(adjustment);
-  
-    if (taxType === 'TDS') {
-      return (subtotal - Number(taxAmount) + adjustedValue).toFixed(2);
-    } else if (taxType === 'TCS') {
-      return (subtotal + Number(taxAmount) + adjustedValue).toFixed(2);
-    } else {
-      return (subtotal + adjustedValue).toFixed(2);
-    }
-  };
+const calculateTotal = () => {
+  const subtotal = Number(calculateSubtotal()) || 0;
+  const taxAmount = Number(calculateTaxAmount()) || 0;
+  const adjustedValue = adjustmentType === 'add' ? Number(adjustment) : -Number(adjustment);
+
+  const totalBeforeAdjustment = subtotal + taxAmount;
+  console.log('Subtotal:', subtotal);
+  console.log('Tax Amount:', taxAmount);
+  console.log('Total Before Adjustment:', totalBeforeAdjustment);
+  console.log('Adjustment Value:', adjustedValue);
+
+  let total;
+
+  if (taxType === 'TDS') {
+      total = totalBeforeAdjustment * (1 - (Number(tax) / 100)) - adjustedValue;
+  } else if (taxType === 'TCS') {
+      total = totalBeforeAdjustment + (totalBeforeAdjustment * (Number(customTax) / 100)) + adjustedValue;
+  } else {
+      total = totalBeforeAdjustment;
+  }
+
+  console.log('Total After Tax Type Adjustment:', total);
+
+  return (Math.round(total * 100) / 100).toFixed(2);
+};
+
+
   const numberToWords = (num) => {
     const singleDigits = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
     const doubleDigits = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
@@ -212,16 +312,17 @@ const InvoiceForm = () => {
     const value = e.target.value;
     const numericValue = parseFloat(value); // Convert to number
     if (!isNaN(numericValue) && value.trim() !== '') {
-      setCustomTax(numericValue);
+        setCustomTax(numericValue);
     } else {
-      setCustomTax(''); // Clear or handle invalid input
+        setCustomTax(''); // Clear or handle invalid input
     }
-  };
+};
+
   
 
-  const handleTaxTypeChange = (e) => {
-    setTaxType(e.target.value);
-  };
+const handleTaxTypeChange = (e) => {
+  setTaxType(e.target.value);
+};
 
   
 
@@ -387,8 +488,8 @@ const MyDocument = () => (
  // Will log the value of isModalOpen to ensure it changes
 
   return (
-    <div className="p-6 mt-8 bg-gray-50 min-h-screen flex items-center justify-center">
-      <div className="max-w-4xl w-full bg-white p-8 rounded-lg shadow-md">
+    <div className="p-6 mt-8 mr-20 ml-20 bg-gray-50 min-h-screen flex items-center justify-center">
+      <div className="max-w-7xl w-full bg-white p-8 rounded-lg shadow-md">
         <h1 className="text-2xl font-bold mb-6">New Invoice</h1>
         <form className="space-y-8" onSubmit={(e) => {
           e.preventDefault();
@@ -400,7 +501,7 @@ const MyDocument = () => (
           <div className="relative">
             <select
               value={customer}
-              onChange={(e) => handleDropdownChange(e, setCustomer, 'sales/customers')}
+              onChange={handleDropdownChange}
               className="border border-gray-300 rounded-md p-2 w-full focus:ring-blue-500 focus:border-blue-500"
             >
               <option value="">Select a customer</option>
@@ -411,6 +512,16 @@ const MyDocument = () => (
             </select>
           </div>
             </div>
+            <div>
+        <label className="block text-sm font-medium mb-1">Customer State*</label>
+        <input
+          type="text"
+          value={customerState}
+          readOnly
+          className="border border-gray-300 rounded-md p-2 w-full focus:ring-blue-500 focus:border-blue-500"
+        />
+      </div>
+            
             <div>
               <label className="block text-sm font-medium text-gray-700">Customer Addrress*</label>
               <input
@@ -492,6 +603,8 @@ const MyDocument = () => (
                 <th>Discount</th>
                 <th>GST (%)</th>
                 <th>SGST (%)</th>
+                <th>CGST (%)</th>
+                <th>IGST (%)</th>
                 <th>Amount</th>
                 <th>Actions</th>
               </tr>
@@ -538,22 +651,39 @@ const MyDocument = () => (
                     />
                   </td>
                   <td>
-                    <input
-                      type="number"
-                      step="0.01"
-                      value={item.gst}
-                      onChange={(e) => handleItemChange(index, 'gst', e.target.value)}
-                      className="border border-gray-300 rounded-md p-2 w-full"
-                    />
+                  <input
+    type="number"
+    value={items[index].gst || ''}
+    onChange={(e) => handleItemChange(index, 'gst', e.target.value)}
+    className="border p-2 w-full"
+  />
+                  </td>
+                  
+                  <td>
+                  <input
+    type="number"
+    value={items[index].sgst || ''}
+    className="border p-2 w-full"
+    readOnly // Automatically filled based on state
+  />
                   </td>
                   <td>
-                    <input
-                      type="number"
-                      value={item.sgst}
-                      onChange={(e) => handleItemChange(index, 'sgst', e.target.value)}
-                      className="border border-gray-300 rounded-md p-2 w-full"
-                    />
+                  <input
+    type="number"
+    value={items[index].cgst || ''}
+    className="border p-2 w-full"
+    readOnly // Automatically filled based on state
+  />
                   </td>
+                  <td>
+                  <input
+    type="number"
+    value={items[index].igst || ''}
+    className="border p-2 w-full"
+    readOnly // Automatically filled based on state
+  />
+                  </td>
+                  
                   <td>{item.amount}</td>
                   <td>
                     <button
@@ -668,24 +798,51 @@ const MyDocument = () => (
           </div>
 
           {/* Total Section */}
-          <div className="text-right mt-6">
-            <p className="text-lg font-semibold">Subtotal: ₹{calculateSubtotal().toFixed(2)}</p>
-            <p className="text-lg font-semibold">Tax Amount: ₹{calculateTaxAmount()}</p>
-            <p className="text-lg font-semibold">Total: ₹{calculateTotal()}</p>
-          </div>
+          <div>
+  <div>
+    <span>Subtotal: {calculateSubtotal()}</span>
+  </div>
+  <div>
+    <span>Tax Amount: {calculateTaxAmount()}</span>
+  </div>
+  <div>
+  <span>Total amount: {calculateTotal()}</span>
+</div>
+
+
+  {customer.state === 'Tamil Nadu' ? (
+    <>
+      <div>
+        <span>SGST ({items[0].gst / 2}%): {items.reduce((total, item) => total + (parseFloat(item.sgst) || 0), 0).toFixed(2)}</span>
+      </div>
+      <div>
+        <span>CGST ({items[0].gst / 2}%): {items.reduce((total, item) => total + (parseFloat(item.cgst) || 0), 0).toFixed(2)}</span>
+      </div>
+    </>
+  ) : (
+    <div>
+      <span>TAX ({items[0].gst}%)</span>
+    </div>
+  )}
+  <div>
+    <span>Total: {calculateTotal()}</span>
+  </div>
+</div>
+
           
 
-          <div>
+        <div>
             
-            <div className="payment-checkbox">
-        <input 
-          type="checkbox" 
-          id="paymentReceived" 
-          onChange={handleCheckboxChange} 
-        />
-        <label htmlFor="paymentReceived">I have received the payment</label>
-      </div>
-      <div className="payment-form">
+          <div className="payment-checkbox">
+              <input 
+                type="checkbox" 
+                id="paymentReceived" 
+                onChange={handleCheckboxChange} 
+              />
+              <label htmlFor="paymentReceived">I have received the payment</label>
+          </div>
+          {isPaymentReceived && (
+        <div className="payment-form">
           <table>
             <thead>
               <tr>
@@ -697,14 +854,12 @@ const MyDocument = () => (
             <tbody>
               <tr>
                 <td> 
-
                   <select name="paymentMode">
                     <option value="cash">Cash</option>
                     <option value="cheque">Cheque</option>
                     <option value="bank_transfer">Bank Transfer</option>
                     <option value="credit_card">Credit Card</option>
                     <option value="upi">UPI</option>
-
                   </select>
                 </td>
                 <td>
@@ -719,9 +874,9 @@ const MyDocument = () => (
                 </td>
                 <td>
                   <input 
-
                     name="amountReceived" 
                     value={calculateTotal()}
+                    readOnly
                   />
                 </td>
               </tr>
@@ -731,11 +886,11 @@ const MyDocument = () => (
             <p>Total (₹): <span>{calculateTotal()}</span></p>
             <p>Balance Amount (₹): <span>0.00</span></p>
           </div>
-          
         </div>
+      )}
    
 
-          </div>
+        </div>
           <button
             type="submit"
             className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-500 hover:bg-blue-600"
