@@ -1,5 +1,9 @@
 {
+<<<<<<< HEAD
+  "id": "adcd0290-a9a3-45d3-b9d1-81445ed3b106",
+=======
   "id": "3901417b-a34b-4762-a62c-4b038276ccc8",
+>>>>>>> c435f1cae3e2584f6e8d9ea60d1b0be5376d1b53
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -208,6 +212,18 @@
           "primaryKey": false,
           "notNull": true
         },
+        "itemCode": {
+          "name": "itemCode",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "hsnCode": {
+          "name": "hsnCode",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
         "salesprice": {
           "name": "salesprice",
           "type": "numeric",
@@ -243,6 +259,18 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true
+        },
+        "taxPayable": {
+          "name": "taxPayable",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "gst": {
+          "name": "gst",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {},

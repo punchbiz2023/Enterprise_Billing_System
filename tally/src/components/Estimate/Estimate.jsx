@@ -16,7 +16,7 @@ const Estimate = () => {
   const [projectName, setProjectName] = useState('');
   const [projects, setProjects] = useState([]);
   const [subject, setSubject] = useState('');
-  const [items, setItems] = useState([{ item: '', quantity: 1, rate: 0, discount: 0, amount: 0 }]);
+  const [items, setItems] = useState([{ item: '', quantity: 1, rate: '', discount: '', gst: '', cgst: '', sgst: '', igst: '', amount: '' }]);
   const [availableItems, setAvailableItems] = useState([]);
   const [taxType, setTaxType] = useState('');
   const [tax, setTax] = useState(0);
@@ -37,23 +37,23 @@ const Estimate = () => {
       }
     };
 
-    // const fetchSalespeople = async () => {
-    //   try {
-    //     const response = await axios.get('http://localhost:3001/api/salespeople');
-    //     setSalespeople(response.data);
-    //   } catch (error) {
-    //     console.error('Error fetching salesperson data:', error);
-    //   }
-    // };
+    const fetchSalespeople = async () => {
+      try {
+        const response = await axios.get('http://localhost:3001/api/salespersons');
+        setSalespeople(response.data);
+      } catch (error) {
+        console.error('Error fetching salesperson data:', error);
+      }
+    };
 
-    // const fetchProjects = async () => {
-    //   try {
-    //     const response = await axios.get('http://localhost:3001/api/projects');
-    //     setProjects(response.data);
-    //   } catch (error) {
-    //     console.error('Error fetching project data:', error);
-    //   }
-    // };
+    const fetchProjects = async () => {
+      try {
+        const response = await axios.get('http://localhost:3001/api/projects');
+        setProjects(response.data);
+      } catch (error) {
+        console.error('Error fetching project data:', error);
+      }
+    };
 
     const fetchItems = async () => {
       try {
@@ -65,18 +65,16 @@ const Estimate = () => {
     };
 
     fetchCustomers();
-    // fetchSalespeople();
-    // fetchProjects();
+    fetchSalespeople();
+    fetchProjects();
     fetchItems();
 
-    const currentDate = new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-      .toISOString()
-      .slice(0, 10);
+    const currentDate = new Date().toISOString().slice(0, 10);
     setQuoteDate(currentDate);
 
   }, []);
 
-  const addNewItem = () => {
+  /*const addNewItem = () => {
     setItems([...items, { item: '', quantity: 1, rate: 0, discount: 0, amount: 0 }]);
   };
 
@@ -92,22 +90,104 @@ const Estimate = () => {
       updatedItems[index] = {
         ...updatedItems[index],
         item: value,
-        rate: selectedItem ? selectedItem.salesprice : 0, // Set the rate from the selected item
+        rate: selectedItem ? selectedItem.salesprice : 0,
       };
     } else {
       updatedItems[index][field] = value;
     }
     if (value === 'new item') {
-      navigate("/dashboard/items/form")
+      navigate('/dashboard/items/form');
     }
 
     setItems(updatedItems);
+  }; */
+
+  const handleItemChange = (index, field, value) => {
+    const newItems = [...items];
+    newItems[index][field] = value;
+
+    if (field === 'gst') {
+      const gst = parseFloat(value) || 0;
+      setGSTForState(index, gst);
+    }
+
+    if (['rate', 'quantity', 'discount', 'gst', 'sgst', 'cgst', 'igst'].includes(field)) {
+      const rate = parseFloat(newItems[index].rate) || 0;
+      const quantity = parseFloat(newItems[index].quantity) || 0;
+      const discount = parseFloat(newItems[index].discount) || 0;
+      const gst = parseFloat(newItems[index].gst) || 0;
+      const sgst = parseFloat(newItems[index].sgst) || 0;
+      const cgst = parseFloat(newItems[index].cgst) || 0;
+      const igst = parseFloat(newItems[index].igst) || 0;
+
+      const baseAmount = rate * quantity;
+      const discountedAmount = baseAmount * (1 - discount / 100);
+
+      let totalAmount = discountedAmount;
+      if (customerState === 'Tamil Nadu') {
+        const sgstAmount = gst / 2;
+        const cgstAmount = gst / 2;
+        newItems[index].sgst = sgstAmount.toFixed(2);
+        newItems[index].cgst = cgstAmount.toFixed(2);
+        newItems[index].igst = '';
+        totalAmount = discountedAmount * (1 + sgstAmount / 100 + cgstAmount / 100);
+      } else {
+        newItems[index].igst = gst;
+        totalAmount = discountedAmount * (1 + gst / 100);
+      }
+
+      newItems[index].amount = totalAmount.toFixed(2);
+
+      if (field === 'item') {
+        const selectedItem = availableItems.find((it) => it.name === value);
+        updatedItems[index] = {
+          ...updatedItems[index],
+          item: value,
+          rate: selectedItem ? selectedItem.salesprice : 0,
+        };
+      } else {
+        updatedItems[index][field] = value;
+      }
+
+      if (value === 'new item') {
+        navigate('/dashboard/items/form');
+      }
+    }
+
+    setItems(newItems);
+  };
+
+
+
+  const setGSTForState = (index, gst) => {
+    const newItems = [...items];
+
+    if (customer.state === 'Tamil Nadu') {
+      const halfGST = gst / 2;
+      newItems[index].sgst = halfGST.toFixed(2);
+      newItems[index].cgst = halfGST.toFixed(2);
+      newItems[index].igst = '';  // Clear IGST for Tamil Nadu
+    } else {
+      newItems[index].sgst = '';  // Clear SGST
+      newItems[index].cgst = '';  // Clear CGST
+      newItems[index].igst = gst.toFixed(2);  // Set full GST as IGST
+    }
+
+    setItems(newItems);
+  };
+
+  const addNewItem = () => {
+    setItems([...items, { item: '', quantity: '', rate: '', discount: '', gst: '', sgst: '', cgst: '', igst: '', amount: '' }]);
+  };
+
+  const removeItem = (index) => {
+    setItems(items.filter((_, i) => i !== index));
   };
 
   const calculateSubtotal = () => {
     return items.reduce((sum, item) => sum + (item.quantity * item.rate * (1 - item.discount / 100)), 0);
   };
-
+  
   const calculateTaxAmount = () => {
     const subtotal = calculateSubtotal();
     const taxValue = showCustomTax ? customTax : tax;
@@ -116,9 +196,37 @@ const Estimate = () => {
 
   const calculateTotal = () => {
     const subtotal = calculateSubtotal();
-    const taxAmount = calculateTaxAmount();
+    let taxAmount = 0;
+  
+    // Debugging output
+    console.log('Subtotal:', subtotal);
+    console.log('Tax Type:', taxType);
+    console.log('Custom Tax Rate:', customTax);
+  
+    // Calculate tax amount based on tax type
+    if (taxType === 'tds') {
+      taxAmount = (subtotal * (customTax / 100)).toFixed(2); // TCS is added
+    } else if (taxType === 'tcs') {
+      taxAmount = (subtotal * (customTax / 100)).toFixed(2); // TDS is subtracted
+    } else {
+      taxAmount = calculateTaxAmount(); // Other tax types
+    }
+  
+    // Debugging output
+    console.log('Tax Amount:', taxAmount);
+  
     const adjustedValue = adjustmentType === 'add' ? Number(adjustment) : -Number(adjustment);
-    return (subtotal - Number(taxAmount) + adjustedValue).toFixed(2);
+  
+    // Debugging output
+    console.log('Adjustment Value:', adjustedValue);
+  
+    // Ensure correct total calculation
+    const total = subtotal + (taxType === 'tcs' ? Number(taxAmount) : 0) - (taxType === 'tds' ? Number(taxAmount) : 0) + adjustedValue;
+  
+    // Debugging output
+    console.log('Total:', total);
+  
+    return total.toFixed(2);
   };
 
   const handleDropdownChange = (e, setter, redirectPath) => {
@@ -132,13 +240,27 @@ const Estimate = () => {
 
   const handleTaxChange = (e) => {
     const value = e.target.value;
+  
     if (value === 'Others') {
       setShowCustomTax(true);
       setTax(0);
+    } else if (value === 'tds') {
+      setShowCustomTax(true); // Enable custom tax input
+      setCustomTax(0); // Reset custom tax value for TDS
+      setTaxType('tds'); // Set tax type to TDS
+    } else if (value === 'tcs') {
+      setShowCustomTax(true); // Enable custom tax input
+      setCustomTax(0); // Reset custom tax value for TCS
+      setTaxType('tcs'); // Set tax type to TCS
     } else {
       setShowCustomTax(false);
       setTax(Number(value));
+      setTaxType(value);
     }
+  };
+
+  const handleCustomTaxChange = (e) => {
+    setCustomTax(e.target.value);
   };
 
   const handleSubmit = async (e) => {
@@ -155,7 +277,7 @@ const Estimate = () => {
       itemtable: items,
       subtotal: {
         subtotal: calculateSubtotal(),
-        tax: calculateTaxAmount(),
+        tax: taxType === 'tcs' ? (calculateSubtotal() * (customTax / 100)).toFixed(2) : calculateTaxAmount(),
         adjustment: adjustmentType === 'add' ? adjustment : -adjustment,
         total: calculateTotal(),
       }
@@ -169,7 +291,6 @@ const Estimate = () => {
     }
   };
 
-
   return (
     <div className='flex'>
       <div className="w-1/5">
@@ -177,7 +298,7 @@ const Estimate = () => {
       </div>
       <div className="estimate-container">
         <h2 className="text-2xl font-semibold mb-10 mt-20 text-gray-700">New Quote</h2>
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label>Customer Name*</label>
             <select value={customer} onChange={(e) => handleDropdownChange(e, setCustomer, 'sales/customers')}>
@@ -237,19 +358,22 @@ const Estimate = () => {
               type="text"
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
-              placeholder="Let your customer know what this quote is for"
             />
           </div>
 
-          <div className="items-section">
-            <label className="text-l font-semibold mb-6 text-gray-700">Item Table</label>
+          <div className="items-table">
+            <h2 className="text-xl font-semibold mb-6 text-gray-700">Items</h2>
             <table>
               <thead>
                 <tr>
-                  <th>Item Details</th>
+                  <th>Item</th>
                   <th>Quantity</th>
                   <th>Rate</th>
                   <th>Discount (%)</th>
+                  <th>GST (%)</th>
+                  <th>SGST (%)</th>
+                  <th>CGST (%)</th>
+                  <th>IGST (%)</th>
                   <th>Amount</th>
                   <th>Actions</th>
                 </tr>
@@ -280,7 +404,7 @@ const Estimate = () => {
                     <td>
                       <input
                         type="number"
-                        value={item.salesprice}
+                        value={item.rate}
                         onChange={(e) => handleItemChange(index, 'rate', e.target.value)}
                         min="0"
                       />
@@ -291,6 +415,39 @@ const Estimate = () => {
                         value={item.discount}
                         onChange={(e) => handleItemChange(index, 'discount', e.target.value)}
                         min="0"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        value={items[index].gst || ''}
+                        onChange={(e) => handleItemChange(index, 'gst', e.target.value)}
+                        className="border p-2 w-full"
+                      />
+                    </td>
+
+                    <td>
+                      <input
+                        type="number"
+                        value={items[index].sgst || ''}
+                        className="border p-2 w-full"
+                        readOnly // Automatically filled based on state
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        value={items[index].cgst || ''}
+                        className="border p-2 w-full"
+                        readOnly // Automatically filled based on state
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        value={items[index].igst || ''}
+                        className="border p-2 w-full"
+                        readOnly // Automatically filled based on state
                       />
                     </td>
                     <td>{(item.quantity * item.rate * (1 - item.discount / 100)).toFixed(2)}</td>
@@ -312,55 +469,51 @@ const Estimate = () => {
                 <br />
               </div>
 
-              <label className="text-xl font-semibold mb-6 text-gray-700">Select Tax:</label>
-              <input
-                type="radio"
-                id="tds"
-                name="taxType"
-                value="TDS"
-                checked={taxType === 'TDS'}
-                onChange={() => setTaxType('TDS')}
-              />
-              <label htmlFor="tds">TDS</label>
-              <input
-                type="radio"
-                id="tcs"
-                name="taxType"
-                value="TCS"
-                checked={taxType === 'TCS'}
-                onChange={() => setTaxType('TCS')}
-              />
-              <label htmlFor="tcs">TCS</label>
-              <br /><br />
               <div className="form-group">
-                <select value={showCustomTax ? 'Others' : tax} onChange={handleTaxChange}>
-                  <option value="" disabled>Select Tax</option>
-                  <option value="5">Commission or Brokerage [5%]</option>
-                  <option value="3.75">Commission or Brokerage (Reduced) [3.75%]</option>
-                  <option value="10">Dividend [10%]</option>
-                  <option value="7.5">Dividend (Reduced) [7.5%]</option>
-                  <option value="2">Payment of contractors for Others [2%]</option>
-                  <option value="1.5">Payment of contractors for Others (Reduced) [1.5%]</option>
-                  <option value="1">Payment of contractors HUF/Indiv [1%]</option>
-                  <option value="0.75">Payment of contractors HUF/Indiv (Reduced) [0.75%]</option>
-                  <option value="10">Professional Fees [10%]</option>
-                  <option value="7.5">Professional Fees (Reduced) [7.5%]</option>
-                  <option value="Others">Others</option>
+                <label>Tax Type</label>
+                <select value={taxType} onChange={(e) => setTaxType(e.target.value)}>
+                  <option value="" >Select a tax type</option>
+                  <option value="tds">TDS</option>
+                  <option value="tcs">TCS</option>
                 </select>
-
-                {showCustomTax && (
-                  <input
-                    type="number"
-                    value={customTax}
-                    onChange={(e) => setCustomTax(e.target.value)}
-                    min="0"
-                    placeholder="Enter custom tax percentage"
-                  />
-                )}
               </div>
 
+              {taxType === 'tds' && (
+                <div className="form-group">
+                  <label>Select TDS Type and Rate</label>
+                  <select value={showCustomTax ? 'Others' : tax} onChange={handleTaxChange}>
+                    <option value="" >Select Tax</option>
+                    <option value="5">Commission or Brokerage [5%]</option>
+                    <option value="3.75">Commission or Brokerage (Reduced) [3.75%]</option>
+                    <option value="10">Dividend [10%]</option>
+                    <option value="7.5">Dividend (Reduced) [7.5%]</option>
+                    <option value="2">Payment of contractors for Others [2%]</option>
+                    <option value="1.5">Payment of contractors for Others (Reduced) [1.5%]</option>
+                    <option value="1">Payment of contractors HUF/Indiv [1%]</option>
+                    <option value="0.75">Payment of contractors HUF/Indiv (Reduced) [0.75%]</option>
+                    <option value="10">Professional Fees [10%]</option>
+                    <option value="7.5">Professional Fees (Reduced) [7.5%]</option>
+                    <option value="Others">Others</option>
+                  </select>
+                  {showCustomTax && (
+                    <div>
+                      <label>Custom TDS Rate (%)</label>
+                      <input type="number" value={customTax} onChange={handleCustomTaxChange} />
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {taxType === 'tcs' && (
+                <div>
+                  <label>Enter TCS Tax Rate (%)</label>
+                  <input type="number" value={customTax} onChange={handleCustomTaxChange} />
+                </div>
+              )}
+
               <div className="summary">
-                <div>Tax Amount: ₹ {calculateTaxAmount()}</div><br />
+                <div>Tax Amount: ₹ {taxType === 'tcs' ? (calculateSubtotal() * (customTax / 100)).toFixed(2) : calculateTaxAmount()}</div>
+                <br />
               </div>
 
               <div className="form-group">
@@ -386,8 +539,8 @@ const Estimate = () => {
           </div>
 
           <div className="actions">
-            <button type="button" onClick={handleSubmit}>Save and Send</button>
-            <button type="button">Cancel</button>
+            <button type="submit">Save and Send</button>
+            <button type="button" onClick={() => navigate('/dashboard/estimates')}>Cancel</button>
           </div>
         </form>
       </div>
