@@ -1,270 +1,196 @@
-// BillForm.jsx
-import React, { useState } from 'react';
-import SidePanel from '../Purchase/SidePanel';
+import React, { useState, useEffect } from 'react';
+import './BillForm.css';
 
 const BillForm = () => {
-  const [formData, setFormData] = useState({
-    vendorName: '',
-    billNumber: '',
-    orderNumber: '',
-    billDate: '',
-    dueDate: '',
-    paymentTerms: '',
-    subject: '',
-    items: [{ itemDetails: '', account: '', quantity: '', rate: '', customerDetails: '', amount: 0 }],
-    subTotal: 0,
-    discount: 0,
-    tax: 'TDS',
-    adjustment: 0,
-  });
+    const [vendor, setVendor] = useState('');
+    const [vendors, setVendors] = useState([]);  // State to hold vendor list
+    const [customer, setCustomer] = useState('');
+    const [deliveryType, setDeliveryType] = useState('organization');
+    const [billNo, setbillNo] = useState('');
+    const [reference, setReference] = useState('');
+    const [date, setDate] = useState('');
+    const [dueDate, setdueDate] = useState('');
+    const [paymentTerms, setPaymentTerms] = useState('');
+    const [shipmentPreference, setShipmentPreference] = useState('');
+    const [items, setItems] = useState([{ id: 1, account: '', quantity: 1, rate: 0, amount: 0 }]);
+    const [discountType, setDiscountType] = useState('%');
+    const [taxType, setTaxType] = useState('');
+    const [tcsTds, setTcsTds] = useState('TCS');
+    const [gstPercentage, setGstPercentage] = useState(0);
+    const [gstAmount, setGstAmount] = useState(0);
+    const [subtotal, setSubtotal] = useState(0);
+    const [grandTotal, setGrandTotal] = useState(0);
 
-  const handleInputChange = (e, index) => {
-    const { name, value } = e.target;
-    const updatedItems = [...formData.items];
-    updatedItems[index][name] = value;
-    setFormData({ ...formData, items: updatedItems });
-  };
+    useEffect(() => {
+        const currentDate = new Date().toLocaleDateString('en-GB');
+        setDate(currentDate);
+    }, []);
 
-  const handleAddRow = () => {
-    setFormData({
-      ...formData,
-      items: [...formData.items, { itemDetails: '', account: '', quantity: '', rate: '', customerDetails: '', amount: 0 }],
-    });
-  };
+    useEffect(() => {
+        calculateSubtotal();
+    }, [items]);
 
-  return (
-    <div className='flex'>
-      <div className="w-1/5">
-                <SidePanel />
+    useEffect(() => {
+        calculateGstAndGrandTotal();
+    }, [subtotal, gstPercentage]);
+
+    // Fetch vendor data from API
+    useEffect(() => {
+        const fetchVendors = async () => {
+            try {
+                const response = await fetch('http://localhost:3001/api/vendor');
+                const data = await response.json();
+                setVendors(data); // Assuming the response is an array of vendor objects
+            } catch (error) {
+                console.error('Error fetching vendor data:', error);
+            }
+        };
+
+        fetchVendors();
+    }, []);
+
+    const calculateSubtotal = () => {
+        const total = items.reduce((acc, item) => acc + (parseFloat(item.rate) * parseFloat(item.quantity)), 0);
+        setSubtotal(total);
+    };
+
+    const calculateGstAndGrandTotal = () => {
+        const gst = (subtotal * gstPercentage) / 100;
+        setGstAmount(gst);
+        setGrandTotal(subtotal + gst);
+    };
+
+    const removeItem = (index) => {
+        setItems(items.filter((_, i) => i !== index));
+    };
+
+    return (
+        <div className="purchase-order-container">
+            <h2 className="text-2xl font-semibold mb-10 mt-20 text-gray-700">Create Bill</h2>
+
+            <div className="vendor-section">
+                <label>Vendor Name*</label>
+                <select value={vendor} onChange={(e) => setVendor(e.target.value)}>
+                    <option value="">Select a Vendor</option>
+                    {vendors.map((vendor) => (
+                        <option key={vendor.id} value={vendor.name}>
+                            {vendor.name}
+                        </option>
+                    ))}
+                </select>
             </div>
-    <div className="p-10 bg-white rounded-lg shadow-xl max-w-7xl mx-auto mt-12">
-      <h2 className="text-3xl font-semibold mb-8 text-gray-800">New Bill</h2>
 
-      <div className="grid grid-cols-2 gap-8">
-        <div className="flex flex-col">
-          <label className="font-semibold text-gray-700">Vendor Name*</label>
-          <select
-            className="border border-gray-400 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={formData.vendorName}
-            onChange={(e) => setFormData({ ...formData, vendorName: e.target.value })}
-          >
-            <option>Select a Vendor</option>
-            {/* Add vendor options here */}
-          </select>
-        </div>
+            
 
-        <div className="flex flex-col">
-          <label className="font-semibold text-gray-700">Bill*</label>
-          <input
-            type="text"
-            className="border border-gray-400 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={formData.billNumber}
-            onChange={(e) => setFormData({ ...formData, billNumber: e.target.value })}
-          />
-        </div>
+            <div className="purchase-order-details">
+                <label>Bill Number</label>
+                <input type="text" value={billNo} />
+                <label>Order Number</label>
+                <input type="text" value={reference} onChange={(e) => setReference(e.target.value)} />
+                <label>Bill Date</label>
+                <input type="date" />
+                <label>Due Date</label>
+                <input
+                    type="date"
+                    placeholder="dd/mm/yyyy"
+                    value={dueDate}
+                    onChange={(e) => setDeliveryDate(e.target.value)}
+                />
+                <label>Payment Terms</label>
+                <select className="payment-terms-dropdown" value={paymentTerms} onChange={(e) => setPaymentTerms(e.target.value)}>
+                    <option value="net15">Net 15</option>
+                    <option value="net30">Net 30</option>
+                    <option value="net45">Net 45</option>
+                    <option value="net60">Net 60</option>
+                    <option value="endOfMonth">Due end of the month</option>
+                    <option value="endOfNextMonth">Due end of next month</option>
+                    <option value="dueOnReceipt">Due on Receipt</option>
+                </select>
 
-        <div className="flex flex-col">
-          <label className="font-semibold text-gray-700">Order Number</label>
-          <input
-            type="text"
-            className="border border-gray-400 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={formData.orderNumber}
-            onChange={(e) => setFormData({ ...formData, orderNumber: e.target.value })}
-          />
-        </div>
+                
+            </div>
 
-        <div className="flex flex-col">
-          <label className="font-semibold text-gray-700">Bill Date*</label>
-          <input
-            type="date"
-            className="border border-gray-400 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={formData.billDate}
-            onChange={(e) => setFormData({ ...formData, billDate: e.target.value })}
-          />
-        </div>
+            <div className="item-table">
+                <label>Item Table</label>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Item Details</th>
+                            <th>Quantity</th>
+                            <th>Rate</th>
+                            <th>Amount</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {items.map((item, index) => (
+                            <tr key={item.id}>
+                                <td>
+                                    <input type="text" placeholder="Type or click to select an item." />
+                                </td>
+                                
+                                <td>
+                                    <input
+                                        type="number"
+                                        value={item.quantity}
+                                        onChange={(e) => setItems(prevItems => {
+                                            const updatedItems = [...prevItems];
+                                            updatedItems[index].quantity = e.target.value;
+                                            return updatedItems;
+                                        })}
+                                    />
+                                </td>
+                                <td>
+                                    <input
+                                        type="text"
+                                        value={item.rate}
+                                        onChange={(e) => setItems(prevItems => {
+                                            const updatedItems = [...prevItems];
+                                            updatedItems[index].rate = e.target.value;
+                                            return updatedItems;
+                                        })}
+                                    />
+                                </td>
+                                <td>
+                                    {parseFloat(item.rate) * parseFloat(item.quantity)}
+                                </td>
+                                <td><button type="button" onClick={() => removeItem(index)}>Remove</button></td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+                <button className="font-semibold text-blue-700" onClick={() => setItems([...items, { id: items.length + 1, account: '', quantity: 1, rate: 0, amount: 0 }])}>Add New Row</button>
+            </div>
 
-        <div className="flex flex-col">
-          <label className="font-semibold text-gray-700">Due Date</label>
-          <input
-            type="date"
-            className="border border-gray-400 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={formData.dueDate}
-            onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
-          />
-        </div>
-
-        <div className="flex flex-col">
-          <label className="font-semibold text-gray-700">Payment Terms</label>
-          <select
-            className="border border-gray-400 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={formData.paymentTerms}
-            onChange={(e) => setFormData({ ...formData, paymentTerms: e.target.value })}
-          >
-            <option>Due On Receipt</option>
-            <option>Net 30</option>
-            <option>Net 60</option>
-          </select>
-        </div>
-
-        <div className="col-span-2 flex flex-col">
-          <label className="font-semibold text-gray-700">Subject</label>
-          <input
-            type="text"
-            className="border border-gray-400 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            maxLength="250"
-            placeholder="Enter a subject within 250 characters"
-            value={formData.subject}
-            onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-          />
-        </div>
-      </div>
-
-      {/* Item Table */}
-      <div className="mt-10">
-        <h3 className="text-2xl font-medium text-gray-800 mb-6">Item Table</h3>
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse">
-            <thead>
-              <tr className="bg-gray-200">
-                <th className="border-b p-4 font-medium text-left">Item Details</th>
-                <th className="border-b p-4 font-medium text-left">Account</th>
-                <th className="border-b p-4 font-medium text-left">Quantity</th>
-                <th className="border-b p-4 font-medium text-left">Rate</th>
-                <th className="border-b p-4 font-medium text-left">Customer Details</th>
-                <th className="border-b p-4 font-medium text-left">Amount</th>
-                <th className="border-b p-4"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {formData.items.map((item, index) => (
-                <tr key={index} className="hover:bg-gray-100">
-                  <td className="border-t p-3">
+            <div className="subtotal-section">
+                <div>
+                    <label>Subtotal: </label>
+                    <span>₹ {subtotal.toFixed(2)}</span>
+                </div><br/>
+                <div className="gst-section">
+                    <label>GST (%): </label>
                     <input
-                      type="text"
-                      name="itemDetails"
-                      className="border border-gray-400 p-2 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      value={item.itemDetails}
-                      onChange={(e) => handleInputChange(e, index)}
-                    />
-                  </td>
-                  <td className="border-t p-3">
-                    <input
-                      type="text"
-                      name="account"
-                      className="border border-gray-400 p-2 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      value={item.account}
-                      onChange={(e) => handleInputChange(e, index)}
-                    />
-                  </td>
-                  <td className="border-t p-3">
-                    <input
-                      type="number"
-                      name="quantity"
-                      className="border border-gray-400 p-2 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      value={item.quantity}
-                      onChange={(e) => handleInputChange(e, index)}
-                    />
-                  </td>
-                  <td className="border-t p-3">
-                    <input
-                      type="number"
-                      name="rate"
-                      className="border border-gray-400 p-2 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      value={item.rate}
-                      onChange={(e) => handleInputChange(e, index)}
-                    />
-                  </td>
-                  <td className="border-t p-3">
-                    <input
-                      type="text"
-                      name="customerDetails"
-                      className="border border-gray-400 p-2 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      value={item.customerDetails}
-                      onChange={(e) => handleInputChange(e, index)}
-                    />
-                  </td>
-                  <td className="border-t p-3">{item.amount}</td>
-                  <td className="border-t p-3">
-                    <button
-                      className="text-red-500 hover:text-red-600 focus:outline-none"
-                      onClick={() =>
-                        setFormData({
-                          ...formData,
-                          items: formData.items.filter((_, i) => i !== index),
-                        })
-                      }
-                    >
-                      X
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <button
-          className="mt-6 p-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg focus:outline-none transition-all"
-          onClick={handleAddRow}
-        >
-          Add New Row
-        </button>
-      </div>
+                        type="number"
+                        value={gstPercentage}
+                        onChange={(e) => setGstPercentage(parseFloat(e.target.value))}
+                    /><br/><br/>
+                    <div>
+                        <label>GST Amount: </label>
+                        <span>₹ {gstAmount.toFixed(2)}</span>
+                    </div><br/>
+                </div>
+                <div>
+                    <label>Grand Total: </label>
+                    <span>₹ {grandTotal.toFixed(2)}</span>
+                </div>
+            </div>
 
-      {/* Total Section */}
-      <div className="mt-10 grid grid-cols-2 gap-8">
-        <div>
-          <label className="font-semibold text-gray-700">Sub Total</label>
-          <input
-            type="text"
-            className="border border-gray-400 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={formData.subTotal}
-            readOnly
-          />
+            <div className="actions">
+                <button>Save and Send</button>
+                <button>Cancel</button>
+            </div>
         </div>
-        <div>
-          <label className="font-semibold text-gray-700">Discount</label>
-          <input
-            type="number"
-            className="border border-gray-400 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={formData.discount}
-            onChange={(e) => setFormData({ ...formData, discount: e.target.value })}
-          />
-        </div>
-        <div>
-          <label className="font-semibold text-gray-700">Tax</label>
-          <select
-            className="border border-gray-400 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={formData.tax}
-            onChange={(e) => setFormData({ ...formData, tax: e.target.value })}
-          >
-            <option value="TDS">TDS</option>
-            <option value="TCS">TCS</option>
-          </select>
-        </div>
-        <div>
-          <label className="font-semibold text-gray-700">Adjustment</label>
-          <input
-            type="number"
-            className="border border-gray-400 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={formData.adjustment}
-            onChange={(e) => setFormData({ ...formData, adjustment: e.target.value })}
-          />
-        </div>
-      </div>
-
-      {/* Buttons */}
-      <div className="flex justify-between mt-10">
-        <button className="p-3 bg-green-600 hover:bg-green-700 text-white rounded-lg focus:outline-none transition-all">
-          Save
-        </button>
-        <button className="p-3 bg-red-600 hover:bg-red-700 text-white rounded-lg focus:outline-none transition-all">
-          Cancel
-        </button>
-      </div>
-    </div>
-    </div>
-
-  );
+    );
 };
 
 export default BillForm;

@@ -1,22 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import './estimate.css';
-import SidePanel from '../Sales/SidePanel';
+import SidePanel from '../sales/SidePanel';
+import SalesPerson from '../Salesperson/SalesPerson'
+import { Link, useNavigate } from 'react-router-dom';
+
 
 const Estimate = () => {
-  const [customer, setCustomer] = useState('');
-  const [customers, setCustomers] = useState([]);
+
+  const [salespersons, setSalespersons] = useState([]);
+  const [customerName, setCustomerName] = useState('');
+  const [customerAddress, setCustomerAddress] = useState('');
   const [quoteNumber, setQuoteNumber] = useState('');
   const [quoteDate, setQuoteDate] = useState('');
   const [reference, setReference] = useState('');
   const [expiryDate, setExpiryDate] = useState('');
-  const [salesperson, setSalesperson] = useState('');
-  const [salespeople, setSalespeople] = useState([]);
+  const [subject, setSubject] = useState('');
   const [projectName, setProjectName] = useState('');
   const [projects, setProjects] = useState([]);
-  const [subject, setSubject] = useState('');
-  const [items, setItems] = useState([{ item: '', quantity: 1, rate: '', discount: '', gst: '', cgst: '', sgst: '', igst: '', amount: '' }]);
+  const [items, setItems] = useState([{ item: '', quantity: '', rate: '', discount: '', gst: '', sgst: '', amount: '' }]);
   const [availableItems, setAvailableItems] = useState([]);
   const [taxType, setTaxType] = useState('');
   const [tax, setTax] = useState(0);
@@ -24,83 +25,88 @@ const Estimate = () => {
   const [adjustment, setAdjustment] = useState(0);
   const [adjustmentType, setAdjustmentType] = useState('add');
   const [showCustomTax, setShowCustomTax] = useState(false);
+  const [paymentReceived, setPaymentReceived] = useState(false);
+  const [customers, setCustomers] = useState([]);
+  const [customer, setCustomer] = useState('');
+  const [customerState, setCustomerState] = useState('');
+  const [isPaymentReceived, setIsPaymentReceived] = useState(false);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchCustomers = async () => {
-      try {
-        const response = await axios.get('http://localhost:3001/api/customers');
-        setCustomers(response.data);
-      } catch (error) {
-        console.error('Error fetching customer data:', error);
-      }
-    };
-
-    const fetchSalespeople = async () => {
-      try {
-        const response = await axios.get('http://localhost:3001/api/salespersons');
-        setSalespeople(response.data);
-      } catch (error) {
-        console.error('Error fetching salesperson data:', error);
-      }
-    };
-
-    const fetchProjects = async () => {
-      try {
-        const response = await axios.get('http://localhost:3001/api/projects');
-        setProjects(response.data);
-      } catch (error) {
-        console.error('Error fetching project data:', error);
-      }
-    };
-
-    const fetchItems = async () => {
-      try {
-        const response = await axios.get('http://localhost:3001/api/items');
-        setAvailableItems(response.data);
-      } catch (error) {
-        console.error('Error fetching item data:', error);
-      }
-    };
-
     fetchCustomers();
     fetchSalespeople();
-    fetchProjects();
     fetchItems();
-
-    const currentDate = new Date().toISOString().slice(0, 10);
-    setQuoteDate(currentDate);
-
+    fetchProjects();
   }, []);
 
-  /*const addNewItem = () => {
-    setItems([...items, { item: '', quantity: 1, rate: 0, discount: 0, amount: 0 }]);
+  const fetchSalespeople = async () => {
+    try {
+      const response = await axios.get('http://localhost:3001/api/salespersons');
+      setSalespersons(response.data);
+    } catch (error) {
+      console.error('Error fetching salesperson data:', error);
+    }
+  };
+  const fetchProjects = async () => {
+    try {
+      const response = await axios.get('http://localhost:3001/api/projects');
+      setProjects(response.data);
+    } catch (error) {
+      console.error('Error fetching project data:', error);
+    }
   };
 
-  const removeItem = (index) => {
-    setItems(items.filter((_, i) => i !== index));
+
+  const fetchCustomers = async () => {
+    try {
+      const response = await axios.get('http://localhost:3001/api/customers');
+      const customersWithState = response.data.map((cust) => ({
+        ...cust,
+        state: cust.billaddress.state, 
+      }));
+      setCustomers(customersWithState);
+    } catch (error) {
+      console.error('Error fetching customer data:', error);
+    }
   };
-
-  const handleItemChange = (index, field, value) => {
-    const updatedItems = [...items];
-
-    if (field === 'item') {
-      const selectedItem = availableItems.find((it) => it.name === value);
-      updatedItems[index] = {
-        ...updatedItems[index],
-        item: value,
-        rate: selectedItem ? selectedItem.salesprice : 0,
-      };
+  const handleDropdownChanges = (e, setter, redirectPath) => {
+    const { value } = e.target;
+    if (value === `new ${redirectPath}`) {
+      navigate(`/dashboard/${redirectPath}/form`);
     } else {
-      updatedItems[index][field] = value;
+      setter(value);
     }
-    if (value === 'new item') {
-      navigate('/dashboard/items/form');
-    }
+  };
+  const handleDropdownChange = (e) => {
+    const selectedCustomerName = e.target.value;
+    setCustomer(selectedCustomerName);
 
-    setItems(updatedItems);
-  }; */
+    
+    const selectedCustomer = customers.find((cust) => cust.name === selectedCustomerName);
+    if (selectedCustomer) {
+      setCustomerState(selectedCustomer.state); 
+    } else {
+      setCustomerState(''); 
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewSalesperson({ ...newSalesperson, [name]: value });
+  };
+  const fetchItems = async () => {
+    try {
+      const response = await axios.get('http://localhost:3001/api/items');
+      setAvailableItems(response.data);
+    } catch (error) {
+      console.error('Error fetching items:', error);
+    }
+  };
+
+  const handleCheckboxChange = (e) => {
+    setIsPaymentReceived(e.target.checked);
+  };
 
   const handleItemChange = (index, field, value) => {
     const newItems = [...items];
@@ -137,21 +143,6 @@ const Estimate = () => {
       }
 
       newItems[index].amount = totalAmount.toFixed(2);
-
-      if (field === 'item') {
-        const selectedItem = availableItems.find((it) => it.name === value);
-        updatedItems[index] = {
-          ...updatedItems[index],
-          item: value,
-          rate: selectedItem ? selectedItem.salesprice : 0,
-        };
-      } else {
-        updatedItems[index][field] = value;
-      }
-
-      if (value === 'new item') {
-        navigate('/dashboard/items/form');
-      }
     }
 
     setItems(newItems);
@@ -166,11 +157,11 @@ const Estimate = () => {
       const halfGST = gst / 2;
       newItems[index].sgst = halfGST.toFixed(2);
       newItems[index].cgst = halfGST.toFixed(2);
-      newItems[index].igst = '';  // Clear IGST for Tamil Nadu
+      newItems[index].igst = '';  
     } else {
-      newItems[index].sgst = '';  // Clear SGST
-      newItems[index].cgst = '';  // Clear CGST
-      newItems[index].igst = gst.toFixed(2);  // Set full GST as IGST
+      newItems[index].sgst = '';  
+      newItems[index].cgst = '';  
+      newItems[index].igst = gst.toFixed(2);  
     }
 
     setItems(newItems);
@@ -185,132 +176,194 @@ const Estimate = () => {
   };
 
   const calculateSubtotal = () => {
-    return items.reduce((sum, item) => sum + (item.quantity * item.rate * (1 - item.discount / 100)), 0);
+    
+    return items.reduce((acc, item) => {
+      const rate = parseFloat(item.rate) || 0;
+      const quantity = parseFloat(item.quantity) || 0;
+      const discount = parseFloat(item.discount) || 0;
+
+      const baseAmount = rate * quantity;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+      const discountedAmount = baseAmount * (1 - discount / 100);
+
+      return acc + discountedAmount;
+    }, 0).toFixed(2);
   };
-  
+
   const calculateTaxAmount = () => {
-    const subtotal = calculateSubtotal();
-    const taxValue = showCustomTax ? customTax : tax;
-    return (subtotal * (taxValue / 100)).toFixed(2);
+    let taxAmount = 0;
+    const isTamilNadu = customer.state === 'Tamil Nadu';
+
+    items.forEach(item => {
+      const rate = Number(item.rate) || 0;
+      const quantity = Number(item.quantity) || 0;
+      const gst = Number(item.gst) || 0;
+
+      const baseAmount = rate * quantity;
+      let totalTax = 0;
+      const isTamilNadu = customer.state === 'Tamil Nadu';
+      if (isTamilNadu) {
+        const sgst = gst / 2;
+        const cgst = gst / 2;
+        const igst = '';
+        totalTax = baseAmount * ((sgst + cgst) / 100);
+      } else {
+        const igst = gst;
+        totalTax = baseAmount * (igst / 100);
+      }
+
+      taxAmount += totalTax;
+    });
+
+    return taxAmount.toFixed(2);
   };
+
+
 
   const calculateTotal = () => {
-    const subtotal = calculateSubtotal();
-    let taxAmount = 0;
-  
-    // Debugging output
-    console.log('Subtotal:', subtotal);
-    console.log('Tax Type:', taxType);
-    console.log('Custom Tax Rate:', customTax);
-  
-    // Calculate tax amount based on tax type
-    if (taxType === 'tds') {
-      taxAmount = (subtotal * (customTax / 100)).toFixed(2); // TCS is added
-    } else if (taxType === 'tcs') {
-      taxAmount = (subtotal * (customTax / 100)).toFixed(2); // TDS is subtracted
-    } else {
-      taxAmount = calculateTaxAmount(); // Other tax types
-    }
-  
-    // Debugging output
-    console.log('Tax Amount:', taxAmount);
-  
+    const subtotal = Number(calculateSubtotal()) || 0;
+    const taxAmount = Number(calculateTaxAmount()) || 0;
     const adjustedValue = adjustmentType === 'add' ? Number(adjustment) : -Number(adjustment);
-  
-    // Debugging output
-    console.log('Adjustment Value:', adjustedValue);
-  
-    // Ensure correct total calculation
-    const total = subtotal + (taxType === 'tcs' ? Number(taxAmount) : 0) - (taxType === 'tds' ? Number(taxAmount) : 0) + adjustedValue;
-  
-    // Debugging output
-    console.log('Total:', total);
-  
-    return total.toFixed(2);
+
+    const totalBeforeAdjustment = subtotal + taxAmount;
+    
+    ('Subtotal:', subtotal);
+    
+    
+    
+
+    let total;
+
+    if (taxType === 'TDS') {
+      total = totalBeforeAdjustment * (1 - (Number(tax) / 100)) - adjustedValue;
+    } else if (taxType === 'TCS') {
+      total = totalBeforeAdjustment + (totalBeforeAdjustment * (Number(customTax) / 100)) + adjustedValue;
+    } else {
+      total = totalBeforeAdjustment;
+    }
+
+    
+
+    return (Math.round(total * 100) / 100).toFixed(2);
   };
 
-  const handleDropdownChange = (e, setter, redirectPath) => {
-    const { value } = e.target;
-    if (value === `new ${redirectPath}`) {
-      navigate(`/dashboard/${redirectPath}/form`);
-    } else {
-      setter(value);
+
+  const numberToWords = (num) => {
+    const singleDigits = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
+    const doubleDigits = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+    const teens = ['Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+    const tens = ['Ten', ...teens];
+
+    const higherUnits = ['', 'Thousand', 'Lakh', 'Crore'];  
+
+    if (num === 0) return 'Zero Rupees Only';
+
+    let words = '';
+
+    
+    const convertBelowThousand = (n) => {
+      let str = '';
+      if (n > 99) {
+        str += singleDigits[Math.floor(n / 100)] + ' Hundred ';
+        n %= 100;
+      }
+      if (n > 10 && n < 20) {
+        str += teens[n - 11] + ' ';
+      } else {
+        if (n >= 10) {
+          str += doubleDigits[Math.floor(n / 10)] + ' ';
+          n %= 10;
+        }
+        if (n > 0) {
+          str += singleDigits[n] + ' ';
+        }
+      }
+      return str.trim();
+    };
+
+    
+    let unitIndex = 0;
+    while (num > 0) {
+      let chunk = num % 1000;
+      if (chunk !== 0) {
+        words = convertBelowThousand(chunk) + (higherUnits[unitIndex] ? ' ' + higherUnits[unitIndex] : '') + ' ' + words;
+      }
+      num = Math.floor(num / 1000);
+      unitIndex++;
     }
+
+    return words.trim() + ' Rupees Only';
   };
+
 
   const handleTaxChange = (e) => {
     const value = e.target.value;
-  
-    if (value === 'Others') {
+    if (value === 'TCS') {
       setShowCustomTax(true);
-      setTax(0);
-    } else if (value === 'tds') {
-      setShowCustomTax(true); // Enable custom tax input
-      setCustomTax(0); // Reset custom tax value for TDS
-      setTaxType('tds'); // Set tax type to TDS
-    } else if (value === 'tcs') {
-      setShowCustomTax(true); // Enable custom tax input
-      setCustomTax(0); // Reset custom tax value for TCS
-      setTaxType('tcs'); // Set tax type to TCS
+      setTax(''); 
     } else {
       setShowCustomTax(false);
-      setTax(Number(value));
-      setTaxType(value);
+      setTax(Number(value)); 
     }
   };
+
 
   const handleCustomTaxChange = (e) => {
-    setCustomTax(e.target.value);
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const estimateData = {
-      cname: customer,
-      quotenum: quoteNumber,
-      refnum: reference,
-      qdate: quoteDate,
-      expdate: expiryDate,
-      salesperson,
-      project: projectName,
-      subject,
-      itemtable: items,
-      subtotal: {
-        subtotal: calculateSubtotal(),
-        tax: taxType === 'tcs' ? (calculateSubtotal() * (customTax / 100)).toFixed(2) : calculateTaxAmount(),
-        adjustment: adjustmentType === 'add' ? adjustment : -adjustment,
-        total: calculateTotal(),
-      }
-    };
-
-    try {
-      await axios.post('http://localhost:3001/api/estimates', estimateData);
-      navigate('/dashboard/estimates');
-    } catch (error) {
-      console.error('Error submitting estimate:', error);
+    const value = e.target.value;
+    const numericValue = parseFloat(value); 
+    if (!isNaN(numericValue) && value.trim() !== '') {
+      setCustomTax(numericValue);
+    } else {
+      setCustomTax(''); 
     }
   };
+
+
+
+  const handleTaxTypeChange = (e) => {
+    setTaxType(e.target.value);
+  };
+
 
   return (
     <div className='flex'>
       <div className="w-1/5">
         <SidePanel />
       </div>
-      <div className="estimate-container">
-        <h2 className="text-2xl font-semibold mb-10 mt-20 text-gray-700">New Quote</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label>Customer Name*</label>
-            <select value={customer} onChange={(e) => handleDropdownChange(e, setCustomer, 'sales/customers')}>
-              <option value="">Select a customer</option>
-              {customers.map((cust) => (
-                <option key={cust.id} value={cust.name}>{cust.name}</option>
-              ))}
-              <option value="new sales/customers">Add New Customer</option>
-            </select>
-          </div>
+      <div className="p-6 mt-8 mr-20 ml-20 bg-gray-50 min-h-screen flex items-center justify-center">
+        <div className="max-w-8xl w-full bg-white p-8 rounded-lg shadow-md">
+          <h1 className="text-2xl font-bold mb-6">New Quote</h1>
+          <form className="space-y-8" onSubmit={(e) => {
+            e.preventDefault();
+            
+          }}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium mb-1">Customer Name*</label>
+                <div>
+                  <select
+                    value={customer}
+                    onChange={handleDropdownChange}
+                    className="border border-gray-300 rounded-md p-2 w-full focus:ring-blue-500 focus:border-blue-500"
+                  >
+                    <option value="">Select a customer</option>
+                    {customers.map((cust) => (
+                      <option key={cust.id} value={cust.name}>{cust.name}</option>
+                    ))}
+                    <option value="new sales/customers">Add New Customer</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Customer State*</label>
+                <input
+                  type="text"
+                  value={customerState}
+                  readOnly
+                  className="border border-gray-300 rounded-md p-2 w-full focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
 
-          <div className="form-group">
+              <div className="form-group">
             <label>Quote#</label>
             <input type="text" value={quoteNumber} onChange={(e) => setQuoteNumber(e.target.value)} />
           </div>
@@ -329,21 +382,9 @@ const Estimate = () => {
             <label>Expiry Date</label>
             <input type="date" value={expiryDate} onChange={(e) => setExpiryDate(e.target.value)} />
           </div>
-
-          <div className="form-group">
-            <label>Salesperson</label>
-            <select value={salesperson} onChange={(e) => handleDropdownChange(e, setSalesperson, 'sales/salespersons')}>
-              <option value="">Select a salesperson</option>
-              {salespeople.map((sp) => (
-                <option key={sp.id} value={sp.name}>{sp.name}</option>
-              ))}
-              <option value="new sales/salespersons">Add New Salesperson</option>
-            </select>
-          </div>
-
           <div className="form-group">
             <label>Project Name</label>
-            <select value={projectName} onChange={(e) => handleDropdownChange(e, setProjectName, 'projects')}>
+            <select value={projectName} onChange={(e) => handleDropdownChanges(e, setProjectName, 'projects')}>
               <option value="">Select a project</option>
               {projects.map((proj) => (
                 <option key={proj.id} value={proj.name}>{proj.name}</option>
@@ -351,25 +392,17 @@ const Estimate = () => {
               <option value="new projects">Add New Project</option>
             </select>
           </div>
-
-          <div className="form-group">
-            <label>Subject</label>
-            <input
-              type="text"
-              value={subject}
-              onChange={(e) => setSubject(e.target.value)}
-            />
+              
           </div>
 
-          <div className="items-table">
-            <h2 className="text-xl font-semibold mb-6 text-gray-700">Items</h2>
-            <table>
+            {/* Items Table */}
+            <table className="w-full table-auto mt-6">
               <thead>
                 <tr>
                   <th>Item</th>
                   <th>Quantity</th>
                   <th>Rate</th>
-                  <th>Discount (%)</th>
+                  <th>Discount</th>
                   <th>GST (%)</th>
                   <th>SGST (%)</th>
                   <th>CGST (%)</th>
@@ -385,11 +418,13 @@ const Estimate = () => {
                       <select
                         value={item.item}
                         onChange={(e) => handleItemChange(index, 'item', e.target.value)}
+                        className="border border-gray-300 rounded-md p-2"
                       >
-                        <option value="" hidden>Select an item</option>
-                        <option value="new item" className='text-blue-500'>Add New Item</option>
-                        {availableItems.map((it) => (
-                          <option key={it.id} value={it.name}>{it.name}</option>
+                        <option value="">Select an item</option>
+                        {availableItems.map((availableItem, idx) => (
+                          <option key={idx} value={availableItem.name}>
+                            {availableItem.name}
+                          </option>
                         ))}
                       </select>
                     </td>
@@ -398,7 +433,7 @@ const Estimate = () => {
                         type="number"
                         value={item.quantity}
                         onChange={(e) => handleItemChange(index, 'quantity', e.target.value)}
-                        min="0"
+                        className="border border-gray-300 rounded-md p-2 w-full"
                       />
                     </td>
                     <td>
@@ -406,7 +441,7 @@ const Estimate = () => {
                         type="number"
                         value={item.rate}
                         onChange={(e) => handleItemChange(index, 'rate', e.target.value)}
-                        min="0"
+                        className="border border-gray-300 rounded-md p-2 w-full"
                       />
                     </td>
                     <td>
@@ -414,7 +449,7 @@ const Estimate = () => {
                         type="number"
                         value={item.discount}
                         onChange={(e) => handleItemChange(index, 'discount', e.target.value)}
-                        min="0"
+                        className="border border-gray-300 rounded-md p-2 w-full"
                       />
                     </td>
                     <td>
@@ -431,7 +466,7 @@ const Estimate = () => {
                         type="number"
                         value={items[index].sgst || ''}
                         className="border p-2 w-full"
-                        readOnly // Automatically filled based on state
+                        readOnly 
                       />
                     </td>
                     <td>
@@ -439,7 +474,7 @@ const Estimate = () => {
                         type="number"
                         value={items[index].cgst || ''}
                         className="border p-2 w-full"
-                        readOnly // Automatically filled based on state
+                        readOnly 
                       />
                     </td>
                     <td>
@@ -447,102 +482,154 @@ const Estimate = () => {
                         type="number"
                         value={items[index].igst || ''}
                         className="border p-2 w-full"
-                        readOnly // Automatically filled based on state
+                        readOnly 
                       />
                     </td>
-                    <td>{(item.quantity * item.rate * (1 - item.discount / 100)).toFixed(2)}</td>
+
+                    <td>{item.amount}</td>
                     <td>
-                      <button type="button" onClick={() => removeItem(index)}>Remove</button>
+                      <button
+                        type="button"
+                        onClick={() => removeItem(index)}
+                        className="text-red-600 hover:text-red-800"
+                      >
+                        Remove
+                      </button>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
-            <button type="button" onClick={addNewItem}>Add New Item</button>
-          </div>
 
-          <div className="subtotal-section">
-            <h2 className="text-xl font-semibold mb-6 text-gray-700">Subtotal Details</h2>
-            <div className="subtotal-container">
-              <div className="summary">
-                <div>Subtotal: ₹ {calculateSubtotal().toFixed(2)}</div>
-                <br />
-              </div>
+            <button
+              type="button"
+              className="mt-4 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-500 hover:bg-green-600"
+              onClick={addNewItem}
+            >
+              Add New Item
+            </button>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Subject</label>
+              <input
+                type="text"
+                value={subject}
+                onChange={(e) => setSubject(e.target.value)}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+              />
+            </div>
+            <label htmlFor="salesperson" className="block text-sm font-medium text-gray-700">
+              Salesperson
+            </label>
+            <select id="salesperson" name="salesperson" className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2">
+              <option value="">Select a Salesperson</option>
+              {salespersons.map((person, index) => (
+                <option key={index} value={person}>
+                  {person.name}
+                </option>
+              ))}
+            </select>
+            <button
+              type="button"
+              onClick={() => navigate('/dashboard/salesperson')}
+              className="mt-5 inline-flex items-center px-5 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-500 hover:bg-blue-600"
+            >
+              Add Salesperson
+            </button>
 
-              <div className="form-group">
-                <label>Tax Type</label>
-                <select value={taxType} onChange={(e) => setTaxType(e.target.value)}>
-                  <option value="" >Select a tax type</option>
-                  <option value="tds">TDS</option>
-                  <option value="tcs">TCS</option>
+            {/* Tax and Adjustment Section */}
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Tax Type</label>
+                <select
+                  value={taxType}
+                  onChange={handleTaxTypeChange}
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                >
+                  <option value="">Select Tax Type</option>
+                  <option value="TDS">TDS</option>
+                  <option value="TCS">TCS</option>
                 </select>
               </div>
-
-              {taxType === 'tds' && (
-                <div className="form-group">
-                  <label>Select TDS Type and Rate</label>
-                  <select value={showCustomTax ? 'Others' : tax} onChange={handleTaxChange}>
-                    <option value="" >Select Tax</option>
+              {taxType === 'TCS' && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">TCS Rate</label>
+                  <input
+                    type="number"
+                    value={customTax}
+                    onChange={handleCustomTaxChange}
+                    placeholder="Enter TCS Rate"
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                  />
+                </div>
+              )}
+              {taxType === 'TDS' && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Tax Rate</label>
+                  <select
+                    value={tax}
+                    onChange={handleTaxChange}
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                  >
+                    <option value="">Select Tax Rate</option>
                     <option value="5">Commission or Brokerage [5%]</option>
                     <option value="3.75">Commission or Brokerage (Reduced) [3.75%]</option>
                     <option value="10">Dividend [10%]</option>
                     <option value="7.5">Dividend (Reduced) [7.5%]</option>
-                    <option value="2">Payment of contractors for Others [2%]</option>
-                    <option value="1.5">Payment of contractors for Others (Reduced) [1.5%]</option>
-                    <option value="1">Payment of contractors HUF/Indiv [1%]</option>
-                    <option value="0.75">Payment of contractors HUF/Indiv (Reduced) [0.75%]</option>
-                    <option value="10">Professional Fees [10%]</option>
-                    <option value="7.5">Professional Fees (Reduced) [7.5%]</option>
-                    <option value="Others">Others</option>
+                    {/* Add more options as required */}
                   </select>
-                  {showCustomTax && (
-                    <div>
-                      <label>Custom TDS Rate (%)</label>
-                      <input type="number" value={customTax} onChange={handleCustomTaxChange} />
-                    </div>
-                  )}
                 </div>
               )}
-
-              {taxType === 'tcs' && (
-                <div>
-                  <label>Enter TCS Tax Rate (%)</label>
-                  <input type="number" value={customTax} onChange={handleCustomTaxChange} />
-                </div>
-              )}
-
-              <div className="summary">
-                <div>Tax Amount: ₹ {taxType === 'tcs' ? (calculateSubtotal() * (customTax / 100)).toFixed(2) : calculateTaxAmount()}</div>
-                <br />
-              </div>
-
-              <div className="form-group">
-                <label>Adjustment</label>
-                <select value={adjustmentType} onChange={(e) => setAdjustmentType(e.target.value)}>
-                  <option value="add">Add</option>
-                  <option value="subtract">Subtract</option>
-                </select>
-
-                <input
-                  type="number"
-                  value={adjustment}
-                  onChange={(e) => setAdjustment(e.target.value)}
-                  placeholder="Adjustment amount"
-                  min="0"
-                />
-              </div>
-
-              <div className="summary">
-                <div>Total: ₹ {calculateTotal()}</div>
-              </div>
+             
             </div>
-          </div>
 
-          <div className="actions">
-            <button type="submit">Save and Send</button>
-            <button type="button" onClick={() => navigate('/dashboard/estimates')}>Cancel</button>
-          </div>
-        </form>
+            {/* Total Section */}
+          <div className="my-4 p-4 border border-gray-300 rounded-md">
+               <div className="mb-2">
+                  <span className="text-lg font-bold">Subtotal: </span>
+                  <span className="text-lg">{calculateSubtotal()}</span>
+                </div>
+            <div className="mb-2">
+              <span className="text-lg font-bold">Tax Amount: </span>
+              <span className="text-lg">{calculateTaxAmount()}</span>
+            </div>
+            <div className="mb-2">
+              <span className="text-lg font-bold">Total Amount: </span>
+              <span className="text-lg">{calculateTotal()}</span>
+            </div>
+
+
+            {customer.state === 'Tamil Nadu' ? (
+    <>
+      <div className="mb-2">
+        <span className="text-lg font-bold">SGST ({items[0].gst / 2}%): </span>
+        <span className="text-lg">{items.reduce((total, item) => total + (parseFloat(item.sgst) || 0), 0).toFixed(2)}</span>
+      </div>
+      <div className="mb-2">
+        <span className="text-lg font-bold">CGST ({items[0].gst / 2}%): </span>
+        <span className="text-lg">{items.reduce((total, item) => total + (parseFloat(item.cgst) || 0), 0).toFixed(2)}</span>
+      </div>
+    </>
+  ) : (
+    <div className="mb-2">
+    <span className="text-lg font-bold">TAX ({items[0].gst}%): </span>
+    <span className="text-lg">{calculateTaxAmount()}</span>
+  </div>
+)}
+              <div className="mt-4">
+    <span className="text-xl font-extrabold">Total: </span>
+    <span className="text-xl">{calculateTotal()}</span>
+  </div>
+            </div>
+            <div>
+            </div>
+            <button
+              type="submit"
+              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-500 hover:bg-blue-600"
+            >
+              Save
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );
