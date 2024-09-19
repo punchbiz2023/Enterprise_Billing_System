@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './BillForm.css';
+import SidePanel from '../Purchase/Sidepanel';
 
 const BillForm = () => {
     const [vendor, setVendor] = useState('');
@@ -65,6 +66,10 @@ const BillForm = () => {
     };
 
     return (
+    <div>
+        <div>
+            <SidePanel/>
+        </div>
         <div className="purchase-order-container">
             <h2 className="text-2xl font-semibold mb-10 mt-20 text-gray-700">Create Bill</h2>
 
@@ -189,6 +194,7 @@ const BillForm = () => {
                 <button>Save and Send</button>
                 <button>Cancel</button>
             </div>
+        </div>
         </div>
     );
 };

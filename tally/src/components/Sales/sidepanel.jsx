@@ -1,13 +1,9 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import './sidepanel.css'; // Import the CSS file
 
 const SidePanel = () => {
-  const [activeLink, setActiveLink] = useState('');
-
-  const handleLinkClick = (path) => {
-    setActiveLink(path);
-  };
+  const location = useLocation();
 
   return (
     <div className="side-panel">
@@ -15,18 +11,15 @@ const SidePanel = () => {
         <li>
           <Link
             to="/dashboard/sales/customers"
-            className={`side-link ${activeLink === '/dashboard/sales/customers' ? 'active' : ''}`}
-            onClick={() => handleLinkClick('/dashboard/sales/customers')}
+            className={`side-link ${location.pathname === '/dashboard/sales/customers' || location.pathname === '/dashboard/sales' ? 'active' : ''}`}
           >
             Customers
           </Link>
-
         </li>
         <li>
           <Link
             to="/dashboard/sales/invoice"
-            className={`block ${activeLink === '/dashboard/sales/invoice' ? 'active' : ''}`}
-            onClick={() => handleLinkClick('/dashboard/sales/invoice')}
+            className={`side-link ${location.pathname === '/dashboard/sales/invoice' ? 'active' : ''}`}
           >
             Invoice
           </Link>
@@ -34,8 +27,7 @@ const SidePanel = () => {
         <li>
           <Link
             to="/dashboard/sales/order"
-            className={`block ${activeLink === '/dashboard/sales/order' ? 'active' : ''}`}
-            onClick={() => handleLinkClick('/dashboard/sales/order')}
+            className={`side-link ${location.pathname === '/dashboard/sales/order' ? 'active' : ''}`}
           >
             Order
           </Link>
@@ -43,8 +35,7 @@ const SidePanel = () => {
         <li>
           <Link
             to="/dashboard/sales/estimate"
-            className={`block ${activeLink === '/dashboard/sales/estimate' ? 'active' : ''}`}
-            onClick={() => handleLinkClick('/dashboard/sales/estimate')}
+            className={`side-link ${location.pathname === '/dashboard/sales/estimate' ? 'active' : ''}`}
           >
             Estimate
           </Link>
@@ -52,8 +43,7 @@ const SidePanel = () => {
         <li>
           <Link
             to="/dashboard/sales/delivery"
-            className={`block ${activeLink === '/dashboard/sales/delivery' ? 'active' : ''}`}
-            onClick={() => handleLinkClick('/dashboard/sales/delivery')}
+            className={`side-link ${location.pathname === '/dashboard/sales/delivery' ? 'active' : ''}`}
           >
             Delivery Challan
           </Link>
@@ -61,8 +51,7 @@ const SidePanel = () => {
         <li>
           <Link
             to="/dashboard/sales/payment-received"
-            className={`block ${activeLink === '/dashboard/sales/payment-received' ? 'active' : ''}`}
-            onClick={() => handleLinkClick('/dashboard/sales/payment-received')}
+            className={`side-link ${location.pathname === '/dashboard/sales/payment-received' ? 'active' : ''}`}
           >
             Payment Received
           </Link>

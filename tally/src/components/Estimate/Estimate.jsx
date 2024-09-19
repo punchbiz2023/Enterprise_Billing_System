@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import SidePanel from '../sales/SidePanel';
+import SidePanel from '../Sales/SidePanel';
 import SalesPerson from '../Salesperson/SalesPerson'
 import { Link, useNavigate } from 'react-router-dom';
 

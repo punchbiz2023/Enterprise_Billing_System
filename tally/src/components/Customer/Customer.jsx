@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import SidePanel from '../sales/SidePanel';
+import SidePanel from '../Sales/SidePanel';
 
 const Customer = () => {
     const [customers, setCustomers] = useState([]);
@@ -67,7 +67,7 @@ const Customer = () => {
                         placeholder="Search by name..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="px-4 py-2 border rounded w-1/3"
+                        className="px-4 py-2 border border-gray-600 rounded w-1/3"
                     />
 
                     {/* Buttons on the right */}
