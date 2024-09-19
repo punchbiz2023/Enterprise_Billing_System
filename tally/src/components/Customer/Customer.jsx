@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import SidePanel from '../Sales/SidePanel';
+import SidePanel from '../sales/SidePanel';
 
 const Customer = () => {
     const [customers, setCustomers] = useState([]);
