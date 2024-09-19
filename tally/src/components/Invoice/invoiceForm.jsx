@@ -166,10 +166,6 @@ const InvoiceForm = () => {
     setItems(newItems);
   };
 
-
-
-
-
   const addNewItem = () => {
     setItems([...items, { item: '', quantity: '', rate: '', discount: '', gst: '', sgst: '', cgst: '', igst: '', amount: '' }]);
   };
@@ -185,7 +181,7 @@ const InvoiceForm = () => {
       const quantity = parseFloat(item.quantity) || 0;
       const discount = parseFloat(item.discount) || 0;
 
-      const baseAmount = rate * quantity;
+      const baseAmount = rate * quantity;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
       const discountedAmount = baseAmount * (1 - discount / 100);
 
       return acc + discountedAmount;
