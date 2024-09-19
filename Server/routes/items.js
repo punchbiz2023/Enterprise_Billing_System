@@ -16,6 +16,8 @@ router.post('/', async (req, res) => {
   const {
     name,
     unit,
+    itemCode,
+    hsnCode,
     sellingPrice,
     costPrice,
     salesAccount,
@@ -23,6 +25,8 @@ router.post('/', async (req, res) => {
     descriptionSales,
     descriptionPurchase,
     preferredVendor,
+    taxPayable,
+    gst,
     type
   } = req.body;
 
@@ -32,12 +36,16 @@ router.post('/', async (req, res) => {
       .values({
         name,
         unit,
+        itemcode: itemCode,  
+        hsncode: hsnCode,
         salesprice: Number(sellingPrice),
         costprice: Number(costPrice),
         salesaccount: salesAccount,
         purchaseaccount: purchaseAccount,
         salesdescription: descriptionSales,
         purchasedescription: descriptionPurchase,
+        taxpayable: taxPayable,  
+        gst: Number(gst),  
         type,
       })
       .returning();
@@ -56,12 +64,16 @@ router.get('/', async (req, res) => {
       .select({
         sno: Items.sno,
         name: Items.name,
+        itemcode: Items.itemcode,  
+        hsncode: Items.hsncode, 
         salesprice: Items.salesprice,
         costprice: Items.costprice,
         type: Items.type,
         unit: Items.unit,
         salesdescription: Items.salesdescription,
         purchasedescription: Items.purchasedescription,
+        taxpayable: Items.taxpayable, 
+        gst: Items.gst,
       })
       .from(Items);
 

@@ -43,14 +43,22 @@ const ItemDetails = () => {
         <p className="mb-3"><strong>Item Type</strong> {item.type}</p>
         <p className="mb-3"><strong>Unit</strong> {item.unit}</p>
 
+        <p className="mb-3"><strong>Item Code:</strong> {item.itemcode}</p>
+        <p className="mb-3"><strong>HSN Code:</strong> {item.hsncode}</p>
+        <p className="mb-3"><strong>GST Payable:</strong> {item.taxPayable ? 'Yes' : 'No'}</p>
+        {item.taxPayable && (
+          <p className="mb-3"><strong>GST (%):</strong> {item.gst}</p>
+        )}
+
+
         <h1><strong>Sales Information</strong></h1>
         <p className="mb-3"><strong>Selling Price:</strong> {item.salesprice}</p>
-        <p className="mb-3"><strong>Sales Description</strong> {item.descriptionSales}</p>
+        <p className="mb-3"><strong>Sales Description</strong> {item.salesdescription}</p>
         
 
         <h1><strong>Purchase Information</strong></h1>
         <p className="mb-3"><strong>Cost Price:</strong> {item.costprice}</p>
-        <p className="mb-3"><strong>Cost Description</strong> {item.descriptionCost}</p>
+        <p className="mb-3"><strong>Purchase Description</strong> {item.purchasedescription}</p>
 
         
       </div>
