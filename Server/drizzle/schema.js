@@ -1,4 +1,6 @@
-import { pgTable, serial, text, numeric, json, date } from 'drizzle-orm/pg-core';
+import { pgTable, serial, text, numeric, json, date, boolean , decimal
+  
+ } from 'drizzle-orm/pg-core';
 
 export const CustTable = pgTable('customer', {
   sno: serial('sno').primaryKey(),
@@ -40,12 +42,16 @@ export const Items = pgTable('items', {
   name: text('name').notNull(),
   type: text("type").notNull(),
   unit: text('unit').notNull(),
+  itemcode: text('itemCode'),
+  hsncode: text('hsnCode'),
   salesprice: numeric('salesprice').notNull(),
   costprice: numeric('costprice').notNull(),
   salesdescription: text('salesdescription'),
   purchasedescription: text('purchasedescription'),
   salesaccount: text('salesaccount').notNull(),
   purchaseaccount: text('purchaseaccount').notNull(),
+  taxpayable: boolean('taxPayable'),  
+  gst: decimal('gst'),   
 });
 
 export const Users = pgTable('users',{

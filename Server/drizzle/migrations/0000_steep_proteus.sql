@@ -35,12 +35,16 @@ CREATE TABLE IF NOT EXISTS "items" (
 	"name" text NOT NULL,
 	"type" text NOT NULL,
 	"unit" text NOT NULL,
+	"itemCode" text,
+	"hsnCode" text,
 	"salesprice" numeric NOT NULL,
 	"costprice" numeric NOT NULL,
 	"salesdescription" text,
 	"purchasedescription" text,
 	"salesaccount" text NOT NULL,
-	"purchaseaccount" text NOT NULL
+	"purchaseaccount" text NOT NULL,
+	"taxPayable" boolean,
+	"gst" numeric
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "users" (
