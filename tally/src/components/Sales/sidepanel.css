@@ -1,41 +1,43 @@
 /* Ensure consistent width and spacing for the side panel */
 .side-panel {
-    position: fixed;
-    top: 70px; /* Adjust based on header height */
-    left: 100px;
-    height: calc(100vh - 70px); /* Adjust based on header height */
-    width: 150px; /* Fixed width for the side panel */
-    background-color: #4F4F4F;
-    padding: 20px;
-    box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.1);
-    overflow-y: auto;
-    z-index: 1000; /* Ensure it's above other elements */
-  }
-  
-  /* Ensure consistent spacing within the list */
-  .side-panel ul {
-    list-style-type: none;
-    padding: 0;
-    margin-top: 20px;
-  }
-  
-  .side-panel ul li {
-    margin: 15px 0; /* Ensure spacing between items */
-  }
-  
-  /* Style for links */
-  .side-panel ul li a {
-    color: white;
-    text-decoration: none;
-    display: block;
-    padding: 10px;
-    transition: background-color 0.3s ease, color 0.3s ease;
-  }
-  
-  /* Hover and active states for links */
-  .side-panel ul li a.active,
-  .side-panel ul li a:hover {
-    background-color: #3399ff; /* Active state background color */
-    color: white; /* Active state text color */
-  }
-  
+  position: fixed;
+  top: 70px;
+  left: 100px;
+  height: calc(100vh - 70px);
+  width: 150px;
+  background-color: #4F4F4F;
+  padding: 20px;
+  box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.side-panel ul {
+  list-style-type: none;
+  padding: 0;
+  margin-top: 20px;
+}
+
+.side-panel ul li {
+  margin: 15px 0;
+}
+
+.side-panel ul li a.side-link {
+  color: white;
+  text-decoration: none;
+  display: block;
+  padding: 10px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Active state for the link */
+.side-panel ul li a.active {
+  background-color: #3399ff; /* Blue color for the active link */
+  color: white;
+}
+
+/* Remove hover effect */
+.side-panel ul li a:hover {
+  background-color: initial; /* No background change on hover */
+  color: white; /* Retain text color */
+}

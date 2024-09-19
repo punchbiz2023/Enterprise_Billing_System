@@ -43,6 +43,12 @@ CREATE TABLE IF NOT EXISTS "items" (
 	"purchaseaccount" text NOT NULL
 );
 --> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "salesperson" (
+	"sno" serial PRIMARY KEY NOT NULL,
+	"name" text NOT NULL,
+	"mail" text NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "users" (
 	"sno" serial PRIMARY KEY NOT NULL,
 	"name" text NOT NULL,

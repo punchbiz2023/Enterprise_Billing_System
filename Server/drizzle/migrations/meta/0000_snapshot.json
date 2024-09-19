@@ -1,5 +1,5 @@
 {
-  "id": "5c9c7e3d-72c8-4b03-b3a4-be1491a4bdc6",
+  "id": "3901417b-a34b-4762-a62c-4b038276ccc8",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -240,6 +240,34 @@
         },
         "purchaseaccount": {
           "name": "purchaseaccount",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.salesperson": {
+      "name": "salesperson",
+      "schema": "",
+      "columns": {
+        "sno": {
+          "name": "sno",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "mail": {
+          "name": "mail",
           "type": "text",
           "primaryKey": false,
           "notNull": true
