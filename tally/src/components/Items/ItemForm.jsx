@@ -6,7 +6,9 @@ const ItemForm = () => {
     const [formState, setFormState] = useState({
         newItem: {
             sno: '',
+            itemCode: '',
             unit: '',
+            hsnCode: '',
             sellingPrice: '',
             costPrice: '',
             salesAccount: 'Sales',
@@ -14,6 +16,8 @@ const ItemForm = () => {
             descriptionSales: '',
             descriptionPurchase: '',
             type: 'Goods',
+            taxPayable: false, 
+            gst: '',           
         }
     });
 
@@ -79,28 +83,77 @@ const ItemForm = () => {
                     </div>
                 </div>
                 <div>
-    <label className="block text-sm font-medium text-gray-700">Unit</label>
-    <select
-        name="unit"
-        value={formState.newItem.unit}
-        onChange={handleInputChange}
-        className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-        required
-    >
-        <option value="BOX">BOX - box</option>
-        <option value="CMS">CMS - cm</option>
-        <option value="DOZ">DOZ - dz</option>
-        <option value="FTS">FTS - ft</option>
-        <option value="GMS">GMS - g</option>
-        <option value="KGS">KGS - kg</option>
-        <option value="KME">KME - km</option>
-        <option value="LBS">LBS - lb</option>
-        <option value="MGS">MGS - mg</option>
-        <option value="MLT">MLT - ml</option>
-        <option value="MTR">MTR - m</option>
-        <option value="PCS">PCS - pcs</option>
-    </select>
-</div>
+                    <label className="block text-sm font-medium text-gray-700">Item Code</label>
+                    <input
+                        type="text"
+                        name="itemCode"
+                        value={formState.newItem.itemCode}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                        required
+                    />
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-gray-700">Unit</label>
+                    <select
+                        name="unit"
+                        value={formState.newItem.unit}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                        required
+                    >
+                        <option value="BOX">BOX - box</option>
+                        <option value="CMS">CMS - cm</option>
+                        <option value="DOZ">DOZ - dz</option>
+                        <option value="FTS">FTS - ft</option>
+                        <option value="GMS">GMS - g</option>
+                        <option value="KGS">KGS - kg</option>
+                        <option value="KME">KME - km</option>
+                        <option value="LBS">LBS - lb</option>
+                        <option value="MGS">MGS - mg</option>
+                        <option value="MLT">MLT - ml</option>
+                        <option value="MTR">MTR - m</option>
+                        <option value="PCS">PCS - pcs</option>
+                    </select>
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-gray-700">HSN Code</label>
+                    <input
+                        type="text"
+                        name="hsnCode"
+                        value={formState.newItem.hsnCode}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                        required
+                    />
+                </div>
+
+                {/* Tax Payable Checkbox and GST Input */}
+                <div className="flex">
+                    <div className="flex">
+                        <input
+                            type="checkbox"
+                            name="taxPayable"
+                            checked={formState.newItem.taxPayable}
+                            onChange={handleInputChange}
+                            className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+                        />
+                        <label className="ml-2 font-medium text-gray-700">Tax Payable</label>
+                    </div>
+                    {formState.newItem.taxPayable && (
+                        <div className="flex space-x-2">
+                            <label className="block text-sm font-medium text-gray-700">GST (%)</label>
+                            <input
+                                type="number"
+                                name="gst"
+                                value={formState.newItem.gst}
+                                onChange={handleInputChange}
+                                className="w-60% px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                                required
+                            />
+                        </div>
+                    )}
+                </div>
 
 
                 {/* Sales Information */}
@@ -172,28 +225,8 @@ const ItemForm = () => {
                                 required
                             >
                                 <option value="Cost of Goods Sold">Cost of Goods Sold</option>
-                                <option value="Advertising And Marketing">Advertising And Marketing</option>
-                                <option value="Automobile Expense">Automobile Expense</option>
-                                <option value="Bad Debt">Bad Debt</option>
-                                <option value="Bank Fees and Charges">Bank Fees and Charges</option>
-                                <option value="Consultant Expense">Consultant Expense</option>
-                                <option value="Contract Assets">Contract Assets</option>
-                                <option value="Credit Card Charges">Credit Card Charges</option>
-                                <option value="Depreciation And Amortisation">Depreciation And Amortisation</option>
-                                <option value="Depreciation Expense">Depreciation Expense</option>
-                                <option value="IT and Internet Expenses">IT and Internet Expenses</option>
-                                <option value="Janitorial Expense">Janitorial Expense</option>
-                                <option value="Lodging">Lodging</option>
-                                <option value="Meals and Entertainment">Meals and Entertainment</option>
-                                <option value="Merchandise">Merchandise</option>
-                                <option value="Office Supplies">Office Supplies</option>
-                                <option value="Postage">Postage</option>
-                                <option value="Printing and Stationery">Printing and Stationery</option>
-                                <option value="Raw Materials And Consumables">Raw Materials And Consumables</option>
-                                <option value="Repairs and Maintenance">Repairs and Maintenance</option>
-                                <option value="Salaries and Employee Wages">Salaries and Employee Wages</option>
-                                <option value="Telephone Expense">Telephone Expense</option>
-
+                                <option value="General Expense">General Expense</option>
+                                <option value="Shipping Charges">Shipping Charges</option>
                             </select>
                         </div>
                     </div>
@@ -206,15 +239,16 @@ const ItemForm = () => {
                             className="w-full px-4 py-2 mt-1 h-12 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                         />
                     </div>
-                    
                 </div>
 
-                <button
-                    type="submit"
-                    className="w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-                >
-                    Add Item
-                </button>
+                <div className="text-center">
+                    <button
+                        type="submit"
+                        className="px-6 py-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:bg-blue-700"
+                    >
+                        Add Item
+                    </button>
+                </div>
             </form>
         </div>
     );

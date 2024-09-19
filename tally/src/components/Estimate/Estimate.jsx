@@ -16,7 +16,7 @@ const Estimate = () => {
   const [projectName, setProjectName] = useState('');
   const [projects, setProjects] = useState([]);
   const [subject, setSubject] = useState('');
-  const [items, setItems] = useState([{ item: '', quantity: 1, rate: 0, discount: 0, amount: 0 }]);
+  const [items, setItems] = useState([{ item: '', quantity: 1, rate: '', discount: '', amount: 0 }]);
   const [availableItems, setAvailableItems] = useState([]);
   const [taxType, setTaxType] = useState('');
   const [tax, setTax] = useState(0);
