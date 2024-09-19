@@ -1,5 +1,6 @@
 // BillForm.jsx
 import React, { useState } from 'react';
+import SidePanel from '../Purchase/SidePanel';
 
 const BillForm = () => {
   const [formData, setFormData] = useState({
@@ -32,14 +33,18 @@ const BillForm = () => {
   };
 
   return (
-    <div className="p-8 bg-white rounded-lg shadow-lg max-w-4xl mx-auto mt-12">
-      <h2 className="text-2xl font-bold mb-6">New Bill</h2>
+    <div className='flex'>
+      <div className="w-1/5">
+                <SidePanel />
+            </div>
+    <div className="p-10 bg-white rounded-lg shadow-xl max-w-7xl mx-auto mt-12">
+      <h2 className="text-3xl font-semibold mb-8 text-gray-800">New Bill</h2>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-8">
         <div className="flex flex-col">
-          <label className="font-medium">Vendor Name*</label>
+          <label className="font-semibold text-gray-700">Vendor Name*</label>
           <select
-            className="border p-2 rounded-md"
+            className="border border-gray-400 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={formData.vendorName}
             onChange={(e) => setFormData({ ...formData, vendorName: e.target.value })}
           >
@@ -49,65 +54,63 @@ const BillForm = () => {
         </div>
 
         <div className="flex flex-col">
-          <label className="font-medium">Bill*</label>
+          <label className="font-semibold text-gray-700">Bill*</label>
           <input
             type="text"
-            className="border p-2 rounded-md"
+            className="border border-gray-400 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={formData.billNumber}
             onChange={(e) => setFormData({ ...formData, billNumber: e.target.value })}
           />
         </div>
 
         <div className="flex flex-col">
-          <label className="font-medium">Order Number</label>
+          <label className="font-semibold text-gray-700">Order Number</label>
           <input
             type="text"
-            className="border p-2 rounded-md"
+            className="border border-gray-400 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={formData.orderNumber}
             onChange={(e) => setFormData({ ...formData, orderNumber: e.target.value })}
           />
         </div>
 
         <div className="flex flex-col">
-          <label className="font-medium">Bill Date*</label>
+          <label className="font-semibold text-gray-700">Bill Date*</label>
           <input
             type="date"
-            className="border p-2 rounded-md"
+            className="border border-gray-400 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={formData.billDate}
             onChange={(e) => setFormData({ ...formData, billDate: e.target.value })}
           />
         </div>
 
         <div className="flex flex-col">
-          <label className="font-medium">Due Date</label>
+          <label className="font-semibold text-gray-700">Due Date</label>
           <input
             type="date"
-            className="border p-2 rounded-md"
+            className="border border-gray-400 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={formData.dueDate}
             onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
           />
         </div>
 
         <div className="flex flex-col">
-          <label className="font-medium">Payment Terms</label>
+          <label className="font-semibold text-gray-700">Payment Terms</label>
           <select
-            className="border p-2 rounded-md"
+            className="border border-gray-400 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={formData.paymentTerms}
             onChange={(e) => setFormData({ ...formData, paymentTerms: e.target.value })}
           >
             <option>Due On Receipt</option>
             <option>Net 30</option>
             <option>Net 60</option>
-            
-            
           </select>
         </div>
 
-        <div className="col-span-5 flex flex-col">
-          <label className="font-medium">Subject</label>
+        <div className="col-span-2 flex flex-col">
+          <label className="font-semibold text-gray-700">Subject</label>
           <input
             type="text"
-            className="border p-2 rounded-md"
+            className="border border-gray-400 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             maxLength="250"
             placeholder="Enter a subject within 250 characters"
             value={formData.subject}
@@ -117,73 +120,73 @@ const BillForm = () => {
       </div>
 
       {/* Item Table */}
-      <div className="mt-8">
-        <h3 className="text-xl font-medium mb-4">Item Table</h3>
-        <div className="overflow-auto">
+      <div className="mt-10">
+        <h3 className="text-2xl font-medium text-gray-800 mb-6">Item Table</h3>
+        <div className="overflow-x-auto">
           <table className="w-full border-collapse">
             <thead>
-              <tr className="text-left">
-                <th className="border-b p-2">Item Details</th>
-                <th className="border-b p-2">Account</th>
-                <th className="border-b p-2">Quantity</th>
-                <th className="border-b p-2">Rate</th>
-                <th className="border-b p-2">Customer Details</th>
-                <th className="border-b p-2">Amount</th>
-                <th className="border-b p-2"></th>
+              <tr className="bg-gray-200">
+                <th className="border-b p-4 font-medium text-left">Item Details</th>
+                <th className="border-b p-4 font-medium text-left">Account</th>
+                <th className="border-b p-4 font-medium text-left">Quantity</th>
+                <th className="border-b p-4 font-medium text-left">Rate</th>
+                <th className="border-b p-4 font-medium text-left">Customer Details</th>
+                <th className="border-b p-4 font-medium text-left">Amount</th>
+                <th className="border-b p-4"></th>
               </tr>
             </thead>
             <tbody>
               {formData.items.map((item, index) => (
-                <tr key={index}>
-                  <td className="border-t p-2">
+                <tr key={index} className="hover:bg-gray-100">
+                  <td className="border-t p-3">
                     <input
                       type="text"
                       name="itemDetails"
-                      className="border p-2 w-full"
+                      className="border border-gray-400 p-2 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       value={item.itemDetails}
                       onChange={(e) => handleInputChange(e, index)}
                     />
                   </td>
-                  <td className="border-t p-2">
+                  <td className="border-t p-3">
                     <input
                       type="text"
                       name="account"
-                      className="border p-2 w-full"
+                      className="border border-gray-400 p-2 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       value={item.account}
                       onChange={(e) => handleInputChange(e, index)}
                     />
                   </td>
-                  <td className="border-t p-2">
+                  <td className="border-t p-3">
                     <input
                       type="number"
                       name="quantity"
-                      className="border p-2 w-full"
+                      className="border border-gray-400 p-2 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       value={item.quantity}
                       onChange={(e) => handleInputChange(e, index)}
                     />
                   </td>
-                  <td className="border-t p-2">
+                  <td className="border-t p-3">
                     <input
                       type="number"
                       name="rate"
-                      className="border p-2 w-full"
+                      className="border border-gray-400 p-2 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       value={item.rate}
                       onChange={(e) => handleInputChange(e, index)}
                     />
                   </td>
-                  <td className="border-t p-2">
+                  <td className="border-t p-3">
                     <input
                       type="text"
                       name="customerDetails"
-                      className="border p-2 w-full"
+                      className="border border-gray-400 p-2 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       value={item.customerDetails}
                       onChange={(e) => handleInputChange(e, index)}
                     />
                   </td>
-                  <td className="border-t p-2">{item.amount}</td>
-                  <td className="border-t p-2">
+                  <td className="border-t p-3">{item.amount}</td>
+                  <td className="border-t p-3">
                     <button
-                      className="text-red-500"
+                      className="text-red-500 hover:text-red-600 focus:outline-none"
                       onClick={() =>
                         setFormData({
                           ...formData,
@@ -200,7 +203,7 @@ const BillForm = () => {
           </table>
         </div>
         <button
-          className="mt-4 p-2 bg-blue-500 text-white rounded-md"
+          className="mt-6 p-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg focus:outline-none transition-all"
           onClick={handleAddRow}
         >
           Add New Row
@@ -208,29 +211,29 @@ const BillForm = () => {
       </div>
 
       {/* Total Section */}
-      <div className="mt-8 grid grid-cols-2 gap-4">
+      <div className="mt-10 grid grid-cols-2 gap-8">
         <div>
-          <label className="font-medium">Sub Total</label>
+          <label className="font-semibold text-gray-700">Sub Total</label>
           <input
             type="text"
-            className="border p-2 w-full"
+            className="border border-gray-400 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={formData.subTotal}
+            readOnly
           />
         </div>
         <div>
-          <label className="font-medium">Discount</label>
+          <label className="font-semibold text-gray-700">Discount</label>
           <input
             type="number"
-            className="border p-2 w-full"
+            className="border border-gray-400 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={formData.discount}
             onChange={(e) => setFormData({ ...formData, discount: e.target.value })}
           />
         </div>
-
         <div>
-          <label className="font-medium">Tax</label>
+          <label className="font-semibold text-gray-700">Tax</label>
           <select
-            className="border p-2 w-full"
+            className="border border-gray-400 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={formData.tax}
             onChange={(e) => setFormData({ ...formData, tax: e.target.value })}
           >
@@ -239,32 +242,28 @@ const BillForm = () => {
           </select>
         </div>
         <div>
-          <label className="font-medium">Adjustment</label>
+          <label className="font-semibold text-gray-700">Adjustment</label>
           <input
             type="number"
-            className="border p-2 w-full"
+            className="border border-gray-400 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={formData.adjustment}
             onChange={(e) => setFormData({ ...formData, adjustment: e.target.value })}
-          />
-        </div>
-        <div>
-          <label className="font-medium">Grand Total</label>
-          <input
-            type="text"
-            className="border p-2 w-full"
-            value={formData.grandTotal}
-           
           />
         </div>
       </div>
 
       {/* Buttons */}
-      <div className="flex justify-between mt-8">
-       
-        <button className="p-2 bg-blue-500 text-white rounded-md">Save</button>
-        <button className="p-2 bg-red-500 text-white rounded-md">Cancel</button>
+      <div className="flex justify-between mt-10">
+        <button className="p-3 bg-green-600 hover:bg-green-700 text-white rounded-lg focus:outline-none transition-all">
+          Save
+        </button>
+        <button className="p-3 bg-red-600 hover:bg-red-700 text-white rounded-lg focus:outline-none transition-all">
+          Cancel
+        </button>
       </div>
     </div>
+    </div>
+
   );
 };
 

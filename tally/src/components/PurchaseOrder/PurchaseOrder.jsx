@@ -3,6 +3,7 @@ import './PurchaseOrder.css';
 
 const PurchaseOrder = () => {
     const [vendor, setVendor] = useState('');
+    const [vendors, setVendors] = useState([]);  // State to hold vendor list
     const [customer, setCustomer] = useState('');
     const [deliveryType, setDeliveryType] = useState('organization');
     const [purchaseOrderNo, setPurchaseOrderNo] = useState('PO-00001');
@@ -15,11 +16,49 @@ const PurchaseOrder = () => {
     const [discountType, setDiscountType] = useState('%');
     const [taxType, setTaxType] = useState('');
     const [tcsTds, setTcsTds] = useState('TCS');
+    const [gstPercentage, setGstPercentage] = useState(0);
+    const [gstAmount, setGstAmount] = useState(0);
+    const [subtotal, setSubtotal] = useState(0);
+    const [grandTotal, setGrandTotal] = useState(0);
 
     useEffect(() => {
         const currentDate = new Date().toLocaleDateString('en-GB');
         setDate(currentDate);
     }, []);
+
+    useEffect(() => {
+        calculateSubtotal();
+    }, [items]);
+
+    useEffect(() => {
+        calculateGstAndGrandTotal();
+    }, [subtotal, gstPercentage]);
+
+    // Fetch vendor data from API
+    useEffect(() => {
+        const fetchVendors = async () => {
+            try {
+                const response = await fetch('http://localhost:3001/api/vendor');
+                const data = await response.json();
+                setVendors(data); // Assuming the response is an array of vendor objects
+            } catch (error) {
+                console.error('Error fetching vendor data:', error);
+            }
+        };
+
+        fetchVendors();
+    }, []);
+
+    const calculateSubtotal = () => {
+        const total = items.reduce((acc, item) => acc + (parseFloat(item.rate) * parseFloat(item.quantity)), 0);
+        setSubtotal(total);
+    };
+
+    const calculateGstAndGrandTotal = () => {
+        const gst = (subtotal * gstPercentage) / 100;
+        setGstAmount(gst);
+        setGrandTotal(subtotal + gst);
+    };
 
     const removeItem = (index) => {
         setItems(items.filter((_, i) => i !== index));
@@ -32,7 +71,12 @@ const PurchaseOrder = () => {
             <div className="vendor-section">
                 <label>Vendor Name*</label>
                 <select value={vendor} onChange={(e) => setVendor(e.target.value)}>
-                    <option>Select a Vendor</option>
+                    <option value="">Select a Vendor</option>
+                    {vendors.map((vendor) => (
+                        <option key={vendor.id} value={vendor.name}>
+                            {vendor.name}
+                        </option>
+                    ))}
                 </select>
             </div>
 
@@ -58,9 +102,6 @@ const PurchaseOrder = () => {
                     />
                     <label htmlFor="customer">Customer</label>
                 </div>
-                <select value={customer} onChange={(e) => setCustomer(e.target.value)}>
-                    <option>Select Customer</option>
-                </select>
             </div>
 
             <div className="purchase-order-details">
@@ -98,7 +139,6 @@ const PurchaseOrder = () => {
                     <thead>
                         <tr>
                             <th>Item Details</th>
-                            <th>Account</th>
                             <th>Quantity</th>
                             <th>Rate</th>
                             <th>Amount</th>
@@ -111,15 +151,7 @@ const PurchaseOrder = () => {
                                 <td>
                                     <input type="text" placeholder="Type or click to select an item." />
                                 </td>
-                                <td>
-                                    <select value={item.account} onChange={(e) => setItems(prevItems => {
-                                        const updatedItems = [...prevItems];
-                                        updatedItems[index].account = e.target.value;
-                                        return updatedItems;
-                                    })}>
-                                        <option>Select an account</option>
-                                    </select>
-                                </td>
+                                
                                 <td>
                                     <input
                                         type="number"
@@ -153,62 +185,34 @@ const PurchaseOrder = () => {
                 <button className="font-semibold text-blue-700" onClick={() => setItems([...items, { id: items.length + 1, account: '', quantity: 1, rate: 0, amount: 0 }])}>Add New Row</button>
             </div>
 
-            <div className="discount-section">
-                <label>Discount</label>
-                <select value={discountType} onChange={(e) => setDiscountType(e.target.value)}>
-                    <option value="%">%</option>
-                    <option value="₹">₹</option>
-                </select>
-            </div>
-
-            <div className="tax-section">
-                <label>Tax Type</label><br/>
-                <br />
-                <select value={taxType} onChange={(e) => setTaxType(e.target.value)}>
-                    <option value="Commission/Brokerage">Commission or Brokerage [5%]</option>
-                    <option value="Commission/Brokerage_Reduced">Commission or Brokerage (Reduced) [3.75%]</option>
-                    <option value="Dividend">Dividend [10%]</option>
-                    <option value="Dividend_Reduced">Dividend (Reduced) [7.5%]</option>
-                    <option value="Interest">Other Interest than securities [10%]</option>
-                    <option value="Interest_Reduced">Other Interest than securities (Reduced) [7.5%]</option>
-                    <option value="Contractor_Others">Payment of contractors for Others [2%]</option>
-                    <option value="Contractor_Others_Reduced">Payment of contractors for Others (Reduced) [1.5%]</option>
-                    <option value="Contractor_HUF">Payment of contractors HUF/Indiv [1%]</option>
-                    <option value="Contractor_HUF_Reduced">Payment of contractors HUF/Indiv (Reduced) [0.75%]</option>
-                    <option value="Professional_Fees">Professional Fees [10%]</option>
-                    <option value="Professional_Fees_Reduced">Professional Fees (Reduced) [7.5%]</option>
-                    <option value="Rent_Land">Rent on land or furniture etc [10%]</option>
-                    <option value="Rent_Land_Reduced">Rent on land or furniture etc (Reduced) [7.5%]</option>
-                    <option value="Technical_Fees">Technical Fees [2%]</option>
-                </select>
-            </div>
-
-            <div className="tcs-tds-section">
-                <label>TCS or TDS</label>
-                <div className="radio-group">
+            <div className="subtotal-section">
+                <div>
+                    <label>Subtotal: </label>
+                    <span>₹ {subtotal.toFixed(2)}</span>
+                </div><br/>
+                <div className="gst-section">
+                    <label>GST (%): </label>
                     <input
-                        type="radio"
-                        name="tcs-tds"
-                        value="TCS"
-                        checked={tcsTds === 'TCS'}
-                        onChange={(e) => setTcsTds(e.target.value)}
-                    />
-                    <label htmlFor="tcs">TCS</label>
-                    <input
-                        type="radio"
-                        name="tcs-tds"
-                        value="TDS"
-                        checked={tcsTds === 'TDS'}
-                        onChange={(e) => setTcsTds(e.target.value)}
-                    />
-                    <label htmlFor="tds">TDS</label>
+                        type="number"
+                        value={gstPercentage}
+                        onChange={(e) => setGstPercentage(parseFloat(e.target.value))}
+                    /><br/><br/>
+                    <div>
+                        <label>GST Amount: </label>
+                        <span>₹ {gstAmount.toFixed(2)}</span>
+                    </div><br/>
+                </div>
+                <div>
+                    <label>Grand Total: </label>
+                    <span>₹ {grandTotal.toFixed(2)}</span>
                 </div>
             </div>
+
             <div className="actions">
-          <button>Save as Draft</button>
-          <button>Save and Send</button>
-          <button>Cancel</button>
-        </div>
+                <button>Save as Draft</button>
+                <button>Save and Send</button>
+                <button>Cancel</button>
+            </div>
         </div>
     );
 };

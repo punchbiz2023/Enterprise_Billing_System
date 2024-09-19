@@ -79,3 +79,10 @@ export const Estimate = pgTable('estimate',{
   itemtable: json('itemtable').notNull(),
   subtotal: json('subtotal').notNull()
 })
+
+
+export const SalesPerson = pgTable('salesperson',{
+  sno: serial('sno').primaryKey(),
+  name: text('name').notNull(),
+  mail: text('mail').notNull()
+})

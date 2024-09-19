@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import './sidepanel.css'; // Import the CSS file
 
 const SidePanel = () => {
-  const [activeLink, setActiveLink] = useState('/dashboard/sales/customers');
+  const [activeLink, setActiveLink] = useState('');
 
   const handleLinkClick = (path) => {
     setActiveLink(path);
@@ -15,11 +15,12 @@ const SidePanel = () => {
         <li>
           <Link
             to="/dashboard/sales/customers"
-            className={`block ${activeLink === '/dashboard/sales/customers' ? 'active' : ''}`}
+            className={`side-link ${activeLink === '/dashboard/sales/customers' ? 'active' : ''}`}
             onClick={() => handleLinkClick('/dashboard/sales/customers')}
           >
             Customers
           </Link>
+
         </li>
         <li>
           <Link
