@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+<<<<<<< HEAD
 import SidePanel from '../sales/sidepanel';
+=======
+import SidePanel from '../sales/SidePanel';
+>>>>>>> 18b151f6bbc8879a7c02a4efd5dc013f1a1bf09a
 
 const Customer = () => {
     const [customers, setCustomers] = useState([]);
     const [dataLoaded, setDataLoaded] = useState(false);
     const [selectedCustomers, setSelectedCustomers] = useState([]);
     const [showCheckboxes, setShowCheckboxes] = useState(false); // State to toggle checkboxes
+    const [searchTerm, setSearchTerm] = useState(''); // State for search term
 
     useEffect(() => {
         fetchCustomers();
@@ -46,6 +51,11 @@ const Customer = () => {
         }
     };
 
+    // Filter customers based on the search term (starts with)
+    const filteredCustomers = customers.filter(customer =>
+        customer.dispname.toLowerCase().startsWith(searchTerm.toLowerCase())
+    );
+
     return (
         <div className="flex">
             <div className="w-1/5">
@@ -55,15 +65,30 @@ const Customer = () => {
                 <h1 className="text-xl font-bold mb-4">Customer List</h1>
 
                 <div className="flex justify-between mb-4">
-                    <Link
-                        to="/dashboard/sales/customers/form"
-                        className="inline-block px-5 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                    >
-                        Add Customer
-                    </Link>
+                    {/* Search bar on the left */}
+                    <input
+                        type="text"
+                        placeholder="Search by name..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="px-4 py-2 border rounded w-1/3"
+                    />
+
+                    {/* Buttons on the right */}
                     <div className="flex space-x-4">
+                        <Link
+                            to="/dashboard/sales/customers/form"
+                            className="inline-block px-5 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                        >
+                            Add Customer
+                        </Link>
                         <button
-                            onClick={() => setShowCheckboxes(!showCheckboxes)}
+                            onClick={() => {
+                                setShowCheckboxes(!showCheckboxes);
+                                if (showCheckboxes) {
+                                    setSelectedCustomers([]); // Unselect all checkboxes when 'Cancel' is clicked
+                                }
+                            }}
                             className={`inline-block px-5 py-2 rounded text-white ${showCheckboxes ? 'bg-gray-500 hover:bg-gray-600' : 'bg-red-500 hover:bg-red-600'}`}
                         >
                             {showCheckboxes ? 'Cancel' : 'Delete Customers'}
@@ -90,8 +115,6 @@ const Customer = () => {
                                 <th className="py-2 px-4 border-b">Phone</th>
                                 <th className="py-2 px-4 border-b">GST Number</th>
                                 <th className="py-2 px-4 border-b">Opening Balance</th>
-
-
                             </tr>
                         </thead>
                         <tbody>
@@ -101,14 +124,14 @@ const Customer = () => {
                                         Loading customers...
                                     </td>
                                 </tr>
-                            ) : customers.length === 0 ? (
+                            ) : filteredCustomers.length === 0 ? (
                                 <tr>
                                     <td colSpan="7" className="py-2 px-4 text-center text-gray-500">
                                         No customers found
                                     </td>
                                 </tr>
                             ) : (
-                                customers.map((customer, index) => (
+                                filteredCustomers.map((customer, index) => (
                                     <tr key={customer.sno || index} className="hover:bg-gray-100">
                                         <td className="py-2 px-4 border-b">
                                             {showCheckboxes && (
@@ -120,7 +143,6 @@ const Customer = () => {
                                                 />
                                             )}
                                         </td>
-
                                         <td className="py-2 px-4 text-center border-b">
                                             <Link to={`/dashboard/sales/customer/${customer.sno}`} className="text-blue-500 hover:underline">
                                                 {customer.dispname}
@@ -131,8 +153,6 @@ const Customer = () => {
                                         <td className="py-2 px-4 text-center border-b">{customer.workphone}</td>
                                         <td className="py-2 px-4 text-center border-b">{customer.gstno}</td>
                                         <td className="py-2 px-4 text-center border-b">{customer.openingbalance}</td>
-
-
                                     </tr>
                                 ))
                             )}

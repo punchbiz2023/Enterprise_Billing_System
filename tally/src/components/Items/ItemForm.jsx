@@ -7,7 +7,7 @@ const ItemForm = () => {
         newItem: {
             sno: '',
             itemCode: '',
-            unit: '',
+            unit: 'BOX',
             hsnCode: '',
             sellingPrice: '',
             costPrice: '',
@@ -101,7 +101,7 @@ const ItemForm = () => {
                         onChange={handleInputChange}
                         className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                         required
-                    >
+>
                         <option value="BOX">BOX - box</option>
                         <option value="CMS">CMS - cm</option>
                         <option value="DOZ">DOZ - dz</option>

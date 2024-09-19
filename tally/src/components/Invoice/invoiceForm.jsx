@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Page, Text, View, Document, StyleSheet, Image, Font } from '@react-pdf/renderer';
 import { PDFViewer } from '@react-pdf/renderer';
 import { pdf } from '@react-pdf/renderer';
-import SidePanel from '../sales/sidepanel';
+import SidePanel from '../Sales/SidePanel';
 import SalesPerson from '../Salesperson/SalesPerson'
 import { Link, useNavigate } from 'react-router-dom';
 
