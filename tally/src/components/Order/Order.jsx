@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+
 import SidePanel from '../sales/SidePanel';
+import SalesPerson from '../Salesperson/SalesPerson'
+import { Link, useNavigate } from 'react-router-dom';
 
 
 const Order = () => {
 
   const [salespersons, setSalespersons] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newSalesperson, setNewSalesperson] = useState({ name: '', mail: '' });
+ 
   const [invoiceNumber, setInvoiceNumber] = useState('');
   const [invoiceDate, setInvoiceDate] = useState('');
   const [dueDate, setDueDate] = useState('');
@@ -34,6 +36,8 @@ const Order = () => {
   const [salesDate, setsalesDate] = useState('');
   const [salesshipDate, setsalesshipDate] = useState('');
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     fetchCustomers();
     fetchSalespeople();
@@ -42,7 +46,7 @@ const Order = () => {
 
   const fetchSalespeople = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/api/salespeople');
+      const response = await axios.get('http://localhost:3001/api/salespersons');
       setSalespersons(response.data);
     } catch (error) {
       console.error('Error fetching salesperson data:', error);
@@ -55,7 +59,7 @@ const Order = () => {
       const response = await axios.get('http://localhost:3001/api/customers');
       const customersWithState = response.data.map((cust) => ({
         ...cust,
-        state: cust.billaddress.state, // Ensure the state is available from billaddress
+        state: cust.billaddress.state, 
       }));
       setCustomers(customersWithState);
     } catch (error) {
@@ -66,12 +70,12 @@ const Order = () => {
     const selectedCustomerName = e.target.value;
     setCustomer(selectedCustomerName);
 
-    // Find the selected customer and update the state with the customer's state
+    
     const selectedCustomer = customers.find((cust) => cust.name === selectedCustomerName);
     if (selectedCustomer) {
-      setCustomerState(selectedCustomer.state); // Set customer state from the selected customer
+      setCustomerState(selectedCustomer.state); 
     } else {
-      setCustomerState(''); // Clear state if no customer is selected
+      setCustomerState(''); 
     }
   };
 
@@ -99,12 +103,12 @@ const Order = () => {
     setIsPaymentReceived(e.target.checked);
   };
 
-  const handleAddSalesperson = () => {
-    // Close the modal and add the salesperson to the list
-    setSalespersons([...salespersons, newSalesperson.name]);
-    setNewSalesperson({ name: '', mail: '' });
-    setIsModalOpen(false);
-  };
+  
+  
+  
+  
+  
+  
 
   const handleItemChange = (index, field, value) => {
     const newItems = [...items];
@@ -155,19 +159,15 @@ const Order = () => {
       const halfGST = gst / 2;
       newItems[index].sgst = halfGST.toFixed(2);
       newItems[index].cgst = halfGST.toFixed(2);
-      newItems[index].igst = '';  // Clear IGST for Tamil Nadu
+      newItems[index].igst = '';  
     } else {
-      newItems[index].sgst = '';  // Clear SGST
-      newItems[index].cgst = '';  // Clear CGST
-      newItems[index].igst = gst.toFixed(2);  // Set full GST as IGST
+      newItems[index].sgst = '';  
+      newItems[index].cgst = '';  
+      newItems[index].igst = gst.toFixed(2);  
     }
 
     setItems(newItems);
   };
-
-
-
-
 
   const addNewItem = () => {
     setItems([...items, { item: '', quantity: '', rate: '', discount: '', gst: '', sgst: '', cgst: '', igst: '', amount: '' }]);
@@ -178,13 +178,13 @@ const Order = () => {
   };
 
   const calculateSubtotal = () => {
-    // Calculate subtotal from items
+    
     return items.reduce((acc, item) => {
       const rate = parseFloat(item.rate) || 0;
       const quantity = parseFloat(item.quantity) || 0;
       const discount = parseFloat(item.discount) || 0;
 
-      const baseAmount = rate * quantity;
+      const baseAmount = rate * quantity;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
       const discountedAmount = baseAmount * (1 - discount / 100);
 
       return acc + discountedAmount;
@@ -227,10 +227,11 @@ const Order = () => {
     const adjustedValue = adjustmentType === 'add' ? Number(adjustment) : -Number(adjustment);
 
     const totalBeforeAdjustment = subtotal + taxAmount;
-    console.log('Subtotal:', subtotal);
-    console.log('Tax Amount:', taxAmount);
-    console.log('Total Before Adjustment:', totalBeforeAdjustment);
-    console.log('Adjustment Value:', adjustedValue);
+    
+    ('Subtotal:', subtotal);
+    
+    
+    
 
     let total;
 
@@ -242,7 +243,7 @@ const Order = () => {
       total = totalBeforeAdjustment;
     }
 
-    console.log('Total After Tax Type Adjustment:', total);
+    
 
     return (Math.round(total * 100) / 100).toFixed(2);
   };
@@ -254,13 +255,13 @@ const Order = () => {
     const teens = ['Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
     const tens = ['Ten', ...teens];
 
-    const higherUnits = ['', 'Thousand', 'Lakh', 'Crore'];  // Higher Indian units
+    const higherUnits = ['', 'Thousand', 'Lakh', 'Crore'];  
 
     if (num === 0) return 'Zero Rupees Only';
 
     let words = '';
 
-    // Function to convert numbers less than 1000
+    
     const convertBelowThousand = (n) => {
       let str = '';
       if (n > 99) {
@@ -281,7 +282,7 @@ const Order = () => {
       return str.trim();
     };
 
-    // Split number into chunks of thousands, lakhs, crores
+    
     let unitIndex = 0;
     while (num > 0) {
       let chunk = num % 1000;
@@ -300,21 +301,21 @@ const Order = () => {
     const value = e.target.value;
     if (value === 'TCS') {
       setShowCustomTax(true);
-      setTax(''); // Clear tax when TCS is selected
+      setTax(''); 
     } else {
       setShowCustomTax(false);
-      setTax(Number(value)); // Set tax for TDS
+      setTax(Number(value)); 
     }
   };
 
 
   const handleCustomTaxChange = (e) => {
     const value = e.target.value;
-    const numericValue = parseFloat(value); // Convert to number
+    const numericValue = parseFloat(value); 
     if (!isNaN(numericValue) && value.trim() !== '') {
       setCustomTax(numericValue);
     } else {
-      setCustomTax(''); // Clear or handle invalid input
+      setCustomTax(''); 
     }
   };
 
@@ -326,17 +327,13 @@ const Order = () => {
 
 
 
-  // Generate PDF dynamically based on form inputs
-
-
-  // Define styles
-  // Define styles
   
 
-  // Define the document
-  
 
-  // Will log the value of isModalOpen to ensure it changes
+  
+  
+  
+  
 
   return (
     <div className='flex'>
@@ -353,7 +350,7 @@ const Order = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium mb-1">Customer Name*</label>
-                <div className="relative">
+                <div>
                   <select
                     value={customer}
                     onChange={handleDropdownChange}
@@ -546,7 +543,7 @@ const Order = () => {
                         type="number"
                         value={items[index].sgst || ''}
                         className="border p-2 w-full"
-                        readOnly // Automatically filled based on state
+                        readOnly 
                       />
                     </td>
                     <td>
@@ -554,7 +551,7 @@ const Order = () => {
                         type="number"
                         value={items[index].cgst || ''}
                         className="border p-2 w-full"
-                        readOnly // Automatically filled based on state
+                        readOnly 
                       />
                     </td>
                     <td>
@@ -562,7 +559,7 @@ const Order = () => {
                         type="number"
                         value={items[index].igst || ''}
                         className="border p-2 w-full"
-                        readOnly // Automatically filled based on state
+                        readOnly 
                       />
                     </td>
 
@@ -604,13 +601,13 @@ const Order = () => {
               <option value="">Select a Salesperson</option>
               {salespersons.map((person, index) => (
                 <option key={index} value={person}>
-                  {person}
+                  {person.name}
                 </option>
               ))}
             </select>
             <button
               type="button"
-              onClick={() => setIsModalOpen(true)}
+              onClick={() => navigate('/dashboard/salesperson')}
               className="mt-5 inline-flex items-center px-5 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-500 hover:bg-blue-600"
             >
               Add Salesperson
@@ -659,24 +656,7 @@ const Order = () => {
                   </select>
                 </div>
               )}
-              {/* <div>
-              <label className="block text-sm font-medium text-gray-700">Adjustment</label>
-              <input
-                type="number"
-                value={adjustment}
-                onChange={(e) => setAdjustment(e.target.value)}
-                placeholder="Adjustment Amount"
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-              />
-              <select
-                value={adjustmentType}
-                onChange={(e) => setAdjustmentType(e.target.value)}
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-              >
-                <option value="add">Add</option>
-                <option value="subtract">Subtract</option>
-              </select>
-            </div> */}
+             
             </div>
 
             {/* Total Section */}
@@ -710,117 +690,15 @@ const Order = () => {
                 <span>Total: {calculateTotal()}</span>
               </div>
             </div>
-
-
-
             <div>
-
-              <div className="payment-checkbox">
-                <input
-                  type="checkbox"
-                  id="paymentReceived"
-                  onChange={handleCheckboxChange}
-                />
-                <label htmlFor="paymentReceived">I have received the payment</label>
-              </div>
-              {isPaymentReceived && (
-                <div className="payment-form">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Payment Mode</th>
-                        <th>Deposit To</th>
-                        <th>Amount Received</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>
-                          <select name="paymentMode">
-                            <option value="cash">Cash</option>
-                            <option value="cheque">Cheque</option>
-                            <option value="bank_transfer">Bank Transfer</option>
-                            <option value="credit_card">Credit Card</option>
-                            <option value="upi">UPI</option>
-                          </select>
-                        </td>
-                        <td>
-                          <select name="depositTo">
-                            <option value="pettyCash">Petty Cash</option>
-                            <option value="undeposited_funds">Undeposited Funds</option>
-                            <option value="employee_reimbursements">Employee Reimbursements</option>
-                            <option value="opening_balance_adjustments">Opening Balance Adjustments</option>
-                            <option value="tcs_payable">TCS Payable</option>
-                            <option value="tds_payable">TDS Payable</option>
-                          </select>
-                        </td>
-                        <td>
-                          <input
-                            name="amountReceived"
-                            value={calculateTotal()}
-                            readOnly
-                          />
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                  <div className="total-amount">
-                    <p>Total (₹): <span>{calculateTotal()}</span></p>
-                    <p>Balance Amount (₹): <span>0.00</span></p>
-                  </div>
-                </div>
-              )}
-
-
             </div>
             <button
               type="submit"
               className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-500 hover:bg-blue-600"
             >
-              Generate PDF
+              Save
             </button>
           </form>
-
-          {/* Conditional rendering of the modal */}
-          {isModalOpen && (
-            <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
-              <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
-                <h2 className="text-xl font-bold mb-4">Add Salesperson</h2>
-                <label className="block text-sm font-medium text-gray-700">Name</label>
-                <input
-                  type="text"
-                  name="name"
-                  value={newSalesperson.name}
-                  onChange={handleInputChange}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                />
-                <label className="block text-sm font-medium text-gray-700 mt-4">Mail ID</label>
-                <input
-                  type="email"
-                  name="mail"
-                  value={newSalesperson.mail}
-                  onChange={handleInputChange}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                />
-                <div className="mt-6 flex justify-end space-x-4">
-                  <button
-                    type="button"
-                    onClick={() => setIsModalOpen(false)}
-                    className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-500 hover:bg-gray-600"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleAddSalesperson}
-                    className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-500 hover:bg-blue-600"
-                  >
-                    Add Salesperson
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </div>
