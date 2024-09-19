@@ -24,6 +24,7 @@ import InvoiceForm from './components/Invoice/invoiceForm.jsx';
 import VendorDetails from './components/Vendor/VendorDetails.jsx';
 import CustomerDetails from './components/Customer/CustomerDetails.jsx';
 import Delivery from './components/DeliveryChallan/Delivery.jsx';
+import SalesPerson from './components/Salesperson/SalesPerson.jsx';
 // Layout with Header and Navbar
 function MainLayout({ children }) {
   return (
@@ -70,6 +71,7 @@ function App() {
         <Route path="/dashboard/purchase/bill" element={<MainLayout><BillForm /></MainLayout>} />
         <Route path="/dashboard/sales/invoice" element={<MainLayout><InvoiceForm /></MainLayout>} />
         <Route path="/dashboard/sales/delivery" element={<MainLayout><Delivery /></MainLayout>} />
+        <Route path="/dashboard/salesperson" element={<MainLayout><SalesPerson /></MainLayout>} />
         
       </Routes>
     </Router>
