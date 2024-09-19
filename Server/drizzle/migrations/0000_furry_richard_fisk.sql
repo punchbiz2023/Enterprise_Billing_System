@@ -30,6 +30,24 @@ CREATE TABLE IF NOT EXISTS "estimate" (
 	"subtotal" json NOT NULL
 );
 --> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "invoice" (
+	"sno" serial PRIMARY KEY NOT NULL,
+	"name" text NOT NULL,
+	"state" text NOT NULL,
+	"phone" text NOT NULL,
+	"mail" text NOT NULL,
+	"invoiceid" text NOT NULL,
+	"invdate" date NOT NULL,
+	"duedate" date NOT NULL,
+	"terms" text NOT NULL,
+	"itemdetails" json NOT NULL,
+	"subject" text NOT NULL,
+	"salesperson" json NOT NULL,
+	"taxtype" text NOT NULL,
+	"taxrate" text NOT NULL,
+	"amount" numeric
+);
+--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "items" (
 	"sno" serial PRIMARY KEY NOT NULL,
 	"name" text NOT NULL,

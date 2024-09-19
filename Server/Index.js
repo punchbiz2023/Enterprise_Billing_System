@@ -5,7 +5,8 @@ import item from './routes/items.js'
 import users from './routes/users.js'
 import estimates from './routes/estimates.js'
 import salesperson from './routes/salesperson.js';
-import purchaseOrder from './routes/purchaseorder.js'
+import purchaseOrder from './routes/purchaseorder.js';
+import Invoice from './routes/invoice.js'
 
 import dotenv from 'dotenv';
 dotenv.config({ path: './.env' });
@@ -23,6 +24,7 @@ app.use('/api/sign-up',users)
 app.use('/api/estimates',estimates)
 app.use('/api/salespersons',salesperson)
 app.use('/api/purchaseorder',purchaseOrder)
+app.use('/api/invoice',Invoice)
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {

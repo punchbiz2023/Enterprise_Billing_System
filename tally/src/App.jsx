@@ -26,6 +26,7 @@ import CustomerDetails from './components/Customer/CustomerDetails.jsx';
 import Delivery from './components/DeliveryChallan/Delivery.jsx';
 import SalesPerson from './components/Salesperson/SalesPerson.jsx';
 import PurchaseOrderTable from './components/PurchaseOrder/PurchaseOrderTable.jsx';
+import Invoice from './components/Invoice/Invoice.jsx';
 // Layout with Header and Navbar
 function MainLayout({ children }) {
   return (
@@ -70,10 +71,11 @@ function App() {
         <Route path="/dashboard/purchase/vendors/:id" element={<MainLayout><VendorDetails /></MainLayout>} />
         <Route path="/dashboard/sales/customer/:id" element={<MainLayout><CustomerDetails /></MainLayout>} />
         <Route path="/dashboard/purchase/bill" element={<MainLayout><BillForm /></MainLayout>} />
-        <Route path="/dashboard/sales/invoice" element={<MainLayout><InvoiceForm /></MainLayout>} />
+        <Route path="/dashboard/sales/invoice/form" element={<MainLayout><InvoiceForm /></MainLayout>} />
         <Route path="/dashboard/sales/delivery" element={<MainLayout><Delivery /></MainLayout>} />
         <Route path="/dashboard/salesperson" element={<MainLayout><SalesPerson /></MainLayout>} />
-        
+        <Route path="/dashboard/purchase/order" element={<MainLayout><PurchaseOrderTable/></MainLayout>} />
+        <Route path='/dashboard/sales/invoice' element={<MainLayout><Invoice/></MainLayout>}/>
       </Routes>
     </Router>
   );

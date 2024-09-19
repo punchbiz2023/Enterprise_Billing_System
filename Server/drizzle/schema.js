@@ -102,3 +102,22 @@ export const PurchaseOrder = pgTable('purchaseorder',{
   gst: numeric('gst').notNull(),
   total: numeric('total').notNull()
 })
+
+
+export const Invoice = pgTable('invoice',{
+  sno: serial('sno').primaryKey(),
+  name: text('name').notNull(),
+  state: text('state').notNull(),
+  phone: text('phone').notNull(),
+  mail: text('mail').notNull(),
+  invoiceid: text('invoiceid').notNull(),
+  invdate: date('invdate').notNull(),
+  duedate: date('duedate').notNull(),
+  terms: text('terms').notNull(),
+  itemdetails: json('itemdetails').notNull(),
+  subject: text('subject').notNull(),
+  salesperson: json('salesperson').notNull(),
+  taxtype: text('taxtype').notNull(),
+  taxrate: text('taxrate').notNull(),
+  amount: numeric('amount'),
+})
