@@ -47,6 +47,21 @@ CREATE TABLE IF NOT EXISTS "items" (
 	"gst" numeric
 );
 --> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "purchaseorder" (
+	"sno" serial PRIMARY KEY NOT NULL,
+	"name" text NOT NULL,
+	"delivery" text NOT NULL,
+	"orderno" text NOT NULL,
+	"ref" text,
+	"date" date NOT NULL,
+	"deliverydate" date NOT NULL,
+	"terms" text NOT NULL,
+	"modeofshipment" text,
+	"itemdetails" json NOT NULL,
+	"gst" numeric NOT NULL,
+	"total" numeric NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "salesperson" (
 	"sno" serial PRIMARY KEY NOT NULL,
 	"name" text NOT NULL,

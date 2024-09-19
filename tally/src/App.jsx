@@ -25,6 +25,7 @@ import VendorDetails from './components/Vendor/VendorDetails.jsx';
 import CustomerDetails from './components/Customer/CustomerDetails.jsx';
 import Delivery from './components/DeliveryChallan/Delivery.jsx';
 import SalesPerson from './components/Salesperson/SalesPerson.jsx';
+import PurchaseOrderTable from './components/PurchaseOrder/PurchaseOrderTable.jsx';
 // Layout with Header and Navbar
 function MainLayout({ children }) {
   return (
@@ -63,7 +64,7 @@ function App() {
         <Route path="/dashboard/purchase/expense" element={<MainLayout><ExpenseForm /></MainLayout>} />
         <Route path="/dashboard/sales/estimate" element={<MainLayout><Estimate /></MainLayout>} />
         <Route path="/dashboard/projects/form" element={<MainLayout><Project /></MainLayout>} />
-        <Route path="/dashboard/purchase/order" element={<MainLayout><PurchaseOrder /></MainLayout>} />
+        <Route path="/dashboard/purchase/order/form" element={<MainLayout><PurchaseOrder /></MainLayout>} />
         <Route path="/dashboard/items/:id" element={<MainLayout><ItemDetails /></MainLayout>} />
         <Route path="/items/:id" element={<MainLayout><ItemDetails /></MainLayout>} />
         <Route path="/dashboard/purchase/vendors/:id" element={<MainLayout><VendorDetails /></MainLayout>} />
@@ -71,7 +72,7 @@ function App() {
         <Route path="/dashboard/purchase/bill" element={<MainLayout><BillForm /></MainLayout>} />
         <Route path="/dashboard/sales/invoice" element={<MainLayout><InvoiceForm /></MainLayout>} />
         <Route path="/dashboard/sales/delivery" element={<MainLayout><Delivery /></MainLayout>} />
-        <Route path="/dashboard/sales/salespersons/form" element={<MainLayout><SalesPerson /></MainLayout>} />
+        <Route path="/dashboard/salesperson" element={<MainLayout><SalesPerson /></MainLayout>} />
         
       </Routes>
     </Router>
