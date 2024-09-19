@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './estimate.css';
-import SidePanel from '../sales/sidepanel';
+import SidePanel from '../sales/SidePanel';
 
 const Estimate = () => {
   const [customer, setCustomer] = useState('');

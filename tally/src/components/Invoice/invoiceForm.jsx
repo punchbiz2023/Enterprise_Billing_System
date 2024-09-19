@@ -502,7 +502,7 @@ const InvoiceForm = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium mb-1">Customer Name*</label>
-                <div >
+                <div>
                   <select
                     value={customer}
                     onChange={handleDropdownChange}
