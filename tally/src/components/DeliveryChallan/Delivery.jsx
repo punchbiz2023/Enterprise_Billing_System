@@ -53,7 +53,7 @@ const Delivery = () => {
   }, []);
 
   const addRow = () => {
-    setItems([...items, { quantity: '1', rate: '', discount: '', amount: '' }]);
+    setItems([...items, { item: '', quantity: '1', rate: '', discount: '', amount: '' }]);
   };
 
   return (
@@ -68,7 +68,7 @@ const Delivery = () => {
           {/* Customer Name */}
           <div className="mb-4">
             <label className="block text-sm font-medium mb-1">Customer Name*</label>
-            <div className="relative">
+            <div >
               <select
                 value={customer}
                 onChange={(e) => handleDropdownChange(e, setCustomer, 'sales/customers')}
@@ -129,18 +129,12 @@ const Delivery = () => {
                 {items.map((item, index) => (
                   <tr key={index} className="border-b">
                     <td>
-                      <select
-                        value={item.item}
-                        onChange={(e) => handleItemChange(index, 'item', e.target.value)}
-                        className="border border-gray-300 rounded-md p-2"
-                      >
-                        <option value="">Select an item</option>
-                        {availableItems.map((availableItem, idx) => (
-                          <option key={idx} value={availableItem.name}>
-                            {availableItem.name}
-                          </option>
-                        ))}
-                      </select>
+                    <input
+                      type="text"
+                      value={item.item}
+                      onChange={(e) => handleItemChange(index, 'item', e.target.value)}
+                      className="border border-gray-300 rounded-md p-2"
+                    />
                     </td>
                     <td className="p-2">
                       <input

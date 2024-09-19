@@ -58,6 +58,11 @@ const Items = () => {
     setClickCount(prev => prev + 1);
   };
 
+  const handleCancelDelete = () => {
+    setSelectedItems([]);  // Unselect all items
+    setShowCheckboxes(false);  // Hide checkboxes
+  };
+
   const filteredItems = selectedType
     ? items.filter(item => item.type === selectedType)
     : items;
@@ -87,7 +92,13 @@ const Items = () => {
               </button>
             )}
             <button
-              onClick={() => setShowCheckboxes(!showCheckboxes)}
+              onClick={() => {
+                if (showCheckboxes) {
+                  handleCancelDelete();
+                } else {
+                  setShowCheckboxes(true);
+                }
+              }}
               className={`inline-block px-5 py-2 rounded text-white ${showCheckboxes ? 'bg-gray-500 hover:bg-gray-600' : 'bg-red-500 hover:bg-red-600'}`}
             >
               {showCheckboxes ? 'Cancel Delete' : 'Delete Items'}
