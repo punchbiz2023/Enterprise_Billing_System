@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Page, Text, View, Document, StyleSheet, Image, Font } from '@react-pdf/renderer';
 import { PDFViewer } from '@react-pdf/renderer';
 import { pdf } from '@react-pdf/renderer';
-import SidePanel from '../sales/SidePanel';
+import SidePanel from '../sales/sidepanel';
 import SalesPerson from '../Salesperson/SalesPerson'
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -502,7 +502,7 @@ const InvoiceForm = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium mb-1">Customer Name*</label>
-                <div className="relative">
+                <div >
                   <select
                     value={customer}
                     onChange={handleDropdownChange}
