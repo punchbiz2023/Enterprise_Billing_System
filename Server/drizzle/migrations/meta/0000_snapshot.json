@@ -1,9 +1,5 @@
 {
-<<<<<<< HEAD
-  "id": "adcd0290-a9a3-45d3-b9d1-81445ed3b106",
-=======
-  "id": "3901417b-a34b-4762-a62c-4b038276ccc8",
->>>>>>> c435f1cae3e2584f6e8d9ea60d1b0be5376d1b53
+  "id": "2f08d773-b443-4af5-9160-fcf7f1b787cd",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -271,6 +267,88 @@
           "type": "numeric",
           "primaryKey": false,
           "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.purchaseorder": {
+      "name": "purchaseorder",
+      "schema": "",
+      "columns": {
+        "sno": {
+          "name": "sno",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "delivery": {
+          "name": "delivery",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "orderno": {
+          "name": "orderno",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "ref": {
+          "name": "ref",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "date": {
+          "name": "date",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "deliverydate": {
+          "name": "deliverydate",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "terms": {
+          "name": "terms",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "modeofshipment": {
+          "name": "modeofshipment",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "itemdetails": {
+          "name": "itemdetails",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "gst": {
+          "name": "gst",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "total": {
+          "name": "total",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
         }
       },
       "indexes": {},

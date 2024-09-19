@@ -86,3 +86,19 @@ export const SalesPerson = pgTable('salesperson',{
   name: text('name').notNull(),
   mail: text('mail').notNull()
 })
+
+
+export const PurchaseOrder = pgTable('purchaseorder',{
+  sno: serial('sno').primaryKey(),
+  name: text('name').notNull(),
+  delivery: text('delivery').notNull(),
+  orderno: text('orderno').notNull(),
+  ref: text('ref'),
+  date: date('date').notNull(),
+  deliverydate: date('deliverydate').notNull(),
+  terms: text('terms').notNull(),
+  modeofshipment: text('modeofshipment'),
+  itemdetails: json('itemdetails').notNull(),
+  gst: numeric('gst').notNull(),
+  total: numeric('total').notNull()
+})
