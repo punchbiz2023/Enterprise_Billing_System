@@ -64,7 +64,7 @@ function App() {
         <Route path="/dashboard/purchase/expense" element={<MainLayout><ExpenseForm /></MainLayout>} />
         <Route path="/dashboard/sales/estimate" element={<MainLayout><Estimate /></MainLayout>} />
         <Route path="/dashboard/projects/form" element={<MainLayout><Project /></MainLayout>} />
-        <Route path="/dashboard/purchase/order/form" element={<MainLayout><PurchaseOrder /></MainLayout>} />
+        <Route path="/dashboard/purchase/order" element={<MainLayout><PurchaseOrder /></MainLayout>} />
         <Route path="/dashboard/items/:id" element={<MainLayout><ItemDetails /></MainLayout>} />
         <Route path="/items/:id" element={<MainLayout><ItemDetails /></MainLayout>} />
         <Route path="/dashboard/purchase/vendors/:id" element={<MainLayout><VendorDetails /></MainLayout>} />
