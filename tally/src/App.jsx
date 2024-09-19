@@ -73,8 +73,6 @@ function App() {
         <Route path="/dashboard/sales/invoice" element={<MainLayout><InvoiceForm /></MainLayout>} />
         <Route path="/dashboard/sales/delivery" element={<MainLayout><Delivery /></MainLayout>} />
         <Route path="/dashboard/salesperson" element={<MainLayout><SalesPerson /></MainLayout>} />
-        <Route path="/dashboard/purchase/order" element={<MainLayout><PurchaseOrderTable /></MainLayout>} />
-
         
       </Routes>
     </Router>

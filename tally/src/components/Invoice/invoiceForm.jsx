@@ -168,10 +168,6 @@ const InvoiceForm = () => {
     setItems(newItems);
   };
 
-
-
-
-
   const addNewItem = () => {
     setItems([...items, { item: '', quantity: '', rate: '', discount: '', gst: '', sgst: '', cgst: '', igst: '', amount: '' }]);
   };
@@ -187,7 +183,7 @@ const InvoiceForm = () => {
       const quantity = parseFloat(item.quantity) || 0;
       const discount = parseFloat(item.discount) || 0;
 
-      const baseAmount = rate * quantity;
+      const baseAmount = rate * quantity;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
       const discountedAmount = baseAmount * (1 - discount / 100);
 
       return acc + discountedAmount;
@@ -506,7 +502,7 @@ const InvoiceForm = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium mb-1">Customer Name*</label>
-                <div className="relative">
+                <div>
                   <select
                     value={customer}
                     onChange={handleDropdownChange}

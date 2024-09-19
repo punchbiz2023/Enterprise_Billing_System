@@ -2,22 +2,21 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import SidePanel from '../Purchase/SidePanel';
+import * as XLSX from 'xlsx';
 
 const ExpenseForm = () => {
   const [isBulkMode, setIsBulkMode] = useState(false);
   const [expenseRows, setExpenseRows] = useState([{ id: 1 }]);
-  const [vendors, setVendors] = useState([])
+  const [vendors, setVendors] = useState([]);
   const [dataLoaded, setDataLoaded] = useState(false);
-  const [customer, setCustomer] = useState([])
-
+  const [customer, setCustomer] = useState([]);
 
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchVendors();
-    fetchCustomers()
-  }, [])
-
+    fetchCustomers();
+  }, []);
 
   const fetchVendors = async () => {
     try {
@@ -37,8 +36,6 @@ const ExpenseForm = () => {
       if (response.data) {
         setCustomer(response.data);
         setDataLoaded(true);
-        console.log(response.data);
-
       }
     } catch (error) {
       console.error('Error fetching customer data:', error.response ? error.response.data : error.message);
@@ -47,19 +44,52 @@ const ExpenseForm = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (value == "new vendor") {
-      navigate('/dashboard/purchase/vendors/form')
+    if (value === 'new vendor') {
+      navigate('/dashboard/purchase/vendors/form');
     }
-  }
-
+  };
 
   // Toggle between normal expense and bulk add expense
   const toggleBulkMode = () => {
     setIsBulkMode(!isBulkMode);
   };
+
   // Add new expense row
   const addNewRow = () => {
-    setExpenseRows([...expenseRows, { id: expenseRows.length + 1 }]); // Add new row
+    setExpenseRows([
+      ...expenseRows,
+      { id: expenseRows.length + 1, date: '', expenseAccount: '', amount: '', paidThrough: '', vendor: '', customerName: '', project: '', billable: false },
+    ]);
+  };
+
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const data = event.target.result;
+      const workbook = XLSX.read(data, { type: 'binary' });
+      const sheetName = workbook.SheetNames[0];
+      const sheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1 });
+      const rows = sheet.slice(1).map((row) => ({
+        date: row[0],
+        expenseAccount: row[1],
+        amount: row[2],
+        paidThrough: row[3],
+        vendor: row[4],
+        customerName: row[5],
+        project: row[6],
+        billable: row[7] === 'Yes',
+      }));
+      setExpenseRows(rows);
+    };
+    reader.readAsBinaryString(file);
+  };
+
+  // Update specific expense row
+  const handleRowChange = (index, field, value) => {
+    const updatedRows = [...expenseRows];
+    updatedRows[index][field] = value;
+    setExpenseRows(updatedRows);
   };
 
   return (
@@ -67,7 +97,7 @@ const ExpenseForm = () => {
       <div className="w-1/5">
         <SidePanel />
       </div>
-      <div className="max-w-5xl mx-auto p-6 mt-20 bg-white shadow-md rounded-lg">
+      <div className="w-full mx-auto p-6 mt-20 bg-white shadow-md rounded-lg">
         <div className="border-b-2 pb-4 flex justify-between">
           <h2 className="text-xl font-semibold">
             {isBulkMode ? 'Bulk Add Expenses' : 'Record Expense'}
@@ -80,9 +110,8 @@ const ExpenseForm = () => {
           </button>
         </div>
 
-        {/* Toggle between forms */}
+        {/* Single Expense Form */}
         {!isBulkMode ? (
-          // Single Expense Form
           <div>
             <div className="mt-4">
               <label className="block text-sm font-medium text-gray-700">Date*</label>
@@ -91,7 +120,6 @@ const ExpenseForm = () => {
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
               />
             </div>
-
             <div className="mt-4">
               <label className="block text-sm font-medium text-gray-700">Expense Account*</label>
               <select className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm">
@@ -102,7 +130,6 @@ const ExpenseForm = () => {
                 <option>Materials</option>
               </select>
             </div>
-
             <div className="mt-4">
               <label className="block text-sm font-medium text-gray-700">Amount*</label>
               <div className="flex">
@@ -116,7 +143,6 @@ const ExpenseForm = () => {
                 />
               </div>
             </div>
-
             <div className="mt-4">
               <label className="block text-sm font-medium text-gray-700">Paid Through*</label>
               <select className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm">
@@ -162,7 +188,6 @@ const ExpenseForm = () => {
                 placeholder="Max. 500 characters"
               ></textarea>
             </div>
-
             {/* Upload Receipt */}
             <div className="mt-4">
               <label className="block text-sm font-medium text-gray-700">Upload Receipt</label>
@@ -190,49 +215,26 @@ const ExpenseForm = () => {
                 </div>
               </div>
             </div>
-            {/* Customer Name */}
-            <div className="mt-4">
-              <label className="block text-sm font-medium text-gray-700">Customer Name</label>
-              <select
-                name="customerName"
-                onChange={handleChange}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                required
-              >
-                <option value="" hidden>--Select a customer--</option>
-                <option value='new customer' className='text-blue-500'>Add new Customer</option>
-                {customer.map((cust) => (
-                  <option key={cust.id} value={cust.name}>
-                    {cust.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            {/* Buttons */}
-            <div className="mt-6 flex space-x-4">
+             {/* Buttons */}
+             <div className="mt-6 flex space-x-4">
               <button
                 className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-md shadow hover:bg-blue-700 focus:outline-none"
               >
-                Save (alt+s)
+                Save
               </button>
-              <button
-                className="px-4 py-2 bg-gray-600 text-white font-semibold rounded-md shadow hover:bg-gray-700 focus:outline-none"
-              >
-                Save and New (alt+n)
-              </button>
+             
               <button
                 className="px-4 py-2 bg-red-600 text-white font-semibold rounded-md shadow hover:bg-red-700 focus:outline-none"
               >
                 Cancel
               </button>
             </div>
-
-
-            {/* Other fields and buttons */}
           </div>
         ) : (
-          // Bulk Add Expenses Form
           <div>
+            {/* File Upload Input */}
+            <input type="file" accept=".xlsx, .xls" onChange={handleFileUpload} className="mb-4" />
+
             <table className="w-full border-collapse border border-gray-300 mt-4">
               <thead>
                 <tr>
@@ -250,10 +252,19 @@ const ExpenseForm = () => {
                 {expenseRows.map((row, index) => (
                   <tr key={index}>
                     <td className="border p-2">
-                      <input type="date" className="w-full p-2 border border-gray-300 rounded-md" />
+                      <input
+                        type="text"
+                        value={row.date}
+                        className="w-full p-2 border border-gray-300 rounded-md"
+                        onChange={(e) => handleRowChange(index, 'date', e.target.value)}
+                      />
                     </td>
                     <td className="border p-2">
-                      <select className="w-full p-2 border border-gray-300 rounded-md">
+                      <select
+                        value={row.expenseAccount}
+                        className="w-full p-2 border border-gray-300 rounded-md"
+                        onChange={(e) => handleRowChange(index, 'expenseAccount', e.target.value)}
+                      >
                         <option>Select an account</option>
                         <option>Cost of Goods Sold</option>
                         <option>Job costing</option>
@@ -266,11 +277,20 @@ const ExpenseForm = () => {
                         <select className="p-2 border border-gray-300 rounded-l-md">
                           <option>INR</option>
                         </select>
-                        <input type="text" className="w-full p-2 border border-l-0 rounded-r-md" />
+                        <input
+                          type="text"
+                          value={row.amount}
+                          className="w-full p-2 border border-l-0 rounded-r-md"
+                          onChange={(e) => handleRowChange(index, 'amount', e.target.value)}
+                        />
                       </div>
                     </td>
                     <td className="border p-2">
-                      <select className="w-full p-2 border border-gray-300 rounded-md">
+                      <select
+                        value={row.paidThrough}
+                        className="w-full p-2 border border-gray-300 rounded-md"
+                        onChange={(e) => handleRowChange(index, 'paidThrough', e.target.value)}
+                      >
                         <option>Select an account</option>
                         <option>Petty Cash</option>
                         <option>Fixed Asset</option>
@@ -278,42 +298,47 @@ const ExpenseForm = () => {
                       </select>
                     </td>
                     <td className="border p-2">
-                      <select
-                        name='vendorName'
-                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                        onChange={handleChange}
-                        required
-                      >
-                        <option value="" hidden>Vendor name</option>
-                        <option value='new vendor' className='text-blue-500'>Add new Vendor</option>
-                        {vendors.map((vend) => (
-                          <option key={vend.id} value={vend.name}>
-                            {vend.name}
-                          </option>
-                        ))}
-                      </select>
+                      <input
+                        type="text"
+                        value={row.vendor}
+                        className="w-full p-2 border border-gray-300 rounded-md"
+                        onChange={(e) => handleRowChange(index, 'vendor', e.target.value)}
+                      />
                     </td>
                     <td className="border p-2">
-                      <select className="w-full p-2 border border-gray-300 rounded-md">
-                        <option>Select customer</option>
-                      </select>
+                      <input
+                        type="text"
+                        value={row.customerName}
+                        className="w-full p-2 border border-gray-300 rounded-md"
+                        onChange={(e) => handleRowChange(index, 'customerName', e.target.value)}
+                      />
                     </td>
                     <td className="border p-2">
-                      <select className="w-full p-2 border border-gray-300 rounded-md">
-                        <option>Select project</option>
-                      </select>
+                      <input
+                        type="text"
+                        value={row.project}
+                        className="w-full p-2 border border-gray-300 rounded-md"
+                        onChange={(e) => handleRowChange(index, 'project', e.target.value)}
+                      />
                     </td>
                     <td className="border p-2 text-center">
-                      <input type="checkbox" className="form-checkbox" />
+                      <input
+                        type="checkbox"
+                        checked={row.billable}
+                        className="w-5 h-5"
+                        onChange={(e) => handleRowChange(index, 'billable', e.target.checked)}
+                      />
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
 
-            {/* Option to add more expenses */}
-            <button className="mt-4 px-4 py-2 bg-green-600 text-white font-semibold rounded-md" onClick={addNewRow}>
-              + Add More Expenses
+            <button
+              onClick={addNewRow}
+              className="mt-4 px-4 py-2 bg-green-600 text-white font-semibold rounded-md shadow hover:bg-green-700"
+            >
+              Add New Row
             </button>
           </div>
         )}
