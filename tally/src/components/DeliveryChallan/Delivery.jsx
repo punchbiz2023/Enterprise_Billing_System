@@ -4,11 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import SidePanel from '../sales/sidepanel';
 
 const Delivery = () => {
-  const [items, setItems] = useState([{ quantity: 1, rate: '', discount: '', amount: 0 }]);
+  const [items, setItems] = useState([{ name: '', quantity: 1, rate: '', discount: '', amount: 0 }]);
   const [customers, setCustomers] = useState([]);
   const [customer, setCustomer] = useState('');
   const navigate = useNavigate();
-  const [availableItems, setAvailableItems] = useState([]);
   const [total, setTotal] = useState(0);
 
   const handleItemChange = (index, field, value) => {
@@ -24,7 +23,6 @@ const Delivery = () => {
     updateTotal(newItems); // Update total when any item changes
   };
 
-
   const updateTotal = (items) => {
     const newTotal = items.reduce((acc, curr) => acc + curr.amount, 0);
     setTotal(newTotal);
@@ -39,21 +37,12 @@ const Delivery = () => {
         console.error('Error fetching customer data:', error);
       }
     };
-    const fetchItems = async () => {
-      try {
-        const response = await axios.get('http://localhost:3001/api/items');
-        setAvailableItems(response.data);
-      } catch (error) {
-        console.error('Error fetching items:', error);
-      }
-    };
 
     fetchCustomers();
-    fetchItems();
   }, []);
 
   const addRow = () => {
-    setItems([...items, { item: '', quantity: '1', rate: '', discount: '', amount: '' }]);
+    setItems([...items, { name: '', quantity: 1, rate: '', discount: '', amount: 0 }]);
   };
 
   return (
@@ -68,10 +57,10 @@ const Delivery = () => {
           {/* Customer Name */}
           <div className="mb-4">
             <label className="block text-sm font-medium mb-1">Customer Name*</label>
-            <div >
+            <div>
               <select
                 value={customer}
-                onChange={(e) => handleDropdownChange(e, setCustomer, 'sales/customers')}
+                onChange={(e) => setCustomer(e.target.value)}
                 className="border border-gray-300 rounded-md p-2 w-full focus:ring-blue-500 focus:border-blue-500"
               >
                 <option value="">Select a customer</option>
@@ -82,6 +71,7 @@ const Delivery = () => {
               </select>
             </div>
           </div>
+
           {/* Delivery Challan # and Reference # */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
             <div>
@@ -128,13 +118,13 @@ const Delivery = () => {
               <tbody>
                 {items.map((item, index) => (
                   <tr key={index} className="border-b">
-                    <td>
-                    <input
-                      type="text"
-                      value={item.item}
-                      onChange={(e) => handleItemChange(index, 'item', e.target.value)}
-                      className="border border-gray-300 rounded-md p-2"
-                    />
+                    <td className="p-2">
+                      <input
+                        type="text"
+                        className="border border-gray-300 rounded-md p-2 w-full"
+                        value={item.name}
+                        onChange={(e) => handleItemChange(index, 'name', e.target.value)}
+                      />
                     </td>
                     <td className="p-2">
                       <input
@@ -185,6 +175,7 @@ const Delivery = () => {
               <input type="text" className="border border-gray-300 rounded-md p-2 w-32 text-right" readOnly value={total.toFixed(2)} />
             </div>
           </div>
+
           {/* Customer Notes */}
           <div className="mb-4">
             <label className="block text-sm font-medium">Customer Notes</label>
