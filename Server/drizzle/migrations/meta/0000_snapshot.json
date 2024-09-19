@@ -1,5 +1,5 @@
 {
-  "id": "132322c9-3147-4486-a5a9-da93b6e9829c",
+  "id": "a4704f4e-11f7-4c4c-85bf-7f61e1203c98",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -311,12 +311,6 @@
         "terms": {
           "name": "terms",
           "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "itemdetails": {
-          "name": "itemdetails",
-          "type": "json",
           "primaryKey": false,
           "notNull": true
         },

@@ -54,7 +54,6 @@ CREATE TABLE IF NOT EXISTS "invoice" (
 	"invdate" date NOT NULL,
 	"duedate" date NOT NULL,
 	"terms" text NOT NULL,
-	"itemdetails" json NOT NULL,
 	"subject" text NOT NULL,
 	"salesperson" text NOT NULL,
 	"taxtype" text NOT NULL,

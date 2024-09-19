@@ -7,7 +7,6 @@ import estimates from './routes/estimates.js'
 import salesperson from './routes/salesperson.js';
 import purchaseOrder from './routes/purchaseorder.js'
 import BillForm from './routes/bills.js'
-import purchaseOrder from './routes/purchaseorder.js';
 import Invoice from './routes/invoice.js'
 
 import dotenv from 'dotenv';

@@ -114,7 +114,6 @@ export const Invoice = pgTable('invoice',{
   invdate: date('invdate').notNull(),
   duedate: date('duedate').notNull(),
   terms: text('terms').notNull(),
-  itemdetails: json('itemdetails').notNull(),
   subject: text('subject').notNull(),
   salesperson: text('salesperson').notNull(),
   taxtype: text('taxtype').notNull(),

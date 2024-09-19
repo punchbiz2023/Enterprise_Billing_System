@@ -10,6 +10,15 @@ const router = express.Router();
 
 const client = postgres(process.env.DATABASE_URL);
 const db3 = drizzle(client, { schema: { BillForm }, logger: true });
+router.get('/', async (req, res) => {
+    try {
+      const orders = await db3.select().from(BillForm);
+      res.json(orders);
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
 
 router.post('/', async (req, res) => {
     const {
@@ -49,15 +58,6 @@ router.post('/', async (req, res) => {
     }
 });
 
-router.get('/', async (req, res) => {
-    try {
-      const orders = await db3.select().from(BillForm);
-      res.json(orders);
-    } catch (error) {
-      console.error('Error fetching orders:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
-    }
-  });
   
 router.delete('/',async(req,res)=>{
     const { ids } = req.body;
