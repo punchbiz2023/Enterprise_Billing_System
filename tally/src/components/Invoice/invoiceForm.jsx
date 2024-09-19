@@ -493,7 +493,7 @@ const InvoiceForm = () => {
         <SidePanel />
       </div>
       <div className="p-6 mt-8 mr-20 ml-20 bg-gray-50 min-h-screen flex items-center justify-center">
-        <div className="max-w-7xl w-full bg-white p-8 rounded-lg shadow-md">
+        <div className="max-w-xxl w-full bg-white p-8 rounded-lg shadow-md">
           <h1 className="text-2xl font-bold mb-6">New Invoice</h1>
           <form className="space-y-8" onSubmit={(e) => {
             e.preventDefault();
