@@ -59,6 +59,7 @@ const PurchaseOrder = () => {
     };
 
     const handleSubmit = async (event) => {
+        alert("Your order has been successfully sent");
         event.preventDefault();
     
         // Convert dates to YYYY-MM-DD format
