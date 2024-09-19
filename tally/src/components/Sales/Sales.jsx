@@ -1,6 +1,6 @@
 import React from 'react';
 import Navbar from '../Navbar/Navbar';
-import SidePanel from './sidepanel';
+import SidePanel from './SidePanel';
 import './sales.css';
 
 const Sales = () => {

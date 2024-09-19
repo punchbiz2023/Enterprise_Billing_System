@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './PurchaseOrder.css';
+import SidePanel from '../Purchase/Sidepanel';
 
 const PurchaseOrder = () => {
     const [vendor, setVendor] = useState('');
@@ -59,6 +60,7 @@ const PurchaseOrder = () => {
     };
 
     const handleSubmit = async (event) => {
+        alert("Your order has been successfully sent");
         event.preventDefault();
     
         // Convert dates to YYYY-MM-DD format
@@ -96,6 +98,10 @@ const PurchaseOrder = () => {
     
 
     return (
+    <div>
+        <div>
+            <SidePanel/>
+        </div>
         <div className="purchase-order-container">
             <h2 className="text-2xl font-semibold mb-10 mt-20 text-gray-700">New Purchase Order</h2>
 
@@ -245,6 +251,7 @@ const PurchaseOrder = () => {
                 </div>
             </form>
         </div>
+    </div>
     );
 };
 

@@ -8,6 +8,7 @@ const Vendor = () => {
     const [dataLoaded, setDataLoaded] = useState(false);
     const [selectedVendors, setSelectedVendors] = useState([]);
     const [showCheckboxes, setShowCheckboxes] = useState(false); // State to toggle checkboxes
+    const [searchTerm, setSearchTerm] = useState(''); // State for search term
 
     useEffect(() => {
         fetchVendors();
@@ -46,6 +47,11 @@ const Vendor = () => {
         }
     };
 
+    // Filter vendors based on the search term (starts with)
+    const filteredVendors = vendors.filter(vendor =>
+        vendor.dispname.toLowerCase().startsWith(searchTerm.toLowerCase())
+    );
+
     return (
         <div className="flex">
             <div className="w-1/5">
@@ -55,15 +61,30 @@ const Vendor = () => {
                 <h1 className="text-xl font-bold mb-4">Vendor List</h1>
 
                 <div className="flex justify-between mb-4">
-                    <Link
-                        to="/dashboard/purchase/vendors/form"
-                        className="inline-block px-5 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                    >
-                        Add Vendor
-                    </Link>
+                    {/* Search bar on the left */}
+                    <input
+                        type="text"
+                        placeholder="Search by name..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="px-4 py-2 border border-gray-600 rounded w-1/3"
+                    />
+
+                    {/* Buttons on the right */}
                     <div className="flex space-x-4">
+                        <Link
+                            to="/dashboard/purchase/vendors/form"
+                            className="inline-block px-5 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                        >
+                            Add Vendor
+                        </Link>
                         <button
-                            onClick={() => setShowCheckboxes(!showCheckboxes)} // Toggle checkboxes
+                            onClick={() => {
+                                setShowCheckboxes(!showCheckboxes);
+                                if (showCheckboxes) {
+                                    setSelectedVendors([]); // Unselect all checkboxes when 'Cancel' is clicked
+                                }
+                            }}
                             className={`inline-block px-5 py-2 rounded text-white ${showCheckboxes ? 'bg-gray-500 hover:bg-gray-600' : 'bg-red-500 hover:bg-red-600'}`}
                         >
                             {showCheckboxes ? 'Cancel' : 'Delete Vendors'}
@@ -99,14 +120,14 @@ const Vendor = () => {
                                         Loading vendors...
                                     </td>
                                 </tr>
-                            ) : vendors.length === 0 ? (
+                            ) : filteredVendors.length === 0 ? (
                                 <tr>
                                     <td colSpan="7" className="py-2 px-4 text-center text-gray-500">
                                         No vendors found
                                     </td>
                                 </tr>
                             ) : (
-                                vendors.map((vendor, index) => (
+                                filteredVendors.map((vendor, index) => (
                                     <tr key={vendor.id || index} className="hover:bg-gray-100">
                                         <td className="py-2 px-4 border-b">
                                             {showCheckboxes && (

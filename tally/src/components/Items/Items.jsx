@@ -11,6 +11,7 @@ const Items = () => {
   const [showCheckboxes, setShowCheckboxes] = useState(false);
   const [selectedType, setSelectedType] = useState(null);
   const [clickCount, setClickCount] = useState(0);
+  const [searchQuery, setSearchQuery] = useState(''); // State for search input
 
   useEffect(() => {
     fetchItems();
@@ -58,9 +59,16 @@ const Items = () => {
     setClickCount(prev => prev + 1);
   };
 
-  const filteredItems = selectedType
-    ? items.filter(item => item.type === selectedType)
-    : items;
+  const handleCancelDelete = () => {
+    setSelectedItems([]);  // Unselect all items
+    setShowCheckboxes(false);  // Hide checkboxes
+  };
+
+ // Filter items based on selectedType and searchQuery, but only apply searchQuery filtering when it's non-empty
+const filteredItems = selectedType
+? items.filter(item => item.type === selectedType && (!searchQuery || item.name.toLowerCase().startsWith(searchQuery.toLowerCase())))
+: items.filter(item => !searchQuery || item.name.toLowerCase().startsWith(searchQuery.toLowerCase()));
+
 
   return (
     <div className="flex">
@@ -70,14 +78,27 @@ const Items = () => {
       <div className="w-4/5 p-6 mt-[4%] mr-[10%]">
         <h1 className="text-xl font-bold mb-4">Items</h1>
 
-        <div className="flex justify-between mb-4">
-          <Link
-            to="/dashboard/items/form"
-            className="inline-block px-5 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
-            Add Item
-          </Link>
+        {/* Container for Search and Buttons */}
+        <div className="flex justify-between items-center mb-4">
+          
+          {/* Search Input on Left */}
+          <input
+            type="text"
+            placeholder="Search by Item Name"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="border border-gray-600 p-2 rounded w-1/3"
+          />
+          
+          {/* Buttons on Right */}
           <div className="flex space-x-4">
+            <Link
+              to="/dashboard/items/form"
+              className="inline-block px-5 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              Add Item
+            </Link>
+
             {selectedItems.length > 0 && (
               <button
                 onClick={handleDelete}
@@ -86,8 +107,15 @@ const Items = () => {
                 Delete Selected
               </button>
             )}
+
             <button
-              onClick={() => setShowCheckboxes(!showCheckboxes)}
+              onClick={() => {
+                if (showCheckboxes) {
+                  handleCancelDelete();
+                } else {
+                  setShowCheckboxes(true);
+                }
+              }}
               className={`inline-block px-5 py-2 rounded text-white ${showCheckboxes ? 'bg-gray-500 hover:bg-gray-600' : 'bg-red-500 hover:bg-red-600'}`}
             >
               {showCheckboxes ? 'Cancel Delete' : 'Delete Items'}
@@ -100,6 +128,7 @@ const Items = () => {
             <thead>
               <tr className="bg-gray-200">
                 <th className="py-2 px-4 border-b text-center"></th>
+                <th className="py-2 px-4 border-b text-center">Item Code</th>
                 <th className="py-2 px-4 border-b text-center">Name</th>
                 <th
                   className="py-2 px-4 border-b cursor-pointer text-center"
@@ -117,13 +146,13 @@ const Items = () => {
             <tbody>
               {!dataLoaded ? (
                 <tr>
-                  <td colSpan="8" className="py-2 px-4 text-center text-gray-500">
+                  <td colSpan="9" className="py-2 px-4 text-center text-gray-500">
                     Loading Items...
                   </td>
                 </tr>
               ) : filteredItems.length === 0 ? (
                 <tr>
-                  <td colSpan="8" className="py-2 px-4 text-center text-gray-500">
+                  <td colSpan="9" className="py-2 px-4 text-center text-gray-500">
                     No Items found
                   </td>
                 </tr>
@@ -140,6 +169,7 @@ const Items = () => {
                         />
                       )}
                     </td>
+                    <td className="py-2 px-4 border-b text-center">{item.itemcode}</td>
                     <td className="py-2 px-4 border-b text-center">
                       <Link to={`/items/${item.sno}`} className="text-blue-500 hover:underline">
                         {item.name}

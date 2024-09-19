@@ -116,8 +116,22 @@ export const Invoice = pgTable('invoice',{
   terms: text('terms').notNull(),
   itemdetails: json('itemdetails').notNull(),
   subject: text('subject').notNull(),
-  salesperson: json('salesperson').notNull(),
+  salesperson: text('salesperson').notNull(),
   taxtype: text('taxtype').notNull(),
   taxrate: text('taxrate').notNull(),
   amount: numeric('amount'),
+})
+
+export const BillForm = pgTable('bill',{
+  sno: serial('sno').primaryKey(),
+  name: text('name').notNull(),
+  billnumber:text('billnumber').notNull(),
+  orderno:text('orderno').notNull(),
+  billdate:date('billdate').notNull(),
+  duedate:date('duedate').notNull(),
+  terms: text('terms').notNull(),
+  modeofshipment: text('modeofshipment'),
+  itemdetails: json('itemdetails').notNull(),
+  gst: numeric('gst').notNull(),
+  total: numeric('total').notNull()
 })

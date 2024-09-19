@@ -1,9 +1,85 @@
 {
-  "id": "8edec893-bb68-4d4b-9e9c-d5712c5b539a",
+  "id": "132322c9-3147-4486-a5a9-da93b6e9829c",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
+    "public.bill": {
+      "name": "bill",
+      "schema": "",
+      "columns": {
+        "sno": {
+          "name": "sno",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "billnumber": {
+          "name": "billnumber",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "orderno": {
+          "name": "orderno",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "billdate": {
+          "name": "billdate",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "duedate": {
+          "name": "duedate",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "terms": {
+          "name": "terms",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "modeofshipment": {
+          "name": "modeofshipment",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "itemdetails": {
+          "name": "itemdetails",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "gst": {
+          "name": "gst",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "total": {
+          "name": "total",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
     "public.customer": {
       "name": "customer",
       "schema": "",
@@ -252,7 +328,7 @@
         },
         "salesperson": {
           "name": "salesperson",
-          "type": "json",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },

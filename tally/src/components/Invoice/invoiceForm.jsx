@@ -3,14 +3,15 @@ import axios from 'axios';
 import { Page, Text, View, Document, StyleSheet, Image, Font } from '@react-pdf/renderer';
 import { PDFViewer } from '@react-pdf/renderer';
 import { pdf } from '@react-pdf/renderer';
-import SidePanel from '../sales/SidePanel';
-// import SalesPerson from '../Salesperson/SalesPerson'
+import SidePanel from '../Sales/sidepanel';
+import SalesPerson from '../Salesperson/SalesPerson'
 import { Link, useNavigate } from 'react-router-dom';
 
 
 const InvoiceForm = () => {
-  const [salesperson,setSalesperson] = useState({});
+
   const [salespersons, setSalespersons] = useState([]);
+ 
   const [invoiceNumber, setInvoiceNumber] = useState('');
   const [invoiceDate, setInvoiceDate] = useState('');
   const [dueDate, setDueDate] = useState('');
@@ -33,15 +34,15 @@ const InvoiceForm = () => {
   const [customer, setCustomer] = useState('');
   const [customerState, setCustomerState] = useState('');
   const [isPaymentReceived, setIsPaymentReceived] = useState(false);
-  
+
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     fetchCustomers();
     fetchSalespeople();
     fetchItems();
   }, []);
-  
+
   const fetchSalespeople = async () => {
     try {
       const response = await axios.get('http://localhost:3001/api/salespersons');
@@ -50,82 +51,37 @@ const InvoiceForm = () => {
       console.error('Error fetching salesperson data:', error);
     }
   };
-  
-  
+
+
   const fetchCustomers = async () => {
     try {
       const response = await axios.get('http://localhost:3001/api/customers');
       const customersWithState = response.data.map((cust) => ({
         ...cust,
-        state: cust.billaddress.state,
+        state: cust.billaddress.state, 
       }));
       setCustomers(customersWithState);
     } catch (error) {
       console.error('Error fetching customer data:', error);
     }
   };
-  
   const handleDropdownChange = (e) => {
     const selectedCustomerName = e.target.value;
     setCustomer(selectedCustomerName);
+
     
-    if (e.target.value == 'new customer') {
-      navigate('/dashboard/sales/customers/form')
+    const selectedCustomer = customers.find((cust) => cust.name === selectedCustomerName);
+    if (selectedCustomer) {
+      setCustomerState(selectedCustomer.state); 
     } else {
-      
-      const selectedCustomer = customers.find((cust) => cust.name === selectedCustomerName);
-      if (selectedCustomer) {
-        setCustomerState(selectedCustomer.state);
-        // setCustomerAddress(selectedCustomer.billaddress);
-        
-        setCustomerPh(selectedCustomer.workphone);
-        setCustomerMail(selectedCustomer.mail)
-      } else {
-        setCustomerState('');
-        setCustomerAddress('');
-        setCustomerPh('');
-        setCustomerMail('');
-      }
-    }
-    
-    
-  };
-
-  const handleSalesperson = (e) => {
-      // setSalesperson(e.target.value)
-      console.log(e.target.value);
-      
-  }
-  
-  const handleSubmit = async () => {
-    const invoiceData = {
-      name: customer,
-      state: customerState,
-      phone: customerPh,
-      mail: customerMail,
-      invoiceid: invoiceNumber,
-      invdate: invoiceDate,
-      duedate: dueDate,
-      terms: terms,
-      itemdetails: items, // Ensure this is an array of objects
-      subject: subject,
-      salesperson: salesperson,
-      taxtype: taxType,
-      taxrate: tax,
-      amount: calculateTotal()
-    };
-  
-    console.log('Invoice data being sent:', invoiceData);
-  
-    try {
-      const response = await axios.post('http://localhost:3001/api/invoice', invoiceData);
-      console.log('Invoice submitted successfully', response.data);
-    } catch (error) {
-      console.error('Error submitting invoice', error);
+      setCustomerState(''); 
     }
   };
-  
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewSalesperson({ ...newSalesperson, [name]: value });
+  };
   const fetchItems = async () => {
     try {
       const response = await axios.get('http://localhost:3001/api/items');
@@ -146,6 +102,12 @@ const InvoiceForm = () => {
     setIsPaymentReceived(e.target.checked);
   };
 
+  
+  
+  
+  
+  
+  
 
   const handleItemChange = (index, field, value) => {
     const newItems = [...items];
@@ -196,11 +158,11 @@ const InvoiceForm = () => {
       const halfGST = gst / 2;
       newItems[index].sgst = halfGST.toFixed(2);
       newItems[index].cgst = halfGST.toFixed(2);
-      newItems[index].igst = '';
+      newItems[index].igst = '';  
     } else {
-      newItems[index].sgst = '';
-      newItems[index].cgst = '';
-      newItems[index].igst = gst.toFixed(2);
+      newItems[index].sgst = '';  
+      newItems[index].cgst = '';  
+      newItems[index].igst = gst.toFixed(2);  
     }
 
     setItems(newItems);
@@ -215,13 +177,13 @@ const InvoiceForm = () => {
   };
 
   const calculateSubtotal = () => {
-
+    
     return items.reduce((acc, item) => {
       const rate = parseFloat(item.rate) || 0;
       const quantity = parseFloat(item.quantity) || 0;
       const discount = parseFloat(item.discount) || 0;
 
-      const baseAmount = rate * quantity;
+      const baseAmount = rate * quantity;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
       const discountedAmount = baseAmount * (1 - discount / 100);
 
       return acc + discountedAmount;
@@ -264,11 +226,11 @@ const InvoiceForm = () => {
     const adjustedValue = adjustmentType === 'add' ? Number(adjustment) : -Number(adjustment);
 
     const totalBeforeAdjustment = subtotal + taxAmount;
-
+    
     ('Subtotal:', subtotal);
-
-
-
+    
+    
+    
 
     let total;
 
@@ -280,7 +242,7 @@ const InvoiceForm = () => {
       total = totalBeforeAdjustment;
     }
 
-
+    
 
     return (Math.round(total * 100) / 100).toFixed(2);
   };
@@ -292,13 +254,13 @@ const InvoiceForm = () => {
     const teens = ['Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
     const tens = ['Ten', ...teens];
 
-    const higherUnits = ['', 'Thousand', 'Lakh', 'Crore'];
+    const higherUnits = ['', 'Thousand', 'Lakh', 'Crore'];  
 
     if (num === 0) return 'Zero Rupees Only';
 
     let words = '';
 
-
+    
     const convertBelowThousand = (n) => {
       let str = '';
       if (n > 99) {
@@ -319,7 +281,7 @@ const InvoiceForm = () => {
       return str.trim();
     };
 
-
+    
     let unitIndex = 0;
     while (num > 0) {
       let chunk = num % 1000;
@@ -338,23 +300,24 @@ const InvoiceForm = () => {
     const value = e.target.value;
     if (value === 'TCS') {
       setShowCustomTax(true);
-      setTax('');
+      setTax(''); 
     } else {
       setShowCustomTax(false);
-      setTax(Number(value));
+      setTax(Number(value)); 
     }
   };
 
 
   const handleCustomTaxChange = (e) => {
     const value = e.target.value;
-    const numericValue = parseFloat(value);
+    const numericValue = parseFloat(value); 
     if (!isNaN(numericValue) && value.trim() !== '') {
       setCustomTax(numericValue);
     } else {
-      setCustomTax('');
+      setCustomTax(''); 
     }
   };
+
 
 
   const handleTaxTypeChange = (e) => {
@@ -362,6 +325,12 @@ const InvoiceForm = () => {
   };
 
 
+
+  
+
+
+  
+  
   const styles = StyleSheet.create({
     page: {
       padding: 30,
@@ -449,7 +418,7 @@ const InvoiceForm = () => {
   });
 
 
-
+  
   const MyDocument = () => (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -516,7 +485,7 @@ const InvoiceForm = () => {
     </Document>
   );
 
-
+  
 
   return (
     <div className='flex'>
@@ -524,7 +493,7 @@ const InvoiceForm = () => {
         <SidePanel />
       </div>
       <div className="p-6 mt-8 mr-20 ml-20 bg-gray-50 min-h-screen flex items-center justify-center">
-        <div className="max-w-7xl w-full bg-white p-8 rounded-lg shadow-md">
+        <div className="max-w-xxl w-full bg-white p-8 rounded-lg shadow-md">
           <h1 className="text-2xl font-bold mb-6">New Invoice</h1>
           <form className="space-y-8" onSubmit={(e) => {
             e.preventDefault();
@@ -539,12 +508,11 @@ const InvoiceForm = () => {
                     onChange={handleDropdownChange}
                     className="border border-gray-300 rounded-md p-2 w-full focus:ring-blue-500 focus:border-blue-500"
                   >
-                    <option value="" hidden>Select a customer</option>
-                    <option value="new customer" className='text-blue-500'>Add New Customer</option>
+                    <option value="">Select a customer</option>
                     {customers.map((cust) => (
                       <option key={cust.id} value={cust.name}>{cust.name}</option>
                     ))}
-
+                    <option value="new sales/customers">Add New Customer</option>
                   </select>
                 </div>
               </div>
@@ -559,12 +527,20 @@ const InvoiceForm = () => {
               </div>
 
               <div>
+                <label className="block text-sm font-medium text-gray-700">Customer Addrress*</label>
+                <input
+                  type="text"
+                  value={customerAddress}
+                  onChange={(e) => setCustomerAddress(e.target.value)}
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                />
+              </div>
+              <div>
                 <label className="block text-sm font-medium text-gray-700">Customer Contact</label>
                 <input
                   type="text"
                   value={customerPh}
-                  // onChange={(e) => setCustomerPh(e.target.value)}
-                  readOnly
+                  onChange={(e) => setCustomerPh(e.target.value)}
                   className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
                 />
               </div>
@@ -573,18 +549,7 @@ const InvoiceForm = () => {
                 <input
                   type="text"
                   value={customerMail}
-                  // onChange={(e) => setCustomerMail(e.target.value)}
-                  readOnly
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Customer Addrress*</label>
-                <input
-                  type="text"
-                  value={customerAddress}
-                  onChange={(e) => setCustomerAddress(e.target.value)}
-                  // readOnly
+                  onChange={(e) => setCustomerMail(e.target.value)}
                   className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
                 />
               </div>
@@ -703,7 +668,7 @@ const InvoiceForm = () => {
                         type="number"
                         value={items[index].sgst || ''}
                         className="border p-2 w-full"
-                        readOnly
+                        readOnly 
                       />
                     </td>
                     <td>
@@ -711,7 +676,7 @@ const InvoiceForm = () => {
                         type="number"
                         value={items[index].cgst || ''}
                         className="border p-2 w-full"
-                        readOnly
+                        readOnly 
                       />
                     </td>
                     <td>
@@ -719,7 +684,7 @@ const InvoiceForm = () => {
                         type="number"
                         value={items[index].igst || ''}
                         className="border p-2 w-full"
-                        readOnly
+                        readOnly 
                       />
                     </td>
 
@@ -757,10 +722,10 @@ const InvoiceForm = () => {
             <label htmlFor="salesperson" className="block text-sm font-medium text-gray-700">
               Salesperson
             </label>
-            <select id="salesperson" onChange={handleSalesperson} name="salesperson" className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2">
+            <select id="salesperson" name="salesperson" className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2">
               <option value="">Select a Salesperson</option>
               {salespersons.map((person, index) => (
-                <option key={index} value={person.id}>
+                <option key={index} value={person}>
                   {person.name}
                 </option>
               ))}
@@ -816,7 +781,7 @@ const InvoiceForm = () => {
                   </select>
                 </div>
               )}
-
+             
             </div>
 
             {/* Total Section */}
@@ -916,17 +881,16 @@ const InvoiceForm = () => {
             <button
               type="submit"
               className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-500 hover:bg-blue-600"
-              onClick={handleSubmit}
             >
               Generate PDF
             </button>
           </form>
 
-
+         
         </div>
       </div>
     </div>
   );
 };
 
-export default InvoiceForm;
+// 

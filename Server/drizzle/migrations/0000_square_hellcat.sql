@@ -1,3 +1,17 @@
+CREATE TABLE IF NOT EXISTS "bill" (
+	"sno" serial PRIMARY KEY NOT NULL,
+	"name" text NOT NULL,
+	"billnumber" text NOT NULL,
+	"orderno" text NOT NULL,
+	"billdate" date NOT NULL,
+	"duedate" date NOT NULL,
+	"terms" text NOT NULL,
+	"modeofshipment" text,
+	"itemdetails" json NOT NULL,
+	"gst" numeric NOT NULL,
+	"total" numeric NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "customer" (
 	"sno" serial PRIMARY KEY NOT NULL,
 	"type" text NOT NULL,
@@ -42,7 +56,7 @@ CREATE TABLE IF NOT EXISTS "invoice" (
 	"terms" text NOT NULL,
 	"itemdetails" json NOT NULL,
 	"subject" text NOT NULL,
-	"salesperson" json NOT NULL,
+	"salesperson" text NOT NULL,
 	"taxtype" text NOT NULL,
 	"taxrate" text NOT NULL,
 	"amount" numeric
