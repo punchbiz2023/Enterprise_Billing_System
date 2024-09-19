@@ -65,6 +65,42 @@ const BillForm = () => {
         setItems(items.filter((_, i) => i !== index));
     };
 
+    const handleSubmit = async (event) => {
+      alert("Your order has been successfully sent");
+      event.preventDefault();
+  
+      // Convert dates to YYYY-MM-DD format
+      const formattedDate = new Date(date.split('/').reverse().join('-')).toISOString().split('T')[0];
+      const formattedDeliveryDate = new Date(dueDate.split('/').reverse().join('-')).toISOString().split('T')[0];
+  
+      const billData = {
+          name: vendor,
+          billnumber: billNo,
+          orderno: reference,
+          billdate: formattedDate,
+          duedate: formattedDeliveryDate,
+          terms: paymentTerms,
+          modeofshipment: shipmentPreference,
+          itemdetails: items,
+          gst: gstPercentage,
+          total: grandTotal
+      };
+  
+      try {
+          const response = await fetch('http://localhost:3001/api/bill', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(billData),
+          });
+  
+          
+      } catch (error) {
+          console.error('Error posting Bill :', error);
+      }
+  };
+
     return (
     <div>
         <div>
@@ -89,17 +125,17 @@ const BillForm = () => {
 
             <div className="purchase-order-details">
                 <label>Bill Number</label>
-                <input type="text" value={billNo} />
+                <input type="text" value={billNo} onChange={(e) => setbillNo(e.target.value)} />
                 <label>Order Number</label>
                 <input type="text" value={reference} onChange={(e) => setReference(e.target.value)} />
                 <label>Bill Date</label>
-                <input type="date" />
+                <input type="text " value={date} readOnly />
                 <label>Due Date</label>
                 <input
                     type="date"
                     placeholder="dd/mm/yyyy"
                     value={dueDate}
-                    onChange={(e) => setDeliveryDate(e.target.value)}
+                    onChange={(e) => setdueDate(e.target.value)}
                 />
                 <label>Payment Terms</label>
                 <select className="payment-terms-dropdown" value={paymentTerms} onChange={(e) => setPaymentTerms(e.target.value)}>
@@ -191,7 +227,7 @@ const BillForm = () => {
             </div>
 
             <div className="actions">
-                <button>Save and Send</button>
+                <button onClick={handleSubmit}>Save and Send</button>
                 <button>Cancel</button>
             </div>
         </div>
