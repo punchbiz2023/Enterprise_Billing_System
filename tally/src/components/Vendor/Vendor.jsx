@@ -67,7 +67,7 @@ const Vendor = () => {
                         placeholder="Search by name..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="px-4 py-2 border rounded w-1/3"
+                        className="px-4 py-2 border border-gray-600 rounded w-1/3"
                     />
 
                     {/* Buttons on the right */}

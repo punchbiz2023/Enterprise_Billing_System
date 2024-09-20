@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-import SidePanel from '../sales/sidepanel';
+import SidePanel from '../Sales/SidePanel';
 import SalesPerson from '../Salesperson/SalesPerson'
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -341,7 +341,7 @@ const Order = () => {
         <SidePanel />
       </div>
       <div className="p-6 mt-8 mr-20 ml-20 bg-gray-50 min-h-screen flex items-center justify-center">
-        <div className="max-w-8xl w-full bg-white p-8 rounded-lg shadow-md">
+        <div className="max-w-7xl w-full bg-white p-8 rounded-lg shadow-md">
           <h1 className="text-2xl font-bold mb-6">Sales Order</h1>
           <form className="space-y-8" onSubmit={(e) => {
             e.preventDefault();
@@ -612,7 +612,7 @@ const Order = () => {
             >
               Add Salesperson
             </button>
-
+              
             {/* Tax and Adjustment Section */}
             <div className="space-y-4">
               <div>
@@ -660,15 +660,12 @@ const Order = () => {
             </div>
 
             {/* Total Section */}
-            <div>
+            <div className="my-4 p-4 border border-gray-300 rounded-md">
               <div>
-                <span>Subtotal: {calculateSubtotal()}</span>
+                <span className="text-lg font-bold">Subtotal: {calculateSubtotal()}</span>
               </div>
               <div>
-                <span>Tax Amount: {calculateTaxAmount()}</span>
-              </div>
-              <div>
-                <span>Total amount: {calculateTotal()}</span>
+                <span className="text-lg font-bold">Total amount: {calculateTotal()}</span>
               </div>
 
 
@@ -683,11 +680,11 @@ const Order = () => {
                 </>
               ) : (
                 <div>
-                  <span>TAX ({items[0].gst}%)</span>
+                  <span className="text-lg font-bold">TAX ({items[0].gst}%)</span>
                 </div>
               )}
               <div>
-                <span>Total: {calculateTotal()}</span>
+                <span className="text-lg font-bold">Total: {calculateTotal()}</span>
               </div>
             </div>
             <div>

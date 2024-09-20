@@ -1,5 +1,5 @@
 {
-  "id": "bb5d0aab-6152-43af-b54b-9acba87b4f0b",
+  "id": "a4704f4e-11f7-4c4c-85bf-7f61e1203c98",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -249,6 +249,100 @@
           "type": "json",
           "primaryKey": false,
           "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.invoice": {
+      "name": "invoice",
+      "schema": "",
+      "columns": {
+        "sno": {
+          "name": "sno",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "state": {
+          "name": "state",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "phone": {
+          "name": "phone",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "mail": {
+          "name": "mail",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "invoiceid": {
+          "name": "invoiceid",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "invdate": {
+          "name": "invdate",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "duedate": {
+          "name": "duedate",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "terms": {
+          "name": "terms",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "subject": {
+          "name": "subject",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "salesperson": {
+          "name": "salesperson",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "taxtype": {
+          "name": "taxtype",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "taxrate": {
+          "name": "taxrate",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "amount": {
+          "name": "amount",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {},

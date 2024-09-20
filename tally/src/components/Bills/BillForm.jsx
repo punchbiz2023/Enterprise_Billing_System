@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import './BillForm.css';
+import SidePanel from '../Purchase/Sidepanel';
+import axios from 'axios'; // Import axios
 
 const BillForm = () => {
     const [vendor, setVendor] = useState('');
-    const [vendors, setVendors] = useState([]);  // State to hold vendor list
+    const [vendors, setVendors] = useState([]);  
     const [customer, setCustomer] = useState('');
     const [deliveryType, setDeliveryType] = useState('organization');
     const [billNo, setbillNo] = useState('');
@@ -38,9 +40,8 @@ const BillForm = () => {
     useEffect(() => {
         const fetchVendors = async () => {
             try {
-                const response = await fetch('http://localhost:3001/api/vendor');
-                const data = await response.json();
-                setVendors(data); // Assuming the response is an array of vendor objects
+                const response = await axios.get('http://localhost:3001/api/vendor');
+                setVendors(response.data); 
             } catch (error) {
                 console.error('Error fetching vendor data:', error);
             }
@@ -65,168 +66,164 @@ const BillForm = () => {
     };
 
     const handleSubmit = async (event) => {
-      alert("Your order has been successfully sent");
-      event.preventDefault();
-  
-      // Convert dates to YYYY-MM-DD format
-      const formattedDate = new Date(date.split('/').reverse().join('-')).toISOString().split('T')[0];
-      const formattedDeliveryDate = new Date(dueDate.split('/').reverse().join('-')).toISOString().split('T')[0];
-  
-      const billData = {
-          name: vendor,
-          billnumber: billNo,
-          orderno: reference,
-          billdate: formattedDate,
-          duedate: formattedDeliveryDate,
-          terms: paymentTerms,
-          modeofshipment: shipmentPreference,
-          itemdetails: items,
-          gst: gstPercentage,
-          total: grandTotal
-      };
-  
-      try {
-          const response = await fetch('http://localhost:3001/api/bill', {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(billData),
-          });
-  
-          
-      } catch (error) {
-          console.error('Error posting Bill :', error);
-      }
-  };
+        event.preventDefault();
+        alert("Your order has been successfully sent");
+
+        const formattedDate = new Date(date.split('/').reverse().join('-')).toISOString().split('T')[0];
+        const formattedDeliveryDate = new Date(dueDate.split('/').reverse().join('-')).toISOString().split('T')[0];
+
+        const billData = {
+            name: vendor,
+            billnumber: billNo,
+            orderno: reference,
+            billdate: formattedDate,
+            duedate: formattedDeliveryDate,
+            terms: paymentTerms,
+            modeofshipment: shipmentPreference,
+            itemdetails: items,
+            gst: gstPercentage,
+            total: grandTotal
+        };
+
+        try {
+            const response = await axios.post('http://localhost:3001/api/bill', billData, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            console.log('Bill posted successfully:', response.data);
+        } catch (error) {
+            console.error('Error posting Bill:', error);
+        }
+    };
 
     return (
-        <div className="purchase-order-container">
-            <h2 className="text-2xl font-semibold mb-10 mt-20 text-gray-700">Create Bill</h2>
-
-            <div className="vendor-section">
-                <label>Vendor Name*</label>
-                <select value={vendor} onChange={(e) => setVendor(e.target.value)}>
-                    <option value="">Select a Vendor</option>
-                    {vendors.map((vendor) => (
-                        <option key={vendor.id} value={vendor.name}>
-                            {vendor.name}
-                        </option>
-                    ))}
-                </select>
+        <div>
+            <div>
+                <SidePanel />
             </div>
+            <div className="purchase-order-container">
+                <h2 className="text-2xl font-semibold mb-10 mt-20 text-gray-700">Create Bill</h2>
 
-            
-
-            <div className="purchase-order-details">
-                <label>Bill Number</label>
-                <input type="text" value={billNo} onChange={(e) => setbillNo(e.target.value)} />
-                <label>Order Number</label>
-                <input type="text" value={reference} onChange={(e) => setReference(e.target.value)} />
-                <label>Bill Date</label>
-                <input type="text " value={date} readOnly />
-                <label>Due Date</label>
-                <input
-                    type="date"
-                    placeholder="dd/mm/yyyy"
-                    value={dueDate}
-                    onChange={(e) => setdueDate(e.target.value)}
-                />
-                <label>Payment Terms</label>
-                <select className="payment-terms-dropdown" value={paymentTerms} onChange={(e) => setPaymentTerms(e.target.value)}>
-                    <option value="net15">Net 15</option>
-                    <option value="net30">Net 30</option>
-                    <option value="net45">Net 45</option>
-                    <option value="net60">Net 60</option>
-                    <option value="endOfMonth">Due end of the month</option>
-                    <option value="endOfNextMonth">Due end of next month</option>
-                    <option value="dueOnReceipt">Due on Receipt</option>
-                </select>
-
-                
-            </div>
-
-            <div className="item-table">
-                <label>Item Table</label>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Item Details</th>
-                            <th>Quantity</th>
-                            <th>Rate</th>
-                            <th>Amount</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {items.map((item, index) => (
-                            <tr key={item.id}>
-                                <td>
-                                    <input type="text" placeholder="Type or click to select an item." />
-                                </td>
-                                
-                                <td>
-                                    <input
-                                        type="number"
-                                        value={item.quantity}
-                                        onChange={(e) => setItems(prevItems => {
-                                            const updatedItems = [...prevItems];
-                                            updatedItems[index].quantity = e.target.value;
-                                            return updatedItems;
-                                        })}
-                                    />
-                                </td>
-                                <td>
-                                    <input
-                                        type="text"
-                                        value={item.rate}
-                                        onChange={(e) => setItems(prevItems => {
-                                            const updatedItems = [...prevItems];
-                                            updatedItems[index].rate = e.target.value;
-                                            return updatedItems;
-                                        })}
-                                    />
-                                </td>
-                                <td>
-                                    {parseFloat(item.rate) * parseFloat(item.quantity)}
-                                </td>
-                                <td><button type="button" onClick={() => removeItem(index)}>Remove</button></td>
-                            </tr>
+                <div className="vendor-section">
+                    <label>Vendor Name*</label>
+                    <select value={vendor} onChange={(e) => setVendor(e.target.value)}>
+                        <option value="">Select a Vendor</option>
+                        {vendors.map((vendor) => (
+                            <option key={vendor.id} value={vendor.name}>
+                                {vendor.name}
+                            </option>
                         ))}
-                    </tbody>
-                </table>
-                <button className="font-semibold text-blue-700" onClick={() => setItems([...items, { id: items.length + 1, account: '', quantity: 1, rate: 0, amount: 0 }])}>Add New Row</button>
-            </div>
+                    </select>
+                </div>
 
-            <div className="subtotal-section">
-                <div>
-                    <label>Subtotal: </label>
-                    <span>₹ {subtotal.toFixed(2)}</span>
-                </div><br/>
-                <div className="gst-section">
-                    <label>GST (%): </label>
+                <div className="purchase-order-details">
+                    <label>Bill Number</label>
+                    <input type="text" value={billNo} onChange={(e) => setbillNo(e.target.value)} />
+                    <label>Order Number</label>
+                    <input type="text" value={reference} onChange={(e) => setReference(e.target.value)} />
+                    <label>Bill Date</label>
+                    <input type="text" value={date} readOnly />
+                    <label>Due Date</label>
                     <input
-                        type="number"
-                        value={gstPercentage}
-                        onChange={(e) => setGstPercentage(parseFloat(e.target.value))}
-                    /><br/><br/>
-                    <div>
-                        <label>GST Amount: </label>
-                        <span>₹ {gstAmount.toFixed(2)}</span>
-                    </div><br/>
+                        type="date"
+                        value={dueDate}
+                        onChange={(e) => setdueDate(e.target.value)}
+                    />
+                    <label>Payment Terms</label>
+                    <select className="payment-terms-dropdown" value={paymentTerms} onChange={(e) => setPaymentTerms(e.target.value)}>
+                        <option value="net15">Net 15</option>
+                        <option value="net30">Net 30</option>
+                        <option value="net45">Net 45</option>
+                        <option value="net60">Net 60</option>
+                        <option value="endOfMonth">Due end of the month</option>
+                        <option value="endOfNextMonth">Due end of next month</option>
+                        <option value="dueOnReceipt">Due on Receipt</option>
+                    </select>
                 </div>
-                <div>
-                    <label>Grand Total: </label>
-                    <span>₹ {grandTotal.toFixed(2)}</span>
-                </div>
-            </div>
 
-            <div className="actions">
-                <button onClick={handleSubmit}>Save and Send</button>
-                <button>Cancel</button>
+                <div className="item-table">
+                    <label>Item Table</label>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Item Details</th>
+                                <th>Quantity</th>
+                                <th>Rate</th>
+                                <th>Amount</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {items.map((item, index) => (
+                                <tr key={item.id}>
+                                    <td>
+                                        <input type="text" placeholder="Type or click to select an item." />
+                                    </td>
+                                    <td>
+                                        <input
+                                            type="number"
+                                            value={item.quantity}
+                                            onChange={(e) => setItems(prevItems => {
+                                                const updatedItems = [...prevItems];
+                                                updatedItems[index].quantity = e.target.value;
+                                                return updatedItems;
+                                            })}
+                                        />
+                                    </td>
+                                    <td>
+                                        <input
+                                            type="text"
+                                            value={item.rate}
+                                            onChange={(e) => setItems(prevItems => {
+                                                const updatedItems = [...prevItems];
+                                                updatedItems[index].rate = e.target.value;
+                                                return updatedItems;
+                                            })}
+                                        />
+                                    </td>
+                                    <td>{parseFloat(item.rate) * parseFloat(item.quantity)}</td>
+                                    <td><button type="button" onClick={() => removeItem(index)}>Remove</button></td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                    <button className="font-semibold text-blue-700" onClick={() => setItems([...items, { id: items.length + 1, account: '', quantity: 1, rate: 0, amount: 0 }])}>
+                        Add New Row
+                    </button>
+                </div>
+
+                <div className="subtotal-section">
+                    <div>
+                        <label>Subtotal: </label>
+                        <span>₹ {subtotal.toFixed(2)}</span>
+                    </div><br />
+                    <div className="gst-section">
+                        <label>GST (%): </label>
+                        <input
+                            type="number"
+                            value={gstPercentage}
+                            onChange={(e) => setGstPercentage(parseFloat(e.target.value))}
+                        /><br /><br />
+                        <div>
+                            <label>GST Amount: </label>
+                            <span>₹ {gstAmount.toFixed(2)}</span>
+                        </div><br />
+                    </div>
+                    <div>
+                        <label>Grand Total: </label>
+                        <span>₹ {grandTotal.toFixed(2)}</span>
+                    </div>
+                </div>
+
+                <div className="actions">
+                    <button onClick={handleSubmit}>Save and Send</button>
+                    <button>Cancel</button>
+                </div>
             </div>
         </div>
     );
 };
 
 export default BillForm;
+    

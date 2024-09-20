@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './PurchaseOrder.css';
+import SidePanel from '../Purchase/Sidepanel';
 
 const PurchaseOrder = () => {
     const [vendor, setVendor] = useState('');
@@ -97,6 +98,10 @@ const PurchaseOrder = () => {
     
 
     return (
+    <div>
+        <div>
+            <SidePanel/>
+        </div>
         <div className="purchase-order-container">
             <h2 className="text-2xl font-semibold mb-10 mt-20 text-gray-700">New Purchase Order</h2>
 
@@ -218,34 +223,36 @@ const PurchaseOrder = () => {
                 </div>
 
                 <div className="subtotal-section">
+                <div className="my-4 p-4 border border-gray-300 rounded-md">
                     <div>
-                        <label>Subtotal: </label>
+                        <label className="text-lg font-bold">Subtotal: </label>
                         <span>₹ {subtotal.toFixed(2)}</span>
-                    </div><br/>
+                    </div>
                     <div className="gst-section">
-                        <label>GST (%): </label>
+                        <label className="text-lg font-bold">GST (%): </label>
                         <input
                             type="number"
                             value={gstPercentage}
                             onChange={(e) => setGstPercentage(parseFloat(e.target.value))}
-                        /><br/><br/>
+                        /><br/>
                         <div>
-                            <label>GST Amount: </label>
+                            <label className="text-lg font-bold">GST Amount: </label>
                             <span>₹ {gstAmount.toFixed(2)}</span>
-                        </div><br/>
+                        </div>
                     </div>
                     <div>
-                        <label>Grand Total: </label>
+                        <label className="text-lg font-bold">Grand Total: </label>
                         <span>₹ {grandTotal.toFixed(2)}</span>
                     </div>
                 </div>
-
+                </div>
                 <div className="actions">
                     <button type="button" onClick={handleSubmit}>Save and Send</button>
                     <button type="button">Cancel</button>
                 </div>
             </form>
         </div>
+    </div>
     );
 };
 

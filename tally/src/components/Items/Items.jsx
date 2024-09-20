@@ -87,7 +87,7 @@ const filteredItems = selectedType
             placeholder="Search by Item Name"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="border p-2 rounded w-1/3"
+            className="border border-gray-600 p-2 rounded w-1/3"
           />
           
           {/* Buttons on Right */}
