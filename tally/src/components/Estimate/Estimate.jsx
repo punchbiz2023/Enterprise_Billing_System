@@ -588,10 +588,7 @@ const Estimate = () => {
                   <span className="text-lg font-bold">Subtotal: </span>
                   <span className="text-lg">{calculateSubtotal()}</span>
                 </div>
-            <div className="mb-2">
-              <span className="text-lg font-bold">Tax Amount: </span>
-              <span className="text-lg">{calculateTaxAmount()}</span>
-            </div>
+            
             <div className="mb-2">
               <span className="text-lg font-bold">Total Amount: </span>
               <span className="text-lg">{calculateTotal()}</span>

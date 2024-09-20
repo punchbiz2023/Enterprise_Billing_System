@@ -40,14 +40,6 @@ const SidePanel = () => {
             Bills
           </Link>
         </li>
-        <li>
-          <Link
-            to="/dashboard/purchase/payment-done"
-            className={`block p-2 ${location.pathname === '/dashboard/purchase/payment-done' ? 'active' : ''}`}
-          >
-            Payment Done
-          </Link>
-        </li>
       </ul>
     </div>
   );
