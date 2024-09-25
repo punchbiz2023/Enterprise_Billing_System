@@ -28,6 +28,7 @@ import SalesPerson from './components/Salesperson/SalesPerson.jsx';
 import PurchaseOrderTable from './components/PurchaseOrder/PurchaseOrderTable.jsx';
 import Invoice from './components/Invoice/Invoice.jsx';
 import Bill from './components/Bills/Bill.jsx';
+import EstimateTable from './components/Estimate/EstimateTable.jsx';
 // Layout with Header and Navbar
 function MainLayout({ children }) {
   return (
@@ -64,7 +65,8 @@ function App() {
         <Route path="/dashboard/purchase/vendors/form" element={<MainLayout><VendorForm /></MainLayout>} />
         <Route path="/dashboard/sales/order" element={<MainLayout><Order /></MainLayout>} />
         <Route path="/dashboard/purchase/expense" element={<MainLayout><ExpenseForm /></MainLayout>} />
-        <Route path="/dashboard/sales/estimate" element={<MainLayout><Estimate /></MainLayout>} />
+        <Route path="/dashboard/sales/estimate/form" element={<MainLayout><Estimate /></MainLayout>} />
+        <Route path="/dashboard/sales/estimate" element={<MainLayout><EstimateTable /></MainLayout>} />
         <Route path="/dashboard/projects/form" element={<MainLayout><Project /></MainLayout>} />
         <Route path="/dashboard/purchase/order/form" element={<MainLayout><PurchaseOrder /></MainLayout>} />
         <Route path="/dashboard/items/:id" element={<MainLayout><ItemDetails /></MainLayout>} />

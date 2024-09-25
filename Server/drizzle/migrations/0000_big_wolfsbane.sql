@@ -37,11 +37,13 @@ CREATE TABLE IF NOT EXISTS "estimate" (
 	"refnum" text,
 	"qdate" date NOT NULL,
 	"expdate" date NOT NULL,
-	"salesperson" text NOT NULL,
 	"project" text NOT NULL,
-	"subject" text,
 	"itemtable" json NOT NULL,
-	"subtotal" json NOT NULL
+	"subject" text,
+	"salesperson" text NOT NULL,
+	"taxtype" text NOT NULL,
+	"taxrate" text NOT NULL,
+	"total" numeric NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "invoice" (
@@ -76,6 +78,21 @@ CREATE TABLE IF NOT EXISTS "items" (
 	"purchaseaccount" text NOT NULL,
 	"taxPayable" boolean,
 	"gst" numeric
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "project" (
+	"sno" serial PRIMARY KEY NOT NULL,
+	"name" text NOT NULL,
+	"pcode" text NOT NULL,
+	"cname" text NOT NULL,
+	"billmethod" text NOT NULL,
+	"total" numeric NOT NULL,
+	"description" text NOT NULL,
+	"costbudget" text NOT NULL,
+	"revenuebudget" text NOT NULL,
+	"projecthours" text NOT NULL,
+	"users" json NOT NULL,
+	"tasks" json NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "purchaseorder" (

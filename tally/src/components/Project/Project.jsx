@@ -12,10 +12,9 @@ function Project() {
   const [costBudget, setCostBudget] = useState('');
   const [revenueBudget, setRevenueBudget] = useState('');
   const [hoursBudgetType, setHoursBudgetType] = useState('');
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState([{ name: '', email: '' }]);
   const [tasks, setTasks] = useState([{ name: '', description: '' }]);
   const [availableCustomers, setAvailableCustomers] = useState([]);
-  const [isFetchingCustomers, setIsFetchingCustomers] = useState(false); // Loading state
 
   // Fetch available customers when component mounts
   useEffect(() => {
@@ -51,18 +50,8 @@ function Project() {
     setTasks(newTasks);
   };
 
-  const addNewUser = async () => {
-    setIsFetchingCustomers(true); 
-
-    try {
-      const response = await axios.get('http://localhost:3001/api/customers');
-      setAvailableCustomers(response.data);
-      setUsers([...users, { name: '', email: '' }]); 
-    } catch (error) {
-      console.error('Error fetching customers:', error);
-    } finally {
-      setIsFetchingCustomers(false); 
-    }
+  const addNewUser = () => {
+    setUsers([...users, { name: '', email: '' }]);
   };
 
   const saveProject = async (e) => {
@@ -224,8 +213,8 @@ function Project() {
             ))}
           </tbody>
         </table>
-        <button type="button" className="add-user" onClick={addNewUser} disabled={isFetchingCustomers}>
-          {isFetchingCustomers ? 'Fetching Customers...' : 'Add User'}
+        <button type="button" className="add-user" onClick={addNewUser}>
+          Add User
         </button><br/><br/>
 
         <h3 className="text-l font-semibold mb-6 text-gray-700">Project Tasks</h3>
@@ -269,12 +258,12 @@ function Project() {
         </table>
         <button type="button" className="add-task" onClick={addNewTask}>
           Add Project Task
-        </button><br/>
-        <br/>
+        </button><br/><br/>
 
         <div className="form-actions">
-          <button type="submit" className="save">Save and Select</button>
-          <button type="button" className="cancel">Cancel</button>
+          <button type="submit" className="save-project">
+            Save Project
+          </button>
         </div>
       </form>
     </div>

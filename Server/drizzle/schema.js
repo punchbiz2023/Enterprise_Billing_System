@@ -73,11 +73,30 @@ export const Estimate = pgTable('estimate',{
   refnum: text('refnum'),
   qdate: date('qdate').notNull(),
   expdate: date('expdate').notNull(),
-  salesperson: text('salesperson').notNull(),
   project: text('project').notNull(),
-  subject: text('subject'),
   itemtable: json('itemtable').notNull(),
-  subtotal: json('subtotal').notNull()
+  subject: text('subject'),
+  salesperson: text('salesperson').notNull(),
+  taxtype: text('taxtype').notNull(),
+  taxrate: text('taxrate').notNull(),
+  total: numeric('total').notNull()
+})
+
+
+export const Project = pgTable('project',{
+  sno: serial('sno').primaryKey(),
+  name: text('name').notNull(),
+  pcode: text('pcode').notNull(),
+  cname: text('cname').notNull(),
+  billmethod: text('billmethod').notNull(),
+  total: numeric('total').notNull(),
+  description: text('description').notNull(),
+  costbudget: text('costbudget').notNull(),
+  revenuebudget: text('revenuebudget').notNull(),
+  projecthours: text('projecthours').notNull(),
+  users: json('users').notNull(),
+  tasks: json('tasks').notNull(),
+  
 })
 
 
