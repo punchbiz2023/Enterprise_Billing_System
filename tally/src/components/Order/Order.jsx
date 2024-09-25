@@ -612,7 +612,7 @@ const Order = () => {
             >
               Add Salesperson
             </button>
-
+              
             {/* Tax and Adjustment Section */}
             <div className="space-y-4">
               <div>
@@ -660,15 +660,12 @@ const Order = () => {
             </div>
 
             {/* Total Section */}
-            <div>
+            <div className="my-4 p-4 border border-gray-300 rounded-md">
               <div>
-                <span>Subtotal: {calculateSubtotal()}</span>
+                <span className="text-lg font-bold">Subtotal: {calculateSubtotal()}</span>
               </div>
               <div>
-                <span>Tax Amount: {calculateTaxAmount()}</span>
-              </div>
-              <div>
-                <span>Total amount: {calculateTotal()}</span>
+                <span className="text-lg font-bold">Total amount: {calculateTotal()}</span>
               </div>
 
 
@@ -683,11 +680,11 @@ const Order = () => {
                 </>
               ) : (
                 <div>
-                  <span>TAX ({items[0].gst}%)</span>
+                  <span className="text-lg font-bold">TAX ({items[0].gst}%)</span>
                 </div>
               )}
               <div>
-                <span>Total: {calculateTotal()}</span>
+                <span className="text-lg font-bold">Total: {calculateTotal()}</span>
               </div>
             </div>
             <div>

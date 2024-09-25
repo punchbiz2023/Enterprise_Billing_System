@@ -48,14 +48,6 @@ const SidePanel = () => {
             Delivery Challan
           </Link>
         </li>
-        <li>
-          <Link
-            to="/dashboard/sales/payment-received"
-            className={`side-link ${location.pathname === '/dashboard/sales/payment-received' ? 'active' : ''}`}
-          >
-            Payment Received
-          </Link>
-        </li>
       </ul>
     </div>
   );
