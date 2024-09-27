@@ -150,14 +150,20 @@ const InvoiceForm = () => {
   const handleItemChange = (index, field, value) => {
     const newItems = [...items];
     newItems[index][field] = value;
-
-    if (field === 'gst') {
-      const gst = parseFloat(value) || 0;
-      setGSTForState(index, gst);
+    if (field === 'item') {
+      const selectedItem = availableItems.find(
+        (availableItem) => availableItem.name === value
+      );
+      if (selectedItem) {
+        newItems[index].gst = selectedItem.gst;
+      }
     }
 
-    if (['rate', 'quantity', 'discount', 'gst', 'sgst', 'cgst', 'igst'].includes(field)) {
+   
+
+    if (['rate','HsnCode', 'quantity', 'discount', 'gst', 'sgst', 'cgst', 'igst'].includes(field)) {
       const rate = parseFloat(newItems[index].rate) || 0;
+      const HsnCode = parseFloat(newItems[index].HsnCode) || 0;
       const quantity = parseFloat(newItems[index].quantity) || 0;
       const discount = parseFloat(newItems[index].discount) || 0;
       const gst = parseFloat(newItems[index].gst) || 0;
@@ -207,7 +213,7 @@ const InvoiceForm = () => {
   };
 
   const addNewItem = () => {
-    setItems([...items, { item: '', quantity: '', rate: '', discount: '', gst: '', sgst: '', cgst: '', igst: '', amount: '' }]);
+    setItems([...items, { item: '',HsnCode:'', quantity: '', rate: '', discount: '', gst: '', sgst: '', cgst: '', igst: '', amount: '' }]);
   };
 
   const removeItem = (index) => {
@@ -524,7 +530,7 @@ const InvoiceForm = () => {
         <SidePanel />
       </div>
       <div className="p-6 mt-8 mr-20 ml-20 bg-gray-50 min-h-screen flex items-center justify-center">
-        <div className="max-w-7xl w-full bg-white p-8 rounded-lg shadow-md">
+        <div className="max-w-9xl w-full bg-white p-8 rounded-lg shadow-md">
           <h1 className="text-2xl font-bold mb-6">New Invoice</h1>
           <form className="space-y-8" onSubmit={(e) => {
             e.preventDefault();
@@ -637,6 +643,7 @@ const InvoiceForm = () => {
               <thead>
                 <tr>
                   <th>Item</th>
+                  <th>HsnCode</th>
                   <th>Quantity</th>
                   <th>Rate</th>
                   <th>Discount</th>
@@ -665,6 +672,21 @@ const InvoiceForm = () => {
                         ))}
                       </select>
                     </td>
+                          <td>
+        <input
+          type="text" // Use "text" instead of "number" to remove up/down arrows
+          value={item.HsnCode}
+          onChange={(e) => {
+            // Allow only numbers and ensure value doesn't go below 0
+            const value = e.target.value;
+            if (/^\d*$/.test(value)) { // Regex to allow only digits (no letters or special characters)
+              handleItemChange(index, 'HsnCode', value === '' ? '' : Math.max(0, Number(value)));
+            }
+          }}
+          className="border border-gray-300 rounded-md p-2 w-full"
+        />
+      </td>
+
                     <td>
                       <input
                         type="number"
@@ -691,10 +713,10 @@ const InvoiceForm = () => {
                     </td>
                     <td>
                       <input
-                        type="number"
-                        value={items[index].gst || ''}
-                        onChange={(e) => handleItemChange(index, 'gst', e.target.value)}
-                        className="border p-2 w-full"
+                        type="text"
+                        value={item.gst}
+                        readOnly
+                        className="border border-gray-300 rounded-md p-2"
                       />
                     </td>
 
@@ -818,8 +840,6 @@ const InvoiceForm = () => {
               )}
 
             </div>
-
-            {/* Total Section */}
             <div>
               <div>
                 <span>Subtotal: {calculateSubtotal()}</span>

@@ -103,6 +103,7 @@ const ItemForm = () => {
                         required
 >
                         <option value="BOX">BOX - box</option>
+                        <option value="Service">Service</option>
                         <option value="CMS">CMS - cm</option>
                         <option value="DOZ">DOZ - dz</option>
                         <option value="FTS">FTS - ft</option>
