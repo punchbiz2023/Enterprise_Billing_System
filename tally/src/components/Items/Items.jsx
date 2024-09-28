@@ -10,8 +10,8 @@ const Items = () => {
   const [selectedItems, setSelectedItems] = useState([]);
   const [showCheckboxes, setShowCheckboxes] = useState(false);
   const [selectedType, setSelectedType] = useState(null);
-  const [clickCount, setClickCount] = useState(0);
-  const [searchQuery, setSearchQuery] = useState(''); // State for search input
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchBy, setSearchBy] = useState('name'); // Default search by name
 
   useEffect(() => {
     fetchItems();
@@ -30,9 +30,9 @@ const Items = () => {
   };
 
   const handleCheckboxChange = (itemId) => {
-    setSelectedItems(prevSelected =>
+    setSelectedItems((prevSelected) =>
       prevSelected.includes(itemId)
-        ? prevSelected.filter(id => id !== itemId)
+        ? prevSelected.filter((id) => id !== itemId)
         : [...prevSelected, itemId]
     );
   };
@@ -49,26 +49,15 @@ const Items = () => {
     }
   };
 
-  const handleTypeClick = () => {
-    const uniqueTypes = Array.from(new Set(items.map(item => item.type)));
-    const currentIndex = uniqueTypes.indexOf(selectedType);
-    const nextIndex = (currentIndex + 1) % (uniqueTypes.length + 1);
-    const newType = nextIndex < uniqueTypes.length ? uniqueTypes[nextIndex] : null;
-
-    setSelectedType(newType);
-    setClickCount(prev => prev + 1);
-  };
-
   const handleCancelDelete = () => {
-    setSelectedItems([]);  // Unselect all items
-    setShowCheckboxes(false);  // Hide checkboxes
+    setSelectedItems([]); // Unselect all items
+    setShowCheckboxes(false); // Hide checkboxes
   };
 
- // Filter items based on selectedType and searchQuery, but only apply searchQuery filtering when it's non-empty
-const filteredItems = selectedType
-? items.filter(item => item.type === selectedType && (!searchQuery || item.name.toLowerCase().startsWith(searchQuery.toLowerCase())))
-: items.filter(item => !searchQuery || item.name.toLowerCase().startsWith(searchQuery.toLowerCase()));
-
+  // Filter items based on searchQuery and searchBy criteria
+  const filteredItems = items.filter((item) => {
+    return item[searchBy]?.toLowerCase().startsWith(searchQuery.toLowerCase());
+  });
 
   return (
     <div className="flex">
@@ -80,17 +69,32 @@ const filteredItems = selectedType
 
         {/* Container for Search and Buttons */}
         <div className="flex justify-between items-center mb-4">
-          
-          {/* Search Input on Left */}
-          <input
-            type="text"
-            placeholder="Search by Item Name"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="border border-gray-600 p-2 rounded w-1/3"
-          />
-          
-          {/* Buttons on Right */}
+          {/* Search Section */}
+          <div className="relative w-[400px]">
+            {/* Input field with embedded dropdown */}
+            <div className="flex border border-gray-400">
+                        {/* Dropdown after the search input */}
+                        <select
+                            value={searchBy}
+                            onChange={(e) => setSearchBy(e.target.value)}
+                            className="bg-gray-100 px-2 py-2 border border-gray-600 rounded-l text-gray-800 cursor-pointer focus:outline-none"
+                        >
+                            <option value="name">Name</option>
+                            <option value="itemcode">Item Code</option>
+                            <option value="type">Type</option>
+                        </select>
+                        <input
+                          type="text"
+                          placeholder={`Search by ${searchBy}`}
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          className="bg-gray-100 flex-grow px-3 py-2 focus:outline-none"
+                        />
+              {/* Search input field */}
+            </div>
+          </div>
+
+          {/* Buttons on the right side */}
           <div className="flex space-x-4">
             <Link
               to="/dashboard/items/form"
@@ -116,7 +120,9 @@ const filteredItems = selectedType
                   setShowCheckboxes(true);
                 }
               }}
-              className={`inline-block px-5 py-2 rounded text-white ${showCheckboxes ? 'bg-gray-500 hover:bg-gray-600' : 'bg-red-500 hover:bg-red-600'}`}
+              className={`inline-block px-5 py-2 rounded text-white ${
+                showCheckboxes ? 'bg-gray-500 hover:bg-gray-600' : 'bg-red-500 hover:bg-red-600'
+              }`}
             >
               {showCheckboxes ? 'Cancel Delete' : 'Delete Items'}
             </button>
@@ -130,12 +136,7 @@ const filteredItems = selectedType
                 <th className="py-2 px-4 border-b text-center"></th>
                 <th className="py-2 px-4 border-b text-center">Item Code</th>
                 <th className="py-2 px-4 border-b text-center">Name</th>
-                <th
-                  className="py-2 px-4 border-b cursor-pointer text-center"
-                  onClick={handleTypeClick}
-                >
-                  Type
-                </th>
+                <th className="py-2 px-4 border-b text-center">Type</th>
                 <th className="py-2 px-4 border-b text-center">Selling Price</th>
                 <th className="py-2 px-4 border-b text-center">Cost Price</th>
                 <th className="py-2 px-4 border-b text-center">Unit</th>

@@ -9,6 +9,7 @@ const Vendor = () => {
     const [selectedVendors, setSelectedVendors] = useState([]);
     const [showCheckboxes, setShowCheckboxes] = useState(false); // State to toggle checkboxes
     const [searchTerm, setSearchTerm] = useState(''); // State for search term
+    const [searchBy, setSearchBy] = useState('name'); // State to track search category
 
     useEffect(() => {
         fetchVendors();
@@ -47,10 +48,12 @@ const Vendor = () => {
         }
     };
 
-    // Filter vendors based on the search term (starts with)
-    const filteredVendors = vendors.filter(vendor =>
-        vendor.dispname.toLowerCase().startsWith(searchTerm.toLowerCase())
-    );
+    // Filter vendors based on search term and selected category (searchBy)
+    const filteredVendors = vendors.filter((vendor) => {
+        if (!searchTerm) return true; // If search term is empty, show all vendors
+        const value = vendor[searchBy]?.toLowerCase(); // Get value from the selected field
+        return value && value.startsWith(searchTerm.toLowerCase());
+    });
 
     return (
         <div className="flex">
@@ -62,13 +65,28 @@ const Vendor = () => {
 
                 <div className="flex justify-between mb-4">
                     {/* Search bar on the left */}
-                    <input
-                        type="text"
-                        placeholder="Search by name..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="px-4 py-2 border border-gray-600 rounded w-1/3"
-                    />
+                    <div className="flex w-1/3 overflow">
+                        {/* Dropdown after the search input */}
+                        <select
+                            value={searchBy}
+                            onChange={(e) => setSearchBy(e.target.value)}
+                            className="bg-gray-100 px-2 py-2 border border-gray-600 rounded-l text-gray-800 cursor-pointer focus:outline-none"
+                        >
+                            <option value="dispname">Name</option>
+                            <option value="company">Company</option>
+                            <option value="mail">Email</option>
+                            <option value="gstno">GST Number</option>
+                            <option value="workphone">Phone</option>
+                        </select>
+                        <input
+                            type="text"
+                            placeholder={`Search by ${searchBy}...`}
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="bg-gray-100 px-2 py-2 border border-gray-600 rounded-r w-full focus:outline-none"
+                        />
+                        
+                    </div>
 
                     {/* Buttons on the right */}
                     <div className="flex space-x-4">
@@ -128,7 +146,7 @@ const Vendor = () => {
                                 </tr>
                             ) : (
                                 filteredVendors.map((vendor, index) => (
-                                    <tr key={vendor.id || index} className="hover:bg-gray-100">
+                                    <tr key={vendor.sno || index} className="hover:bg-gray-100">
                                         <td className="py-2 px-4 border-b">
                                             {showCheckboxes && (
                                                 <input
@@ -139,7 +157,6 @@ const Vendor = () => {
                                                 />
                                             )}
                                         </td>
-
                                         <td className="py-2 px-4 text-center border-b">
                                             <Link to={`/dashboard/purchase/vendors/${vendor.sno}`} className="text-blue-500 hover:underline">
                                                 {vendor.dispname}
