@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import SidePanel from '../Sales/SidePanel';
+import SidePanel from '../sales/sidepanel';
 
 const EstimateTable = () => {
     const [estimates, setEstimates] = useState([]);
     const [dataLoaded, setDataLoaded] = useState(false);
     const [selectedEstimates, setSelectedEstimates] = useState([]);
     const [showCheckboxes, setShowCheckboxes] = useState(false); // State to toggle checkboxes
-    const [searchTerm, setSearchTerm] = useState('');
+    const [searchTerm, setSearchTerm] = useState(''); // State for search term
+    const [searchBy, setSearchBy] = useState('cname'); // State to track search category
 
     useEffect(() => {
         fetchEstimates();
@@ -46,11 +47,13 @@ const EstimateTable = () => {
             console.error('Error deleting estimates:', error.response ? error.response.data : error.message);
         }
     };
- 
-    const filteredEstimates = estimates.filter(estimate =>
-        estimate.cname.toLowerCase().startsWith(searchTerm.toLowerCase())
-    );
 
+    // Filter estimates based on search term and selected category (searchBy)
+    const filteredEstimates = estimates.filter((estimate) => {
+        if (!searchTerm) return true; // If search term is empty, show all estimates
+        const value = estimate[searchBy]?.toString().toLowerCase(); // Get value from the selected field
+        return value && value.startsWith(searchTerm.toLowerCase());
+    });
 
     return (
         <div className="flex">
@@ -62,13 +65,24 @@ const EstimateTable = () => {
 
                 <div className="flex justify-between mb-4">
                     {/* Search bar on the left */}
-                    <input
-                        type="text"
-                        placeholder="Search by name..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="px-4 py-2 border border-gray-600 rounded w-1/3"
-                    />
+                    <div className="flex w-1/3">
+                        {/* Dropdown for selecting the search category */}
+                        <select
+                            value={searchBy}
+                            onChange={(e) => setSearchBy(e.target.value)}
+                            className="bg-gray-100 px-2 py-2 border border-gray-600 rounded-l text-gray-800 cursor-pointer focus:outline-none"
+                        >
+                            <option value="cname">Name</option>
+                            <option value="quotenum">Quote Number</option>
+                        </select>
+                        <input
+                            type="text"
+                            placeholder={`Search by ${searchBy === 'cname' ? 'name' : 'quote number'}...`}
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="bg-gray-100 px-2 py-2 border border-gray-600 rounded-r w-full focus:outline-none"
+                        />
+                    </div>
 
                     {/* Buttons on the right */}
                     <div className="flex space-x-4">
@@ -76,7 +90,7 @@ const EstimateTable = () => {
                             to="/dashboard/sales/estimate/form"
                             className="inline-block px-5 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
                         >
-                            Add estimate
+                            Add Estimate
                         </Link>
                         <button
                             onClick={() => {
@@ -139,11 +153,7 @@ const EstimateTable = () => {
                                                 />
                                             )}
                                         </td>
-                                        <td className="py-2 px-4 text-center border-b">
-                                            
-                                                {estimate.cname}
-                                            
-                                        </td>
+                                        <td className="py-2 px-4 text-center border-b">{estimate.cname}</td>
                                         <td className="py-2 px-4 text-center border-b">{estimate.quotenum}</td>
                                         <td className="py-2 px-4 text-center border-b">{estimate.expdate}</td>
                                         <td className="py-2 px-4 text-center border-b">{estimate.taxtype}</td>
@@ -158,7 +168,6 @@ const EstimateTable = () => {
             </div>
         </div>
     );
-}
+};
 
-
-export default EstimateTable
+export default EstimateTable;

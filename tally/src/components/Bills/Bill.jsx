@@ -9,6 +9,8 @@ const Bill = () => {
     const [selectedBill, setSelectedBill] = useState([]);
     const [showCheckboxes, setShowCheckboxes] = useState(false); // State to toggle checkboxes
     const [searchTerm, setSearchTerm] = useState(''); // State for search term
+    const [searchBy, setSearchBy] = useState('name'); // State to track search category
+
     useEffect(() => {
         fetchBills();
     }, []);
@@ -31,7 +33,6 @@ const Bill = () => {
                 ? prevSelected.filter(id => id !== billId)
                 : [...prevSelected, billId]
         );
-
     };
 
     const handleDelete = async () => {
@@ -47,10 +48,12 @@ const Bill = () => {
         }
     };
 
-
-    const filteredBills = bill.filter(bil =>
-        bil.name.toLowerCase().startsWith(searchTerm.toLowerCase())
-    );
+    // Filter bills based on search term and selected category (searchBy)
+    const filteredBills = bill.filter((bil) => {
+        if (!searchTerm) return true; // If search term is empty, show all bills
+        const value = bil[searchBy]?.toString().toLowerCase(); // Get value from the selected field
+        return value && value.startsWith(searchTerm.toLowerCase());
+    });
 
     return (
         <div className="flex">
@@ -62,13 +65,25 @@ const Bill = () => {
 
                 <div className="flex justify-between mb-4">
                     {/* Search bar on the left */}
-                    <input
-                        type="text"
-                        placeholder="Search by name..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="px-4 py-2 border border-gray-600 rounded w-1/3"
-                    />
+                    <div className="flex w-1/3">
+                        {/* Dropdown for selecting the search category */}
+                        <select
+                            value={searchBy}
+                            onChange={(e) => setSearchBy(e.target.value)}
+                            className="bg-gray-100 px-2 py-2 border border-gray-600 rounded-l text-gray-800 cursor-pointer focus:outline-none"
+                        >
+                            <option value="name">Vendor</option>
+                            <option value="billnumber">Bill Number</option>
+                            <option value="gst">GST</option>
+                        </select>
+                        <input
+                            type="text"
+                            placeholder={`Search by ${searchBy}...`}
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="bg-gray-100 px-2 py-2 border border-gray-600 rounded-r w-full focus:outline-none"
+                        />
+                    </div>
 
                     {/* Buttons on the right */}
                     <div className="flex space-x-4">
@@ -87,7 +102,7 @@ const Bill = () => {
                             }}
                             className={`inline-block px-5 py-2 rounded text-white ${showCheckboxes ? 'bg-gray-500 hover:bg-gray-600' : 'bg-red-500 hover:bg-red-600'}`}
                         >
-                            {showCheckboxes ? 'Cancel' : 'Delete Customers'}
+                            {showCheckboxes ? 'Cancel' : 'Delete Bills'}
                         </button>
                         {showCheckboxes && selectedBill.length > 0 && (
                             <button
@@ -108,7 +123,6 @@ const Bill = () => {
                                 <th className="py-2 px-4 border-b">Vendor</th>
                                 <th className="py-2 px-4 border-b">Bill Number</th>
                                 <th className="py-2 px-4 border-b">Due Date</th>
-                                
                                 <th className="py-2 px-4 border-b">GST</th>
                                 <th className="py-2 px-4 border-b">Grand Total</th>
                             </tr>
@@ -141,12 +155,11 @@ const Bill = () => {
                                         </td>
                                         <td className="py-2 px-4 text-center border-b">
                                             <Link to={`/dashboard/sales/bill/${bill.sno}`} className="text-blue-500 hover:underline">
-                                                {bill.name}
+                                                {bill.name} {/* Change to the actual vendor field name */}
                                             </Link>
                                         </td>
                                         <td className="py-2 px-4 text-center border-b">{bill.billnumber}</td>
                                         <td className="py-2 px-4 text-center border-b">{bill.duedate}</td>
-                                        
                                         <td className="py-2 px-4 text-center border-b">{bill.gst}</td>
                                         <td className="py-2 px-4 text-center border-b">{bill.total}</td>
                                     </tr>
@@ -160,4 +173,4 @@ const Bill = () => {
     );
 }
 
-export default Bill
+export default Bill;

@@ -8,10 +8,12 @@ const PurchaseOrderTable = () => {
     const [dataLoaded, setDataLoaded] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState([]);
     const [showCheckboxes, setShowCheckboxes] = useState(false);
+    const [searchTerm, setSearchTerm] = useState(''); // State for search term
+    const [searchBy, setSearchBy] = useState('name'); // State for search category
 
     useEffect(() => {
         fetchOrders();
-    }, [])
+    }, []);
 
     const fetchOrders = async () => {
         try {
@@ -23,7 +25,7 @@ const PurchaseOrderTable = () => {
         } catch (error) {
             console.error('Error fetching orders data:', error.response ? error.response.data : error.message);
         }
-    }
+    };
 
     const handleCheckboxChange = (orderId) => {
         setSelectedOrder(prevSelected =>
@@ -32,7 +34,6 @@ const PurchaseOrderTable = () => {
                 : [...prevSelected, orderId]
         );
     };
-
 
     const handleDelete = async () => {
         if (selectedOrder.length <= 0) return;
@@ -47,6 +48,12 @@ const PurchaseOrderTable = () => {
         }
     };
 
+    // Filter orders based on search term and selected category (searchBy)
+    const filteredOrders = order.filter((ord) => {
+        if (!searchTerm) return true; // If search term is empty, show all orders
+        const value = ord[searchBy]?.toString().toLowerCase(); // Get value from the selected field
+        return value && value.startsWith(searchTerm.toLowerCase());
+    });
 
     return (
         <div className="flex">
@@ -57,15 +64,41 @@ const PurchaseOrderTable = () => {
                 <h1 className="text-xl font-bold mb-4">Order List</h1>
 
                 <div className="flex justify-between mb-4">
-                    <Link
-                        to="/dashboard/purchase/order/form"
-                        className="inline-block px-5 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                    >
-                        Add Purchase Order
-                    </Link>
+                    {/* Search bar on the left */}
+                    <div className="flex w-1/3">
+                        {/* Dropdown for selecting the search category */}
+                        <select
+                            value={searchBy}
+                            onChange={(e) => setSearchBy(e.target.value)}
+                            className="bg-gray-100 px-2 py-2 border border-gray-600 rounded-l text-gray-800 cursor-pointer focus:outline-none"
+                        >
+                            <option value="name">Name</option>
+                            <option value="orderno">Order Number</option>
+                        </select>
+                        <input
+                            type="text"
+                            placeholder={`Search by ${searchBy}...`}
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="bg-gray-100 px-2 py-2 border border-gray-600 rounded-r w-full focus:outline-none"
+                        />
+                    </div>
+
+                    {/* Buttons on the right */}
                     <div className="flex space-x-4">
+                        <Link
+                            to="/dashboard/purchase/order/form"
+                            className="inline-block px-5 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                        >
+                            Add Purchase Order
+                        </Link>
                         <button
-                            onClick={() => setShowCheckboxes(!showCheckboxes)}
+                            onClick={() => {
+                                setShowCheckboxes(!showCheckboxes);
+                                if (showCheckboxes) {
+                                    setSelectedOrder([]); // Unselect all checkboxes when 'Cancel' is clicked
+                                }
+                            }}
                             className={`inline-block px-5 py-2 rounded text-white ${showCheckboxes ? 'bg-gray-500 hover:bg-gray-600' : 'bg-red-500 hover:bg-red-600'}`}
                         >
                             {showCheckboxes ? 'Cancel' : 'Delete Customers'}
@@ -89,10 +122,7 @@ const PurchaseOrderTable = () => {
                                 <th className="py-2 px-4 border-b">Name</th>
                                 <th className="py-2 px-4 border-b">Order No</th>
                                 <th className="py-2 px-4 border-b">Delivery Date</th>
-                                {/* <th className="py-2 px-4 border-b">Payment Terms</th> */}
                                 <th className="py-2 px-4 border-b">Grand Total</th>
-
-
                             </tr>
                         </thead>
                         <tbody>
@@ -102,14 +132,14 @@ const PurchaseOrderTable = () => {
                                         Loading Orders...
                                     </td>
                                 </tr>
-                            ) : order.length === 0 ? (
+                            ) : filteredOrders.length === 0 ? (
                                 <tr>
                                     <td colSpan="7" className="py-2 px-4 text-center text-gray-500">
-                                        No order found
+                                        No orders found
                                     </td>
                                 </tr>
                             ) : (
-                                order.map((order, index) => (
+                                filteredOrders.map((order, index) => (
                                     <tr key={order.sno || index} className="hover:bg-gray-100">
                                         <td className="py-2 px-4 border-b">
                                             {showCheckboxes && (
@@ -121,16 +151,10 @@ const PurchaseOrderTable = () => {
                                                 />
                                             )}
                                         </td>
-
-                                        <td className="py-2 px-4 text-center border-b">
-                                            {order.name}
-                                        </td>
+                                        <td className="py-2 px-4 text-center border-b">{order.name}</td>
                                         <td className="py-2 px-4 text-center border-b">{order.orderno}</td>
                                         <td className="py-2 px-4 text-center border-b">{order.deliverydate}</td>
-                                        {/* <td className="py-2 px-4 text-center border-b">{order.gstno}</td> */}
                                         <td className="py-2 px-4 text-center border-b">{order.total}</td>
-
-
                                     </tr>
                                 ))
                             )}
@@ -140,6 +164,6 @@ const PurchaseOrderTable = () => {
             </div>
         </div>
     );
-}
+};
 
-export default PurchaseOrderTable
+export default PurchaseOrderTable;
