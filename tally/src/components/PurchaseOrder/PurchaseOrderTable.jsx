@@ -151,16 +151,13 @@ const PurchaseOrderTable = () => {
                                                 />
                                             )}
                                         </td>
-<<<<<<< HEAD
                                         <td className="py-2 px-4 text-center border-b">{order.name}</td>
-=======
 
                                         <td className="py-2 px-4 text-center border-b">
                                         <Link to={`/dashboard/purchase/order/${order.sno}`} className="text-blue-500 hover:underline">
                                                 {order.name}
                                             </Link>
                                         </td>
->>>>>>> 6bdf6b0f741d13c7a415f3385dee6535000dbc3e
                                         <td className="py-2 px-4 text-center border-b">{order.orderno}</td>
                                         <td className="py-2 px-4 text-center border-b">{order.deliverydate}</td>
                                         <td className="py-2 px-4 text-center border-b">{order.total}</td>
