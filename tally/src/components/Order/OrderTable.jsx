@@ -1,31 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import SidePanel from '../Purchase/Sidepanel';
-
-const PurchaseOrderTable = () => {
+import SidePanel from '../Sales/SidePanel';
+const OrderTable = () => {
     const [order, setOrder] = useState([]);
     const [dataLoaded, setDataLoaded] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState([]);
     const [showCheckboxes, setShowCheckboxes] = useState(false);
-    const [searchTerm, setSearchTerm] = useState(''); // State for search term
-    const [searchBy, setSearchBy] = useState('name'); // State for search category
-
     useEffect(() => {
         fetchOrders();
-    }, []);
-
+    }, [])
+    
     const fetchOrders = async () => {
         try {
-            const response = await axios.get('http://localhost:3001/api/purchaseorder');
+            // console.log(order.state);
+            const response = await axios.get('http://localhost:3001/api/salesorder');
             if (response.data) {
                 setOrder(response.data);
+                console.log(response.data);
+                
                 setDataLoaded(true);
             }
         } catch (error) {
             console.error('Error fetching orders data:', error.response ? error.response.data : error.message);
         }
-    };
+    }
 
     const handleCheckboxChange = (orderId) => {
         setSelectedOrder(prevSelected =>
@@ -35,11 +34,12 @@ const PurchaseOrderTable = () => {
         );
     };
 
+
     const handleDelete = async () => {
         if (selectedOrder.length <= 0) return;
 
         try {
-            await axios.delete('http://localhost:3001/api/purchaseorder', { data: { ids: selectedOrder } });
+            await axios.delete('http://localhost:3001/api/salesorder', { data: { ids: selectedOrder } });
             fetchOrders();
             setSelectedOrder([]);
             setShowCheckboxes(false); // Hide checkboxes after deletion
@@ -48,12 +48,6 @@ const PurchaseOrderTable = () => {
         }
     };
 
-    // Filter orders based on search term and selected category (searchBy)
-    const filteredOrders = order.filter((ord) => {
-        if (!searchTerm) return true; // If search term is empty, show all orders
-        const value = ord[searchBy]?.toString().toLowerCase(); // Get value from the selected field
-        return value && value.startsWith(searchTerm.toLowerCase());
-    });
 
     return (
         <div className="flex">
@@ -64,41 +58,15 @@ const PurchaseOrderTable = () => {
                 <h1 className="text-xl font-bold mb-4">Order List</h1>
 
                 <div className="flex justify-between mb-4">
-                    {/* Search bar on the left */}
-                    <div className="flex w-1/3">
-                        {/* Dropdown for selecting the search category */}
-                        <select
-                            value={searchBy}
-                            onChange={(e) => setSearchBy(e.target.value)}
-                            className="bg-gray-100 px-2 py-2 border border-gray-600 rounded-l text-gray-800 cursor-pointer focus:outline-none"
-                        >
-                            <option value="name">Name</option>
-                            <option value="orderno">Order Number</option>
-                        </select>
-                        <input
-                            type="text"
-                            placeholder={`Search by ${searchBy}...`}
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="bg-gray-100 px-2 py-2 border border-gray-600 rounded-r w-full focus:outline-none"
-                        />
-                    </div>
-
-                    {/* Buttons on the right */}
+                    <Link
+                        to="/dashboard/sales/order/form"
+                        className="inline-block px-5 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                    >
+                        Add sales Order
+                    </Link>
                     <div className="flex space-x-4">
-                        <Link
-                            to="/dashboard/purchase/order/form"
-                            className="inline-block px-5 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                        >
-                            Add Purchase Order
-                        </Link>
                         <button
-                            onClick={() => {
-                                setShowCheckboxes(!showCheckboxes);
-                                if (showCheckboxes) {
-                                    setSelectedOrder([]); // Unselect all checkboxes when 'Cancel' is clicked
-                                }
-                            }}
+                            onClick={() => setShowCheckboxes(!showCheckboxes)}
                             className={`inline-block px-5 py-2 rounded text-white ${showCheckboxes ? 'bg-gray-500 hover:bg-gray-600' : 'bg-red-500 hover:bg-red-600'}`}
                         >
                             {showCheckboxes ? 'Cancel' : 'Delete Customers'}
@@ -121,8 +89,11 @@ const PurchaseOrderTable = () => {
                                 <th className="py-2 px-4 border-b"></th>
                                 <th className="py-2 px-4 border-b">Name</th>
                                 <th className="py-2 px-4 border-b">Order No</th>
-                                <th className="py-2 px-4 border-b">Delivery Date</th>
+                                <th className="py-2 px-4 border-b">Shipment Date</th>
+                                {/* <th className="py-2 px-4 border-b">Payment Terms</th> */}
                                 <th className="py-2 px-4 border-b">Grand Total</th>
+
+
                             </tr>
                         </thead>
                         <tbody>
@@ -132,14 +103,14 @@ const PurchaseOrderTable = () => {
                                         Loading Orders...
                                     </td>
                                 </tr>
-                            ) : filteredOrders.length === 0 ? (
+                            ) : order.length === 0 ? (
                                 <tr>
                                     <td colSpan="7" className="py-2 px-4 text-center text-gray-500">
-                                        No orders found
+                                        No order found
                                     </td>
                                 </tr>
                             ) : (
-                                filteredOrders.map((order, index) => (
+                                order.map((order, index) => (
                                     <tr key={order.sno || index} className="hover:bg-gray-100">
                                         <td className="py-2 px-4 border-b">
                                             {showCheckboxes && (
@@ -151,19 +122,18 @@ const PurchaseOrderTable = () => {
                                                 />
                                             )}
                                         </td>
-<<<<<<< HEAD
-                                        <td className="py-2 px-4 text-center border-b">{order.name}</td>
-=======
 
                                         <td className="py-2 px-4 text-center border-b">
-                                        <Link to={`/dashboard/purchase/order/${order.sno}`} className="text-blue-500 hover:underline">
-                                                {order.name}
-                                            </Link>
+                                        <Link to={`/dashboard/sales/order/${order.sno}`} className="text-blue-500 hover:underline">
+                                            {order.name}
+                                        </Link>
                                         </td>
->>>>>>> 6bdf6b0f741d13c7a415f3385dee6535000dbc3e
                                         <td className="py-2 px-4 text-center border-b">{order.orderno}</td>
-                                        <td className="py-2 px-4 text-center border-b">{order.deliverydate}</td>
+                                        <td className="py-2 px-4 text-center border-b">{order.shipmentdate}</td>
+                                        {/* <td className="py-2 px-4 text-center border-b">{order.gstno}</td> */}
                                         <td className="py-2 px-4 text-center border-b">{order.total}</td>
+
+
                                     </tr>
                                 ))
                             )}
@@ -173,6 +143,6 @@ const PurchaseOrderTable = () => {
             </div>
         </div>
     );
-};
+}
 
-export default PurchaseOrderTable;
+export default OrderTable

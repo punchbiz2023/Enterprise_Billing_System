@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-import SidePanel from '../sales/SidePanel';
-import SalesPerson from '../Salesperson/SalesPerson'
+import SidePanel from '../sales/sidepanel';
 import { Link, useNavigate } from 'react-router-dom';
 
 
 const Order = () => {
 
   const [salespersons, setSalespersons] = useState([]);
- 
+  const [salesperson, setSalesperson] = useState('')
+
   const [invoiceNumber, setInvoiceNumber] = useState('');
   const [invoiceDate, setInvoiceDate] = useState('');
   const [dueDate, setDueDate] = useState('');
@@ -44,6 +44,9 @@ const Order = () => {
     fetchItems();
   }, []);
 
+  // console.log(salesperson);
+
+
   const fetchSalespeople = async () => {
     try {
       const response = await axios.get('http://localhost:3001/api/salespersons');
@@ -59,7 +62,7 @@ const Order = () => {
       const response = await axios.get('http://localhost:3001/api/customers');
       const customersWithState = response.data.map((cust) => ({
         ...cust,
-        state: cust.billaddress.state, 
+        state: cust.billaddress.state,
       }));
       setCustomers(customersWithState);
     } catch (error) {
@@ -70,19 +73,24 @@ const Order = () => {
     const selectedCustomerName = e.target.value;
     setCustomer(selectedCustomerName);
 
-    
+
     const selectedCustomer = customers.find((cust) => cust.name === selectedCustomerName);
     if (selectedCustomer) {
-      setCustomerState(selectedCustomer.state); 
+      setCustomerState(selectedCustomer.state);
+      setCustomerName(selectedCustomer.name)
+      // setCustomerAddress(JSON.stringify(selectedCustomer.billaddress)) 
+      setCustomerPh(selectedCustomer.workphone)
+      setCustomerMail(selectedCustomer.mail)
+
     } else {
-      setCustomerState(''); 
+      setCustomerState('');
+      setCustomerPh('');
+      setCustomerMail('');
+
     }
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setNewSalesperson({ ...newSalesperson, [name]: value });
-  };
+
   const fetchItems = async () => {
     try {
       const response = await axios.get('http://localhost:3001/api/items');
@@ -91,24 +99,40 @@ const Order = () => {
       console.error('Error fetching items:', error);
     }
   };
-  const handleDownload = async () => {
-    const blob = await pdf(<MyDocument />).toBlob();
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'invoice.pdf';
-    link.click();
-  };
-  const handleCheckboxChange = (e) => {
-    setIsPaymentReceived(e.target.checked);
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const orderDetails = {
+      name: customerName,
+      state: customerState,
+      caddress: customerAddress,
+      contact: customerPh,
+      mail: customerMail,
+      invoiceid: invoiceNumber,
+      orderno: salesOrder,
+      orderdate: salesDate,
+      shipmentdate: salesshipDate,
+      invoicedate: invoiceDate,
+      duedate: dueDate,
+      terms: terms,
+      itemdetails: items,
+      subject: subject,
+      salesperson: salesperson,
+      taxtype: taxType,
+      taxrate: tax,
+      total: calculateTotal()
+    };
+
+    try {
+      const response = await axios.post('http://localhost:3001/api/salesorder', orderDetails);
+      navigate('/dashboard/sales/order')
+    } catch (error) {
+      console.error('Error creating Sales Order:', error.response ? error.response.data : error.message);
+    }
   };
 
-  
-  
-  
-  
-  
-  
 
   const handleItemChange = (index, field, value) => {
     const newItems = [...items];
@@ -121,7 +145,7 @@ const Order = () => {
         newItems[index].gst = selectedItem.gst;
       }
     }
-    if (['rate','HsnCode', 'quantity', 'discount', 'gst', 'sgst', 'cgst', 'igst'].includes(field)) {
+    if (['rate', 'HsnCode', 'quantity', 'discount', 'gst', 'sgst', 'cgst', 'igst'].includes(field)) {
       const rate = parseFloat(newItems[index].rate) || 0;
       const HsnCode = parseFloat(newItems[index].HsnCode) || 0;
       const quantity = parseFloat(newItems[index].quantity) || 0;
@@ -153,27 +177,8 @@ const Order = () => {
     setItems(newItems);
   };
 
-
-
-  const setGSTForState = (index, gst) => {
-    const newItems = [...items];
-
-    if (customer.state === 'Tamil Nadu') {
-      const halfGST = gst / 2;
-      newItems[index].sgst = halfGST.toFixed(2);
-      newItems[index].cgst = halfGST.toFixed(2);
-      newItems[index].igst = '';  
-    } else {
-      newItems[index].sgst = '';  
-      newItems[index].cgst = '';  
-      newItems[index].igst = gst.toFixed(2);  
-    }
-
-    setItems(newItems);
-  };
-
   const addNewItem = () => {
-    setItems([...items, { item: '',HsnCode: '', quantity: '', rate: '', discount: '', gst: '', sgst: '', cgst: '', igst: '', amount: '' }]);
+    setItems([...items, { item: '', HsnCode: '', quantity: '', rate: '', discount: '', gst: '', sgst: '', cgst: '', igst: '', amount: '' }]);
   };
 
   const removeItem = (index) => {
@@ -181,13 +186,13 @@ const Order = () => {
   };
 
   const calculateSubtotal = () => {
-    
+
     return items.reduce((acc, item) => {
       const rate = parseFloat(item.rate) || 0;
       const quantity = parseFloat(item.quantity) || 0;
       const discount = parseFloat(item.discount) || 0;
 
-      const baseAmount = rate * quantity;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+      const baseAmount = rate * quantity;
       const discountedAmount = baseAmount * (1 - discount / 100);
 
       return acc + discountedAmount;
@@ -230,11 +235,11 @@ const Order = () => {
     const adjustedValue = adjustmentType === 'add' ? Number(adjustment) : -Number(adjustment);
 
     const totalBeforeAdjustment = subtotal + taxAmount;
-    
+
     ('Subtotal:', subtotal);
-    
-    
-    
+
+
+
 
     let total;
 
@@ -246,57 +251,9 @@ const Order = () => {
       total = totalBeforeAdjustment;
     }
 
-    
+
 
     return (Math.round(total * 100) / 100).toFixed(2);
-  };
-
-
-  const numberToWords = (num) => {
-    const singleDigits = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
-    const doubleDigits = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
-    const teens = ['Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
-    const tens = ['Ten', ...teens];
-
-    const higherUnits = ['', 'Thousand', 'Lakh', 'Crore'];  
-
-    if (num === 0) return 'Zero Rupees Only';
-
-    let words = '';
-
-    
-    const convertBelowThousand = (n) => {
-      let str = '';
-      if (n > 99) {
-        str += singleDigits[Math.floor(n / 100)] + ' Hundred ';
-        n %= 100;
-      }
-      if (n > 10 && n < 20) {
-        str += teens[n - 11] + ' ';
-      } else {
-        if (n >= 10) {
-          str += doubleDigits[Math.floor(n / 10)] + ' ';
-          n %= 10;
-        }
-        if (n > 0) {
-          str += singleDigits[n] + ' ';
-        }
-      }
-      return str.trim();
-    };
-
-    
-    let unitIndex = 0;
-    while (num > 0) {
-      let chunk = num % 1000;
-      if (chunk !== 0) {
-        words = convertBelowThousand(chunk) + (higherUnits[unitIndex] ? ' ' + higherUnits[unitIndex] : '') + ' ' + words;
-      }
-      num = Math.floor(num / 1000);
-      unitIndex++;
-    }
-
-    return words.trim() + ' Rupees Only';
   };
 
 
@@ -304,21 +261,21 @@ const Order = () => {
     const value = e.target.value;
     if (value === 'TCS') {
       setShowCustomTax(true);
-      setTax(''); 
+      setTax('');
     } else {
       setShowCustomTax(false);
-      setTax(Number(value)); 
+      setTax(Number(value));
     }
   };
 
 
   const handleCustomTaxChange = (e) => {
     const value = e.target.value;
-    const numericValue = parseFloat(value); 
+    const numericValue = parseFloat(value);
     if (!isNaN(numericValue) && value.trim() !== '') {
       setCustomTax(numericValue);
     } else {
-      setCustomTax(''); 
+      setCustomTax('');
     }
   };
 
@@ -329,26 +286,17 @@ const Order = () => {
   };
 
 
-
-  
-
-
-  
-  
-  
-  
-
   return (
     <div className='flex'>
       <div className="w-1/5">
         <SidePanel />
       </div>
-      <div className="p-6 mt-8 mr-20 ml-50 bg-gray-50 min-h-screen flex items-center justify-center">
+      <div className="p-6 mt-8 mr-12 ml-60 bg-gray-50 min-h-screen flex items-center justify-center">
         <div className="max-w-9xl w-full bg-white p-8 rounded-lg shadow-md">
           <h1 className="text-2xl font-bold mb-6">Sales Order</h1>
           <form className="space-y-8" onSubmit={(e) => {
             e.preventDefault();
-            
+
           }}>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
@@ -436,7 +384,7 @@ const Order = () => {
                 <input
                   type="date"
                   value={salesshipDate}
-                  onChange={(e) => setsalesshipdate(e.target.value)}
+                  onChange={(e) => setsalesshipDate(e.target.value)}
                   className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
                 />
               </div>
@@ -510,19 +458,19 @@ const Order = () => {
                       </select>
                     </td>
                     <td>
-        <input
-          type="text" // Use "text" instead of "number" to remove up/down arrows
-          value={item.HsnCode}
-          onChange={(e) => {
-            // Allow only numbers and ensure value doesn't go below 0
-            const value = e.target.value;
-            if (/^\d*$/.test(value)) { // Regex to allow only digits (no letters or special characters)
-              handleItemChange(index, 'HsnCode', value === '' ? '' : Math.max(0, Number(value)));
-            }
-          }}
-          className="border border-gray-300 rounded-md p-2 w-full"
-        />
-      </td>
+                      <input
+                        type="text" // Use "text" instead of "number" to remove up/down arrows
+                        value={item.HsnCode}
+                        onChange={(e) => {
+                          // Allow only numbers and ensure value doesn't go below 0
+                          const value = e.target.value;
+                          if (/^\d*$/.test(value)) { // Regex to allow only digits (no letters or special characters)
+                            handleItemChange(index, 'HsnCode', value === '' ? '' : Math.max(0, Number(value)));
+                          }
+                        }}
+                        className="border border-gray-300 rounded-md p-2 w-full"
+                      />
+                    </td>
                     <td>
                       <input
                         type="number"
@@ -561,7 +509,7 @@ const Order = () => {
                         type="number"
                         value={items[index].sgst || ''}
                         className="border p-2 w-full"
-                        readOnly 
+                        readOnly
                       />
                     </td>
                     <td>
@@ -569,7 +517,7 @@ const Order = () => {
                         type="number"
                         value={items[index].cgst || ''}
                         className="border p-2 w-full"
-                        readOnly 
+                        readOnly
                       />
                     </td>
                     <td>
@@ -577,7 +525,7 @@ const Order = () => {
                         type="number"
                         value={items[index].igst || ''}
                         className="border p-2 w-full"
-                        readOnly 
+                        readOnly
                       />
                     </td>
 
@@ -615,14 +563,20 @@ const Order = () => {
             <label htmlFor="salesperson" className="block text-sm font-medium text-gray-700">
               Salesperson
             </label>
-            <select id="salesperson" name="salesperson" className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2">
+            <select
+              id="salesperson"
+              onChange={(e) => setSalesperson(e.target.value)} // Update the salesperson ID or name
+              name="salesperson"
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+            >
               <option value="">Select a Salesperson</option>
               {salespersons.map((person, index) => (
-                <option key={index} value={person}>
+                <option key={index} value={person.name}> {/* Use person.name as the value */}
                   {person.name}
                 </option>
               ))}
             </select>
+
             <button
               type="button"
               onClick={() => navigate('/dashboard/salesperson')}
@@ -630,7 +584,7 @@ const Order = () => {
             >
               Add Salesperson
             </button>
-              
+
             {/* Tax and Adjustment Section */}
             <div className="space-y-4">
               <div>
@@ -674,7 +628,7 @@ const Order = () => {
                   </select>
                 </div>
               )}
-             
+
             </div>
 
             {/* Total Section */}
@@ -709,6 +663,7 @@ const Order = () => {
             </div>
             <button
               type="submit"
+              onClick={handleSubmit}
               className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-500 hover:bg-blue-600"
             >
               Save

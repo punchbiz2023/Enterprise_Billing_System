@@ -154,8 +154,13 @@ const Bill = () => {
                                             )}
                                         </td>
                                         <td className="py-2 px-4 text-center border-b">
+<<<<<<< HEAD
                                             <Link to={`/dashboard/sales/bill/${bill.sno}`} className="text-blue-500 hover:underline">
                                                 {bill.name} {/* Change to the actual vendor field name */}
+=======
+                                            <Link to={`/dashboard/purchase/bill/${bill.sno}`} className="text-blue-500 hover:underline">
+                                                {bill.name}
+>>>>>>> 6bdf6b0f741d13c7a415f3385dee6535000dbc3e
                                             </Link>
                                         </td>
                                         <td className="py-2 px-4 text-center border-b">{bill.billnumber}</td>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import SidePanel from '../sales/sidepanel';
+import SidePanel from '../Sales/SidePanel';
 
 const EstimateTable = () => {
     const [estimates, setEstimates] = useState([]);
@@ -154,6 +154,12 @@ const EstimateTable = () => {
                                             )}
                                         </td>
                                         <td className="py-2 px-4 text-center border-b">{estimate.cname}</td>
+                                        <td className="py-2 px-4 text-center border-b">
+                                            <Link to={`/dashboard/sales/estimate/${estimate.sno}`}  className="text-blue-500 hover:underline" >
+                                                {estimate.cname}
+                                            </Link>
+                                            
+                                        </td>
                                         <td className="py-2 px-4 text-center border-b">{estimate.quotenum}</td>
                                         <td className="py-2 px-4 text-center border-b">{estimate.expdate}</td>
                                         <td className="py-2 px-4 text-center border-b">{estimate.taxtype}</td>
