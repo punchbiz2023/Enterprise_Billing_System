@@ -1,6 +1,7 @@
-import { pgTable, serial, text, numeric, json, date, boolean , decimal
-  
- } from 'drizzle-orm/pg-core';
+import {
+  pgTable, serial, text, numeric, json, date, boolean, decimal
+
+} from 'drizzle-orm/pg-core';
 
 export const CustTable = pgTable('customer', {
   sno: serial('sno').primaryKey(),
@@ -50,11 +51,11 @@ export const Items = pgTable('items', {
   purchasedescription: text('purchasedescription'),
   salesaccount: text('salesaccount').notNull(),
   purchaseaccount: text('purchaseaccount').notNull(),
-  taxpayable: boolean('taxPayable'),  
-  gst: decimal('gst'),   
+  taxpayable: boolean('taxPayable'),
+  gst: decimal('gst'),
 });
 
-export const Users = pgTable('users',{
+export const Users = pgTable('users', {
   sno: serial('sno').primaryKey(),
   name: text('name').notNull(),
   mail: text('mail').notNull(),
@@ -66,7 +67,7 @@ export const Users = pgTable('users',{
   docs: text('docs')
 })
 
-export const Estimate = pgTable('estimate',{
+export const Estimate = pgTable('estimate', {
   sno: serial('sno').primaryKey(),
   cname: text('cname').notNull(),
   quotenum: text('quotenum').notNull(),
@@ -83,7 +84,7 @@ export const Estimate = pgTable('estimate',{
 })
 
 
-export const Project = pgTable('project',{
+export const Project = pgTable('project', {
   sno: serial('sno').primaryKey(),
   name: text('name').notNull(),
   pcode: text('pcode').notNull(),
@@ -96,18 +97,18 @@ export const Project = pgTable('project',{
   projecthours: text('projecthours').notNull(),
   users: json('users').notNull(),
   tasks: json('tasks').notNull(),
-  
+
 })
 
 
-export const SalesPerson = pgTable('salesperson',{
+export const SalesPerson = pgTable('salesperson', {
   sno: serial('sno').primaryKey(),
   name: text('name').notNull(),
   mail: text('mail').notNull()
 })
 
 
-export const PurchaseOrder = pgTable('purchaseorder',{
+export const PurchaseOrder = pgTable('purchaseorder', {
   sno: serial('sno').primaryKey(),
   name: text('name').notNull(),
   delivery: text('delivery').notNull(),
@@ -123,7 +124,7 @@ export const PurchaseOrder = pgTable('purchaseorder',{
 })
 
 
-export const Invoice = pgTable('invoice',{
+export const Invoice = pgTable('invoice', {
   sno: serial('sno').primaryKey(),
   name: text('name').notNull(),
   state: text('state').notNull(),
@@ -140,16 +141,39 @@ export const Invoice = pgTable('invoice',{
   amount: numeric('amount'),
 })
 
-export const BillForm = pgTable('bill',{
+export const BillForm = pgTable('bill', {
   sno: serial('sno').primaryKey(),
   name: text('name').notNull(),
-  billnumber:text('billnumber').notNull(),
-  orderno:text('orderno').notNull(),
-  billdate:date('billdate').notNull(),
-  duedate:date('duedate').notNull(),
+  billnumber: text('billnumber').notNull(),
+  orderno: text('orderno').notNull(),
+  billdate: date('billdate').notNull(),
+  duedate: date('duedate').notNull(),
   terms: text('terms').notNull(),
   modeofshipment: text('modeofshipment'),
   itemdetails: json('itemdetails').notNull(),
   gst: numeric('gst').notNull(),
+  total: numeric('total').notNull()
+})
+
+
+export const SalesOrder = pgTable('salesorder', {
+  sno: serial('sno').primaryKey(),
+  name: text('name').notNull(),
+  state: text('state').notNull(),
+  caddress: text('caddress').notNull(),
+  contact: text('contact').notNull(),
+  mail: text('mail').notNull(),
+  invoiceid: text('invoiceid').notNull(),
+  orderno: text('orderno').notNull(),
+  orderdate: date('orderdate').notNull(),
+  shipmentdate: date('shipmentdate').notNull(),
+  invoicedate: date('invoicedate').notNull(),
+  duedate: date('duedate').notNull(),
+  terms: text('terms').notNull(),
+  itemdetails: json('itemdetails').notNull(),
+  subject: text('subject').notNull(),
+  salesperson: text('salesperson').notNull(),
+  taxtype: text('taxtype').notNull(),
+  taxrate: text('taxrate').notNull(),
   total: numeric('total').notNull()
 })

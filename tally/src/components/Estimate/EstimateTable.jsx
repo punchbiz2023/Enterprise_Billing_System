@@ -140,8 +140,9 @@ const EstimateTable = () => {
                                             )}
                                         </td>
                                         <td className="py-2 px-4 text-center border-b">
-                                            
+                                            <Link to={`/dashboard/sales/estimate/${estimate.sno}`}  className="text-blue-500 hover:underline" >
                                                 {estimate.cname}
+                                            </Link>
                                             
                                         </td>
                                         <td className="py-2 px-4 text-center border-b">{estimate.quotenum}</td>

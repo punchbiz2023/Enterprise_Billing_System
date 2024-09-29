@@ -1,5 +1,5 @@
 {
-  "id": "b21ca024-d2d4-4e80-8d09-b90d811c9176",
+  "id": "39bebc58-7ab7-4f9c-b088-4be7b1417f67",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -605,6 +605,130 @@
         "gst": {
           "name": "gst",
           "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "total": {
+          "name": "total",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.salesorder": {
+      "name": "salesorder",
+      "schema": "",
+      "columns": {
+        "sno": {
+          "name": "sno",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "state": {
+          "name": "state",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "caddress": {
+          "name": "caddress",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "contact": {
+          "name": "contact",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "mail": {
+          "name": "mail",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "invoiceid": {
+          "name": "invoiceid",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "orderno": {
+          "name": "orderno",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "orderdate": {
+          "name": "orderdate",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "shipmentdate": {
+          "name": "shipmentdate",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "invoicedate": {
+          "name": "invoicedate",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "duedate": {
+          "name": "duedate",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "terms": {
+          "name": "terms",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "itemdetails": {
+          "name": "itemdetails",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "subject": {
+          "name": "subject",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "salesperson": {
+          "name": "salesperson",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "taxtype": {
+          "name": "taxtype",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "taxrate": {
+          "name": "taxrate",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },

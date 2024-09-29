@@ -1,23 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import SidePanel from '../Purchase/Sidepanel';
-
-const PurchaseOrderTable = () => {
+import SidePanel from '../Sales/SidePanel';
+const OrderTable = () => {
     const [order, setOrder] = useState([]);
     const [dataLoaded, setDataLoaded] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState([]);
     const [showCheckboxes, setShowCheckboxes] = useState(false);
-
     useEffect(() => {
         fetchOrders();
     }, [])
-
+    
     const fetchOrders = async () => {
         try {
-            const response = await axios.get('http://localhost:3001/api/purchaseorder');
+            // console.log(order.state);
+            const response = await axios.get('http://localhost:3001/api/salesorder');
             if (response.data) {
                 setOrder(response.data);
+                console.log(response.data);
+                
                 setDataLoaded(true);
             }
         } catch (error) {
@@ -38,7 +39,7 @@ const PurchaseOrderTable = () => {
         if (selectedOrder.length <= 0) return;
 
         try {
-            await axios.delete('http://localhost:3001/api/purchaseorder', { data: { ids: selectedOrder } });
+            await axios.delete('http://localhost:3001/api/salesorder', { data: { ids: selectedOrder } });
             fetchOrders();
             setSelectedOrder([]);
             setShowCheckboxes(false); // Hide checkboxes after deletion
@@ -58,10 +59,10 @@ const PurchaseOrderTable = () => {
 
                 <div className="flex justify-between mb-4">
                     <Link
-                        to="/dashboard/purchase/order/form"
+                        to="/dashboard/sales/order/form"
                         className="inline-block px-5 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
                     >
-                        Add Purchase Order
+                        Add sales Order
                     </Link>
                     <div className="flex space-x-4">
                         <button
@@ -88,7 +89,7 @@ const PurchaseOrderTable = () => {
                                 <th className="py-2 px-4 border-b"></th>
                                 <th className="py-2 px-4 border-b">Name</th>
                                 <th className="py-2 px-4 border-b">Order No</th>
-                                <th className="py-2 px-4 border-b">Delivery Date</th>
+                                <th className="py-2 px-4 border-b">Shipment Date</th>
                                 {/* <th className="py-2 px-4 border-b">Payment Terms</th> */}
                                 <th className="py-2 px-4 border-b">Grand Total</th>
 
@@ -123,12 +124,12 @@ const PurchaseOrderTable = () => {
                                         </td>
 
                                         <td className="py-2 px-4 text-center border-b">
-                                        <Link to={`/dashboard/purchase/order/${order.sno}`} className="text-blue-500 hover:underline">
-                                                {order.name}
-                                            </Link>
+                                        <Link to={`/dashboard/sales/order/${order.sno}`} className="text-blue-500 hover:underline">
+                                            {order.name}
+                                        </Link>
                                         </td>
                                         <td className="py-2 px-4 text-center border-b">{order.orderno}</td>
-                                        <td className="py-2 px-4 text-center border-b">{order.deliverydate}</td>
+                                        <td className="py-2 px-4 text-center border-b">{order.shipmentdate}</td>
                                         {/* <td className="py-2 px-4 text-center border-b">{order.gstno}</td> */}
                                         <td className="py-2 px-4 text-center border-b">{order.total}</td>
 
@@ -144,4 +145,4 @@ const PurchaseOrderTable = () => {
     );
 }
 
-export default PurchaseOrderTable
+export default OrderTable

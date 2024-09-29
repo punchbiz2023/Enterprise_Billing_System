@@ -140,7 +140,7 @@ const Invoice = () => {
                       )}
                     </td>
                     <td className="py-2 px-4 text-center border-b">
-                        {invoice.name}
+                        <Link to={`/dashboard/sales/invoice/${invoice.sno}` }className="text-blue-500 hover:underline">{invoice.name}</Link>
                     </td>
                     <td className="py-2 px-4 text-center border-b">{invoice.duedate}</td>
                     <td className="py-2 px-4 text-center border-b">{invoice.taxtype}</td>

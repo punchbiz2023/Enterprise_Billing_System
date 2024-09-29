@@ -140,7 +140,7 @@ const Bill = () => {
                                             )}
                                         </td>
                                         <td className="py-2 px-4 text-center border-b">
-                                            <Link to={`/dashboard/sales/bill/${bill.sno}`} className="text-blue-500 hover:underline">
+                                            <Link to={`/dashboard/purchase/bill/${bill.sno}`} className="text-blue-500 hover:underline">
                                                 {bill.name}
                                             </Link>
                                         </td>
