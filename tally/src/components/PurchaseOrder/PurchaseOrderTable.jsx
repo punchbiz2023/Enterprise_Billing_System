@@ -8,8 +8,8 @@ const PurchaseOrderTable = () => {
     const [dataLoaded, setDataLoaded] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState([]);
     const [showCheckboxes, setShowCheckboxes] = useState(false);
-    const [searchTerm, setSearchTerm] = useState(''); // State for search term
-    const [searchBy, setSearchBy] = useState('name'); // State for search category
+    const [searchTerm, setSearchTerm] = useState(''); 
+    const [searchBy, setSearchBy] = useState('name'); 
 
     useEffect(() => {
         fetchOrders();
@@ -42,16 +42,16 @@ const PurchaseOrderTable = () => {
             await axios.delete('http://localhost:3001/api/purchaseorder', { data: { ids: selectedOrder } });
             fetchOrders();
             setSelectedOrder([]);
-            setShowCheckboxes(false); // Hide checkboxes after deletion
+            setShowCheckboxes(false); 
         } catch (error) {
             console.error('Error deleting customers:', error.response ? error.response.data : error.message);
         }
     };
 
-    // Filter orders based on search term and selected category (searchBy)
+    
     const filteredOrders = order.filter((ord) => {
-        if (!searchTerm) return true; // If search term is empty, show all orders
-        const value = ord[searchBy]?.toString().toLowerCase(); // Get value from the selected field
+        if (!searchTerm) return true; 
+        const value = ord[searchBy]?.toString().toLowerCase(); 
         return value && value.startsWith(searchTerm.toLowerCase());
     });
 
@@ -96,7 +96,7 @@ const PurchaseOrderTable = () => {
                             onClick={() => {
                                 setShowCheckboxes(!showCheckboxes);
                                 if (showCheckboxes) {
-                                    setSelectedOrder([]); // Unselect all checkboxes when 'Cancel' is clicked
+                                    setSelectedOrder([]); 
                                 }
                             }}
                             className={`inline-block px-5 py-2 rounded text-white ${showCheckboxes ? 'bg-gray-500 hover:bg-gray-600' : 'bg-red-500 hover:bg-red-600'}`}
@@ -151,7 +151,7 @@ const PurchaseOrderTable = () => {
                                                 />
                                             )}
                                         </td>
-                                        <td className="py-2 px-4 text-center border-b">{order.name}</td>
+                                        
 
                                         <td className="py-2 px-4 text-center border-b">
                                         <Link to={`/dashboard/purchase/order/${order.sno}`} className="text-blue-500 hover:underline">
