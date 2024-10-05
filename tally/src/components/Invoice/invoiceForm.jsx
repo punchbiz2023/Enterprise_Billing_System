@@ -54,12 +54,13 @@ const InvoiceForm = () => {
       subject: subject,
       terms: terms,
       subTotal: Number(calculateSubtotal()).toFixed(2),
+      tax: tax,
       TCS: calculateTaxAmount(),
       total: calculateTotal(),
       totalInWords: numberToWords(Number(calculateTotal()))
     };
     setFormData(updatedFormData); // Update formData state
-  }, [items, invoiceNumber, invoiceDate, dueDate, customerName, customerAddress, customerPh, customerMail, subject, terms]);
+  }, [items, invoiceNumber, invoiceDate, dueDate, customerName, customerAddress, customerPh, customerMail, subject, terms, tax]);
 
 
   useEffect(() => {
