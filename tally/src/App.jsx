@@ -35,7 +35,8 @@ import OrderTable from './components/Order/OrderTable.jsx';
 import OrderDetails from './components/Order/OrderDetails.jsx';
 import BillDetails from './components/Bills/BillDetails.jsx';
 import PurchaseOrderDetails from './components/PurchaseOrder/PurchaseOrderDetails.jsx';
-
+import Reports from './components/Reports/Reports.jsx';
+import CreditNotes from './components/CreditNotes/creditForm.jsx';
 function MainLayout({ children }) {
   return (
     <>
@@ -92,6 +93,7 @@ function App() {
         <Route path='/dashboard/sales/invoice/:id' element={<MainLayout><InvoiceDetails/></MainLayout>}/>
         <Route path='/dashboard/purchase/bill' element={<MainLayout><Bill/></MainLayout>}/>
         <Route path='/dashboard/purchase/bill/:id' element={<MainLayout><BillDetails/></MainLayout>}/>
+        <Route path='/dashboard/sales/credit' element={<MainLayout><CreditNotes/></MainLayout>}/>
       </Routes>
     </Router>
   );

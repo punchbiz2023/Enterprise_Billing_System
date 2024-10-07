@@ -18,6 +18,7 @@
     "chart.js": "^4.4.4",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "firebase": "^10.14.0",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.8.3",
     "lucide-react": "^0.429.0",
@@ -46,6 +47,6 @@
     "globals": "^15.9.0",
     "postcss": "^8.4.41",
     "tailwindcss": "^3.4.10",
-    "vite": "^5.4.6"
+    "vite": "^5.4.8"
   }
 }
