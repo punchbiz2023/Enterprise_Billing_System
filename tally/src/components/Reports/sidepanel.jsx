@@ -10,10 +10,10 @@ const SidePanel = () => {
       <ul>
         <li>
           <Link
-            to="/dashboard/sales/customers"
-            className={`side-link ${location.pathname === '/dashboard/sales/customers' || location.pathname === '/dashboard/sales' ? 'active' : ''}`}
+            to="/dashboard/reports/business"
+            className={`side-link ${location.pathname === '/dashboard/sales/business' || location.pathname === '/dashboard/business' ? 'active' : ''}`}
           >
-            Customers
+            Business Overview
           </Link>
         </li>
         <li>
@@ -46,14 +46,6 @@ const SidePanel = () => {
             className={`side-link ${location.pathname === '/dashboard/sales/delivery' ? 'active' : ''}`}
           >
             Delivery Challan
-          </Link>
-        </li>
-        <li>
-          <Link
-            to="/dashboard/sales/credit"
-            className={`side-link ${location.pathname === '/dashboard/sales/credit' ? 'active' : ''}`}
-          >
-            Credit Note
           </Link>
         </li>
       </ul>

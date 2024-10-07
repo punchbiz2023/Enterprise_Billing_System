@@ -36,9 +36,10 @@
   }
   
   .navbar ul li a:hover {
-    background-color: #7a7a1b; 
-  }
-  
+    background-color: #d86c00;
+    border-radius: 15px; /* Adjust the value to control the roundness */
+}
+
   
   .white-navbar {
     background-color: white;
@@ -53,6 +54,4 @@
     background-color: #F6EACB;
   }
   
-  .inner-div{
-
-  }
+ 
