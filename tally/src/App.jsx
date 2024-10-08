@@ -28,7 +28,15 @@ import SalesPerson from './components/Salesperson/SalesPerson.jsx';
 import PurchaseOrderTable from './components/PurchaseOrder/PurchaseOrderTable.jsx';
 import Invoice from './components/Invoice/Invoice.jsx';
 import Bill from './components/Bills/Bill.jsx';
-// Layout with Header and Navbar
+import EstimateTable from './components/Estimate/EstimateTable.jsx';
+import EstimateDetails from './components/Estimate/EstimateDetails.jsx';
+import InvoiceDetails from './components/Invoice/InvoiceDetails.jsx';
+import OrderTable from './components/Order/OrderTable.jsx';
+import OrderDetails from './components/Order/OrderDetails.jsx';
+import BillDetails from './components/Bills/BillDetails.jsx';
+import PurchaseOrderDetails from './components/PurchaseOrder/PurchaseOrderDetails.jsx';
+import Reports from './components/Reports/Reports.jsx';
+import CreditNotes from './components/CreditNotes/creditForm.jsx';
 function MainLayout({ children }) {
   return (
     <>
@@ -62,11 +70,16 @@ function App() {
         <Route path="/dashboard/sales/customers/form" element={<MainLayout><CustomerForm /></MainLayout>} />
         <Route path="/dashboard/purchase/vendors" element={<MainLayout><Vendor /></MainLayout>} />
         <Route path="/dashboard/purchase/vendors/form" element={<MainLayout><VendorForm /></MainLayout>} />
-        <Route path="/dashboard/sales/order" element={<MainLayout><Order /></MainLayout>} />
+        <Route path="/dashboard/sales/order/form" element={<MainLayout><Order /></MainLayout>} />
+        <Route path="/dashboard/sales/order/:id" element={<MainLayout><OrderDetails /></MainLayout>} />
+        <Route path="/dashboard/sales/order" element={<MainLayout><OrderTable /></MainLayout>} />
         <Route path="/dashboard/purchase/expense" element={<MainLayout><ExpenseForm /></MainLayout>} />
-        <Route path="/dashboard/sales/estimate" element={<MainLayout><Estimate /></MainLayout>} />
+        <Route path="/dashboard/sales/estimate/form" element={<MainLayout><Estimate /></MainLayout>} />
+        <Route path="/dashboard/sales/estimate" element={<MainLayout><EstimateTable /></MainLayout>} />
+        <Route path="/dashboard/sales/estimate/:id" element={<MainLayout><EstimateDetails /></MainLayout>} />
         <Route path="/dashboard/projects/form" element={<MainLayout><Project /></MainLayout>} />
         <Route path="/dashboard/purchase/order/form" element={<MainLayout><PurchaseOrder /></MainLayout>} />
+        <Route path="/dashboard/purchase/order/:id" element={<MainLayout><PurchaseOrderDetails /></MainLayout>} />
         <Route path="/dashboard/items/:id" element={<MainLayout><ItemDetails /></MainLayout>} />
         <Route path="/items/:id" element={<MainLayout><ItemDetails /></MainLayout>} />
         <Route path="/dashboard/purchase/vendors/:id" element={<MainLayout><VendorDetails /></MainLayout>} />
@@ -77,7 +90,10 @@ function App() {
         <Route path="/dashboard/salesperson" element={<MainLayout><SalesPerson /></MainLayout>} />
         <Route path="/dashboard/purchase/order" element={<MainLayout><PurchaseOrderTable/></MainLayout>} />
         <Route path='/dashboard/sales/invoice' element={<MainLayout><Invoice/></MainLayout>}/>
+        <Route path='/dashboard/sales/invoice/:id' element={<MainLayout><InvoiceDetails/></MainLayout>}/>
         <Route path='/dashboard/purchase/bill' element={<MainLayout><Bill/></MainLayout>}/>
+        <Route path='/dashboard/purchase/bill/:id' element={<MainLayout><BillDetails/></MainLayout>}/>
+        <Route path='/dashboard/sales/credit' element={<MainLayout><CreditNotes/></MainLayout>}/>
       </Routes>
     </Router>
   );

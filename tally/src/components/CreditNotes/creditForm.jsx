@@ -1,24 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
 import SidePanel from '../Reports/sidepanel';
 import { Link, useNavigate } from 'react-router-dom';
-
-
-const Order = () => {
+const CreditNotes = () => {
 
   const [salespersons, setSalespersons] = useState([]);
   const [salesperson, setSalesperson] = useState('')
-
-  const [invoiceNumber, setInvoiceNumber] = useState('');
+  const [creditNumber, setcreditNumber] = useState('');
   const [invoiceDate, setInvoiceDate] = useState('');
   const [dueDate, setDueDate] = useState('');
-  const [customerName, setCustomerName] = useState('');
-  const [customerAddress, setCustomerAddress] = useState('');
-  const [customerPh, setCustomerPh] = useState('');
-  const [customerMail, setCustomerMail] = useState('');
-  const [subject, setSubject] = useState('');
-  const [terms, setTerms] = useState('Due On Receipt');
+  const [customerNotes, setcustomerNotes] = useState('');
+  const [terms, setTerms] = useState('');
   const [items, setItems] = useState([{ item: '', quantity: '', rate: '', discount: '', gst: '', sgst: '', amount: '' }]);
   const [availableItems, setAvailableItems] = useState([]);
   const [taxType, setTaxType] = useState('');
@@ -32,9 +24,11 @@ const Order = () => {
   const [customer, setCustomer] = useState('');
   const [customerState, setCustomerState] = useState('');
   const [isPaymentReceived, setIsPaymentReceived] = useState(false);
-  const [salesOrder, setsalesOrder] = useState('');
-  const [salesDate, setsalesDate] = useState('');
+  const [referenceNumber, setreferenceNumber] = useState('');
+  const [creditDate, setcreditDate] = useState('');
   const [salesshipDate, setsalesshipDate] = useState('');
+  const [subject, setSubject] = useState('');
+ 
 
   const navigate = useNavigate();
 
@@ -43,10 +37,6 @@ const Order = () => {
     fetchSalespeople();
     fetchItems();
   }, []);
-
-  // console.log(salesperson);
-
-
   const fetchSalespeople = async () => {
     try {
       const response = await axios.get('http://localhost:3001/api/salespersons');
@@ -291,9 +281,9 @@ const Order = () => {
       <div className="w-1/5">
         <SidePanel />
       </div>
-      <div className="p-6 mt-8 mr-12 ml-60 bg-gray-50 min-h-screen flex items-center justify-center">
+      <div className="p-6 mt-8 mr-12 ml-65 bg-gray-50 min-h-screen flex items-center justify-center">
         <div className="max-w-9xl w-full bg-white p-8 rounded-lg shadow-md">
-          <h1 className="text-2xl font-bold mb-6">Sales Order</h1>
+          <h1 className="text-2xl font-bold mb-6">Credit Notes</h1>
           <form className="space-y-8" onSubmit={(e) => {
             e.preventDefault();
 
@@ -315,113 +305,38 @@ const Order = () => {
                   </select>
                 </div>
               </div>
+              
               <div>
-                <label className="block text-sm font-medium mb-1">Customer State*</label>
+                <label className="block text-sm font-medium text-gray-700">Credit Note #*</label>
                 <input
                   type="text"
-                  value={customerState}
-                  readOnly
-                  className="border border-gray-300 rounded-md p-2 w-full focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Customer Addrress*</label>
-                <input
-                  type="text"
-                  value={customerAddress}
-                  onChange={(e) => setCustomerAddress(e.target.value)}
+                  value={creditNumber}
+                  onChange={(e) => setcreditNumber(e.target.value)}
                   className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Customer Contact</label>
+                <label className="block text-sm font-medium text-gray-700">Reference Number</label>
                 <input
                   type="text"
-                  value={customerPh}
-                  onChange={(e) => setCustomerPh(e.target.value)}
+                  value={referenceNumber}
+                  onChange={(e) => setreferenceNumber(e.target.value)}
                   className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Customer Mail</label>
-                <input
-                  type="text"
-                  value={customerMail}
-                  onChange={(e) => setCustomerMail(e.target.value)}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Invoice #*</label>
-                <input
-                  type="text"
-                  value={invoiceNumber}
-                  onChange={(e) => setInvoiceNumber(e.target.value)}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Sales Order Number</label>
-                <input
-                  type="text"
-                  value={salesOrder}
-                  onChange={(e) => setsalesOrder(e.target.value)}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Sales Order Date</label>
+                <label className="block text-sm font-medium text-gray-700">Credit Note Date</label>
                 <input
                   type="date"
-                  value={salesDate}
-                  onChange={(e) => setsalesDate(e.target.value)}
+                  value={creditDate}
+                  onChange={(e) => setcreditDate(e.target.value)}
                   className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
                 />
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Expected Shipment Date</label>
-                <input
-                  type="date"
-                  value={salesshipDate}
-                  onChange={(e) => setsalesshipDate(e.target.value)}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                />
-              </div>
+              
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Invoice Date*</label>
-                <input
-                  type="date"
-                  value={invoiceDate}
-                  onChange={(e) => setInvoiceDate(e.target.value)}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Due Date*</label>
-                <input
-                  type="date"
-                  value={dueDate}
-                  onChange={(e) => setDueDate(e.target.value)}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Terms</label>
-                <select
-                  value={terms}
-                  onChange={(e) => setTerms(e.target.value)}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                >
-                  <option>Due On Receipt</option>
-                  <option>Net 30</option>
-                  <option>Net 60</option>
-                </select>
-              </div>
-            </div>
+           
 
             {/* Items Table */}
             <table className="w-full table-auto mt-6">
@@ -560,6 +475,26 @@ const Order = () => {
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
               />
             </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Customer Notes</label>
+              <input
+                type="text"
+                
+                value={customerNotes}
+                onChange={(e) => setcustomerNotes(e.target.value)}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Terms and Conditions</label>
+              <input
+                type="text"
+                value={terms}
+                placeholder='Enter the terms and conditions of your business to be displayed in your transactions'
+                onChange={(e) => setTerms(e.target.value)}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+              />
+            </div>
             <label htmlFor="salesperson" className="block text-sm font-medium text-gray-700">
               Salesperson
             </label>
@@ -675,4 +610,4 @@ const Order = () => {
   );
 };
 
-export default Order;
+export default CreditNotes;

@@ -3,12 +3,14 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import SidePanel from '../Sales/SidePanel';
 
+
 const Customer = () => {
     const [customers, setCustomers] = useState([]);
     const [dataLoaded, setDataLoaded] = useState(false);
     const [selectedCustomers, setSelectedCustomers] = useState([]);
     const [showCheckboxes, setShowCheckboxes] = useState(false); // State to toggle checkboxes
     const [searchTerm, setSearchTerm] = useState(''); // State for search term
+    const [searchBy, setSearchBy] = useState('dispname'); // State to track search category
 
     useEffect(() => {
         fetchCustomers();
@@ -47,10 +49,12 @@ const Customer = () => {
         }
     };
 
-    // Filter customers based on the search term (starts with)
-    const filteredCustomers = customers.filter(customer =>
-        customer.dispname.toLowerCase().startsWith(searchTerm.toLowerCase())
-    );
+    // Filter customers based on search term and selected category (searchBy)
+    const filteredCustomers = customers.filter((customer) => {
+        if (!searchTerm) return true; // If search term is empty, show all customers
+        const value = customer[searchBy]?.toLowerCase(); // Get value from the selected field
+        return value && value.startsWith(searchTerm.toLowerCase());
+    });
 
     return (
         <div className="flex">
@@ -62,13 +66,28 @@ const Customer = () => {
 
                 <div className="flex justify-between mb-4">
                     {/* Search bar on the left */}
-                    <input
-                        type="text"
-                        placeholder="Search by name..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="px-4 py-2 border border-gray-600 rounded w-1/3"
-                    />
+                    <div className="flex w-1/3">
+                        
+                        {/* Dropdown after the search input */}
+                        <select
+                            value={searchBy}
+                            onChange={(e) => setSearchBy(e.target.value)}
+                            className="bg-gray-100 px-2 py-2 border border-gray-600 rounded-l text-gray-800 cursor-pointer focus:outline-none"
+                        >
+                            <option value="dispname">Name</option>
+                            <option value="company">Company</option>
+                            <option value="mail">Email</option>
+                            <option value="workphone">Phone</option>
+                            <option value="gstno">GST Number</option>
+                        </select>
+                        <input
+                            type="text"
+                            placeholder={`Search by ${searchBy}...`}
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="bg-gray-100 px-2 py-2 border border-gray-600 rounded-r w-full focus:outline-none"
+                        />
+                    </div>
 
                     {/* Buttons on the right */}
                     <div className="flex space-x-4">

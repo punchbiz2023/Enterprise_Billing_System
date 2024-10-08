@@ -3,13 +3,14 @@ import axios from 'axios';
 import SidePanel from '../Sales/sidepanel';
 import SalesPerson from '../Salesperson/SalesPerson'
 import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+
 
 
 const Estimate = () => {
 
   const [salespersons, setSalespersons] = useState([]);
-  const [customerName, setCustomerName] = useState('');
-  const [customerAddress, setCustomerAddress] = useState('');
+
   const [quoteNumber, setQuoteNumber] = useState('');
   const [quoteDate, setQuoteDate] = useState('');
   const [reference, setReference] = useState('');
@@ -25,13 +26,15 @@ const Estimate = () => {
   const [adjustment, setAdjustment] = useState(0);
   const [adjustmentType, setAdjustmentType] = useState('add');
   const [showCustomTax, setShowCustomTax] = useState(false);
-  const [paymentReceived, setPaymentReceived] = useState(false);
   const [customers, setCustomers] = useState([]);
   const [customer, setCustomer] = useState('');
   const [customerState, setCustomerState] = useState('');
-  const [isPaymentReceived, setIsPaymentReceived] = useState(false);
+  const [selectedSalesperson, setSelectedSalesperson] = useState(''); // Initialize with an empty string
+
 
   const navigate = useNavigate();
+
+  // console.log(projects);
 
   useEffect(() => {
     fetchCustomers();
@@ -63,13 +66,49 @@ const Estimate = () => {
       const response = await axios.get('http://localhost:3001/api/customers');
       const customersWithState = response.data.map((cust) => ({
         ...cust,
-        state: cust.billaddress.state, 
+        state: cust.billaddress.state,
       }));
       setCustomers(customersWithState);
     } catch (error) {
       console.error('Error fetching customer data:', error);
     }
   };
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  
+    const total = calculateTotal(); // Ensure `total` is numeric
+    const taxtype = "GST"; // Example, you can retrieve this from form inputs
+    const taxrate = "18%"; // Example, retrieve this from form inputs
+  
+    try {
+      const response = await axios.post('http://localhost:3001/api/estimates', {
+        customer,
+        quoteNumber,
+        reference,
+        quoteDate,
+        expiryDate,
+        salesperson: selectedSalesperson, // Assuming you're passing salesperson correctly
+        projectName,
+        subject,
+        items, // Ensure `items` is a valid array/object
+        taxtype,
+        taxrate,
+        total // Ensure this is a numeric value
+      });
+  
+      toast.success(response.data.message);
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error(error.response?.data?.error || 'An error occurred while adding the estimate');
+    }
+  };
+  
+
+
+
+
   const handleDropdownChanges = (e, setter, redirectPath) => {
     const { value } = e.target;
     if (value === `new ${redirectPath}`) {
@@ -82,19 +121,16 @@ const Estimate = () => {
     const selectedCustomerName = e.target.value;
     setCustomer(selectedCustomerName);
 
-    
+
     const selectedCustomer = customers.find((cust) => cust.name === selectedCustomerName);
     if (selectedCustomer) {
-      setCustomerState(selectedCustomer.state); 
+      setCustomerState(selectedCustomer.state);
     } else {
-      setCustomerState(''); 
+      setCustomerState('');
     }
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setNewSalesperson({ ...newSalesperson, [name]: value });
-  };
+
   const fetchItems = async () => {
     try {
       const response = await axios.get('http://localhost:3001/api/items');
@@ -104,21 +140,23 @@ const Estimate = () => {
     }
   };
 
-  const handleCheckboxChange = (e) => {
-    setIsPaymentReceived(e.target.checked);
-  };
+
 
   const handleItemChange = (index, field, value) => {
     const newItems = [...items];
     newItems[index][field] = value;
-
-    if (field === 'gst') {
-      const gst = parseFloat(value) || 0;
-      setGSTForState(index, gst);
+    if (field === 'item') {
+      const selectedItem = availableItems.find(
+        (availableItem) => availableItem.name === value
+      );
+      if (selectedItem) {
+        newItems[index].gst = selectedItem.gst;
+      }
     }
 
-    if (['rate', 'quantity', 'discount', 'gst', 'sgst', 'cgst', 'igst'].includes(field)) {
+    if (['rate','HsnCode', 'quantity', 'discount', 'gst', 'sgst', 'cgst', 'igst'].includes(field)) {
       const rate = parseFloat(newItems[index].rate) || 0;
+      const HsnCode = parseFloat(newItems[index].HsnCode) || 0;
       const quantity = parseFloat(newItems[index].quantity) || 0;
       const discount = parseFloat(newItems[index].discount) || 0;
       const gst = parseFloat(newItems[index].gst) || 0;
@@ -157,18 +195,18 @@ const Estimate = () => {
       const halfGST = gst / 2;
       newItems[index].sgst = halfGST.toFixed(2);
       newItems[index].cgst = halfGST.toFixed(2);
-      newItems[index].igst = '';  
+      newItems[index].igst = '';
     } else {
-      newItems[index].sgst = '';  
-      newItems[index].cgst = '';  
-      newItems[index].igst = gst.toFixed(2);  
+      newItems[index].sgst = '';
+      newItems[index].cgst = '';
+      newItems[index].igst = gst.toFixed(2);
     }
 
     setItems(newItems);
   };
 
   const addNewItem = () => {
-    setItems([...items, { item: '', quantity: '', rate: '', discount: '', gst: '', sgst: '', cgst: '', igst: '', amount: '' }]);
+    setItems([...items, { item: '',HsnCode: '', quantity: '', rate: '', discount: '', gst: '', sgst: '', cgst: '', igst: '', amount: '' }]);
   };
 
   const removeItem = (index) => {
@@ -176,13 +214,13 @@ const Estimate = () => {
   };
 
   const calculateSubtotal = () => {
-    
+
     return items.reduce((acc, item) => {
       const rate = parseFloat(item.rate) || 0;
       const quantity = parseFloat(item.quantity) || 0;
       const discount = parseFloat(item.discount) || 0;
 
-      const baseAmount = rate * quantity;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+      const baseAmount = rate * quantity;
       const discountedAmount = baseAmount * (1 - discount / 100);
 
       return acc + discountedAmount;
@@ -225,11 +263,11 @@ const Estimate = () => {
     const adjustedValue = adjustmentType === 'add' ? Number(adjustment) : -Number(adjustment);
 
     const totalBeforeAdjustment = subtotal + taxAmount;
-    
+
     ('Subtotal:', subtotal);
-    
-    
-    
+
+
+
 
     let total;
 
@@ -241,7 +279,7 @@ const Estimate = () => {
       total = totalBeforeAdjustment;
     }
 
-    
+
 
     return (Math.round(total * 100) / 100).toFixed(2);
   };
@@ -253,13 +291,13 @@ const Estimate = () => {
     const teens = ['Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
     const tens = ['Ten', ...teens];
 
-    const higherUnits = ['', 'Thousand', 'Lakh', 'Crore'];  
+    const higherUnits = ['', 'Thousand', 'Lakh', 'Crore'];
 
     if (num === 0) return 'Zero Rupees Only';
 
     let words = '';
 
-    
+
     const convertBelowThousand = (n) => {
       let str = '';
       if (n > 99) {
@@ -280,7 +318,7 @@ const Estimate = () => {
       return str.trim();
     };
 
-    
+
     let unitIndex = 0;
     while (num > 0) {
       let chunk = num % 1000;
@@ -299,21 +337,21 @@ const Estimate = () => {
     const value = e.target.value;
     if (value === 'TCS') {
       setShowCustomTax(true);
-      setTax(''); 
+      setTax('');
     } else {
       setShowCustomTax(false);
-      setTax(Number(value)); 
+      setTax(Number(value));
     }
   };
 
 
   const handleCustomTaxChange = (e) => {
     const value = e.target.value;
-    const numericValue = parseFloat(value); 
+    const numericValue = parseFloat(value);
     if (!isNaN(numericValue) && value.trim() !== '') {
       setCustomTax(numericValue);
     } else {
-      setCustomTax(''); 
+      setCustomTax('');
     }
   };
 
@@ -334,7 +372,7 @@ const Estimate = () => {
           <h1 className="text-2xl font-bold mb-6">New Quote</h1>
           <form className="space-y-8" onSubmit={(e) => {
             e.preventDefault();
-            
+
           }}>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
@@ -364,42 +402,43 @@ const Estimate = () => {
               </div>
 
               <div className="form-group">
-            <label>Quote#</label>
-            <input type="text" value={quoteNumber} onChange={(e) => setQuoteNumber(e.target.value)} />
-          </div>
+                <label>Quote#</label>
+                <input type="text" value={quoteNumber} onChange={(e) => setQuoteNumber(e.target.value)} />
+              </div>
 
-          <div className="form-group">
-            <label>Reference#</label>
-            <input type="text" value={reference} onChange={(e) => setReference(e.target.value)} />
-          </div>
+              <div className="form-group">
+                <label>Reference#</label>
+                <input type="text" value={reference} onChange={(e) => setReference(e.target.value)} />
+              </div>
 
-          <div className="form-group">
-            <label>Quote Date*</label>
-            <input type="date" value={quoteDate} onChange={(e) => setQuoteDate(e.target.value)} />
-          </div>
+              <div className="form-group">
+                <label>Quote Date*</label>
+                <input type="date" value={quoteDate} onChange={(e) => setQuoteDate(e.target.value)} />
+              </div>
 
-          <div className="form-group">
-            <label>Expiry Date</label>
-            <input type="date" value={expiryDate} onChange={(e) => setExpiryDate(e.target.value)} />
-          </div>
-          <div className="form-group">
-            <label>Project Name</label>
-            <select value={projectName} onChange={(e) => handleDropdownChanges(e, setProjectName, 'projects')}>
-              <option value="">Select a project</option>
-              {projects.map((proj) => (
-                <option key={proj.id} value={proj.name}>{proj.name}</option>
-              ))}
-              <option value="new projects">Add New Project</option>
-            </select>
-          </div>
-              
-          </div>
+              <div className="form-group">
+                <label>Expiry Date</label>
+                <input type="date" value={expiryDate} onChange={(e) => setExpiryDate(e.target.value)} />
+              </div>
+              <div className="form-group">
+                <label>Project Name</label>
+                <select value={projectName} onChange={(e) => handleDropdownChanges(e, setProjectName, 'projects')}>
+                  <option value="">Select a project</option>
+                  {projects.map((proj) => (
+                    <option key={proj.id} value={proj.name}>{proj.name}</option>
+                  ))}
+                  <option value="new projects">Add New Project</option>
+                </select>
+              </div>
+
+            </div>
 
             {/* Items Table */}
             <table className="w-full table-auto mt-6">
               <thead>
                 <tr>
                   <th>Item</th>
+                  <th>HsnCode</th>
                   <th>Quantity</th>
                   <th>Rate</th>
                   <th>Discount</th>
@@ -429,6 +468,20 @@ const Estimate = () => {
                       </select>
                     </td>
                     <td>
+        <input
+          type="text" // Use "text" instead of "number" to remove up/down arrows
+          value={item.HsnCode}
+          onChange={(e) => {
+            // Allow only numbers and ensure value doesn't go below 0
+            const value = e.target.value;
+            if (/^\d*$/.test(value)) { // Regex to allow only digits (no letters or special characters)
+              handleItemChange(index, 'HsnCode', value === '' ? '' : Math.max(0, Number(value)));
+            }
+          }}
+          className="border border-gray-300 rounded-md p-2 w-full"
+        />
+      </td>
+                    <td>
                       <input
                         type="number"
                         value={item.quantity}
@@ -454,10 +507,10 @@ const Estimate = () => {
                     </td>
                     <td>
                       <input
-                        type="number"
-                        value={items[index].gst || ''}
-                        onChange={(e) => handleItemChange(index, 'gst', e.target.value)}
-                        className="border p-2 w-full"
+                        type="text"
+                        value={item.gst}
+                        readOnly
+                        className="border border-gray-300 rounded-md p-2"
                       />
                     </td>
 
@@ -466,7 +519,7 @@ const Estimate = () => {
                         type="number"
                         value={items[index].sgst || ''}
                         className="border p-2 w-full"
-                        readOnly 
+                        readOnly
                       />
                     </td>
                     <td>
@@ -474,7 +527,7 @@ const Estimate = () => {
                         type="number"
                         value={items[index].cgst || ''}
                         className="border p-2 w-full"
-                        readOnly 
+                        readOnly
                       />
                     </td>
                     <td>
@@ -482,7 +535,7 @@ const Estimate = () => {
                         type="number"
                         value={items[index].igst || ''}
                         className="border p-2 w-full"
-                        readOnly 
+                        readOnly
                       />
                     </td>
 
@@ -520,14 +573,15 @@ const Estimate = () => {
             <label htmlFor="salesperson" className="block text-sm font-medium text-gray-700">
               Salesperson
             </label>
-            <select id="salesperson" name="salesperson" className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2">
-              <option value="">Select a Salesperson</option>
-              {salespersons.map((person, index) => (
-                <option key={index} value={person}>
-                  {person.name}
+            {/* // Assuming you are using a <select> for salespersons */}
+            <select onChange={(e) => setSelectedSalesperson(e.target.value)} value={selectedSalesperson}>
+              {salespersons.map((sp) => (
+                <option key={sp.id} value={sp.name}>
+                  {sp.name}
                 </option>
               ))}
             </select>
+
             <button
               type="button"
               onClick={() => navigate('/dashboard/salesperson')}
@@ -579,48 +633,52 @@ const Estimate = () => {
                   </select>
                 </div>
               )}
-             
+
             </div>
 
             {/* Total Section */}
-          <div className="my-4 p-4 border border-gray-300 rounded-md">
-               <div className="mb-2">
-                  <span className="text-lg font-bold">Subtotal: </span>
-                  <span className="text-lg">{calculateSubtotal()}</span>
+            <div className="my-4 p-4 border border-gray-300 rounded-md">
+              <div className="mb-2">
+                <span className="text-lg font-bold">Subtotal: </span>
+                <span className="text-lg">{calculateSubtotal()}</span>
+              </div>
+              <div className="mb-2">
+                <span className="text-lg font-bold">Tax Amount: </span>
+                <span className="text-lg">{calculateTaxAmount()}</span>
+              </div>
+              <div className="mb-2">
+                <span className="text-lg font-bold">Total Amount: </span>
+                <span className="text-lg">{calculateTotal()}</span>
+              </div>
+
+
+              {customer.state === 'Tamil Nadu' ? (
+                <>
+                  <div className="mb-2">
+                    <span className="text-lg font-bold">SGST ({items[0].gst / 2}%): </span>
+                    <span className="text-lg">{items.reduce((total, item) => total + (parseFloat(item.sgst) || 0), 0).toFixed(2)}</span>
+                  </div>
+                  <div className="mb-2">
+                    <span className="text-lg font-bold">CGST ({items[0].gst / 2}%): </span>
+                    <span className="text-lg">{items.reduce((total, item) => total + (parseFloat(item.cgst) || 0), 0).toFixed(2)}</span>
+                  </div>
+                </>
+              ) : (
+                <div className="mb-2">
+                  <span className="text-lg font-bold">TAX ({items[0].gst}%): </span>
+                  <span className="text-lg">{calculateTaxAmount()}</span>
                 </div>
-            
-            <div className="mb-2">
-              <span className="text-lg font-bold">Total Amount: </span>
-              <span className="text-lg">{calculateTotal()}</span>
-            </div>
-
-
-            {customer.state === 'Tamil Nadu' ? (
-    <>
-      <div className="mb-2">
-        <span className="text-lg font-bold">SGST ({items[0].gst / 2}%): </span>
-        <span className="text-lg">{items.reduce((total, item) => total + (parseFloat(item.sgst) || 0), 0).toFixed(2)}</span>
-      </div>
-      <div className="mb-2">
-        <span className="text-lg font-bold">CGST ({items[0].gst / 2}%): </span>
-        <span className="text-lg">{items.reduce((total, item) => total + (parseFloat(item.cgst) || 0), 0).toFixed(2)}</span>
-      </div>
-    </>
-  ) : (
-    <div className="mb-2">
-    <span className="text-lg font-bold">TAX ({items[0].gst}%): </span>
-    <span className="text-lg">{calculateTaxAmount()}</span>
-  </div>
-)}
+              )}
               <div className="mt-4">
-    <span className="text-xl font-extrabold">Total: </span>
-    <span className="text-xl">{calculateTotal()}</span>
-  </div>
+                <span className="text-xl font-extrabold">Total: </span>
+                <span className="text-xl">{calculateTotal()}</span>
+              </div>
             </div>
             <div>
             </div>
             <button
               type="submit"
+              onClick={handleSubmit}
               className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-500 hover:bg-blue-600"
             >
               Save

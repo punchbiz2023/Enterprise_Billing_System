@@ -9,7 +9,7 @@ const Header = () => {
 
   return (
     <>
-      <div className='h-[70px] w-full fixed bg-[#d86c55] top-0 left-0 flex justify-between items-center px-5'>
+      <div className='h-[70px] w-full fixed bg-[#d86c00] top-0 left-0 flex justify-between items-center px-5'>
         <div className="relative w-32 h-8">
           <img 
             src={logo} 

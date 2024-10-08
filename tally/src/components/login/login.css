@@ -10,47 +10,61 @@
   z-index: 1000;
   width: 100vw;
   height: 100vh;
-  background-color: #f0dede;
+  background-color: #f4f5f7; /* Softer off-white for background */
+  transition: background-color 0.3s ease-in-out; /* Smooth background transition */
 }
 
-
 .login-box {
-  width: 320px;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background-color: #cac1c1;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  width: 400px;
+  padding: 40px;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  background-color: #ffffff; /* Professional clean white */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1), 0 2px 20px rgba(255, 255, 255, 0.1); /* Subtle glow */
   text-align: center;
-  margin-bottom: 20px;
+  transition: box-shadow 0.3s ease, transform 0.3s ease; /* Smooth shadow and transform transition */
+}
+
+.login-box:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* Enhanced glow on hover */
+  transform: translateY(-5px); /* Slight lift on hover */
 }
 
 .signup-box {
   text-align: center;
+  transition: all 0.3s ease;
 }
 
 .signup-text {
   margin-bottom: 10px;
-  color: #000000;
+  color: #555; /* Softer text color */
 }
 
 .signup-link {
-  color: #113946;
+  color: #007bff; /* Subtle blue tone for link */
   cursor: pointer;
   font-weight: bold;
+  transition: color 0.3s ease; /* Smooth color transition */
+}
+
+.signup-link:hover {
+  color: #0056b3; /* Darker blue on hover */
 }
 
 /* Title styling */
 .login-title {
   margin-bottom: 20px;
-  font-size: 24px;
+  font-size: 26px;
   color: #333;
+  font-weight: bold;
+  transition: opacity 0.3s ease; /* Fade-in effect */
 }
 
 /* Input field container */
 .input-field {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
   text-align: left;
+  transition: all 0.3s ease;
 }
 
 /* Input label styling */
@@ -58,24 +72,57 @@
   display: block;
   margin-bottom: 5px;
   font-weight: bold;
-  color: #333;
+  color: #555;
+  transition: color 0.3s ease;
 }
 
 /* Input control styling */
 .input-control {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   box-sizing: border-box;
   border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 14px;
-  background-color: #dee4e7;
-  color: #0a0202;
+  border-radius: 6px;
+  font-size: 15px;
+  background-color: #f9f9f9;
+  color: #333;
+  transition: all 0.3s ease; /* Smooth transition for input focus */
+}
+
+.input-control:focus {
+  border-color: #007bff; /* Focus border color */
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Soft blue glow on focus */
+  background-color: #ffffff; /* Brighter white on focus */
 }
 
 /* Button styling */
 .login-btn {
-  width: 50%;
+  width: 100%;
+  padding: 12px;
+  margin-top: 15px;
+  border: none;
+  border-radius: 50px;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: bold;
+  color: #fff;
+  background-color: #4CAF50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft button shadow */
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease; /* Smooth transition */
+}
+
+.login-btn:hover {
+  background-color: #45a049; /* Slight color change */
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* Stronger shadow on hover */
+  transform: translateY(-3px); /* Button lift on hover */
+}
+
+.google-signin-btn {
+  width: 100%;
   padding: 12px;
   margin-top: 10px;
   border: none;
@@ -83,27 +130,35 @@
   font-size: 16px;
   cursor: pointer;
   color: #fff;
-  background-color: #56ACA2; 
+  background-color: #4285F4; /* Google Blue */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 }
 
-.login-btn:hover{
-  background-color: #107c70;
+.google-signin-btn:hover {
+  background-color: #357ae8;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* Stronger shadow on hover */
+  transform: translateY(-3px); /* Button lift on hover */
 }
-
-
 
 /* Notification styling */
 .notification {
   margin-top: 15px;
   color: #d9534f;
   font-weight: bold;
+  transition: opacity 0.3s ease; /* Smooth fade-in for notifications */
 }
 
+/* Autofill input color */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-  -webkit-box-shadow: 0 0 0 1000px #113946 inset !important;
-  -webkit-text-fill-color: #ffffff !important;
+  -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+  -webkit-text-fill-color: #333 !important;
   transition: background-color 5000s ease-in-out 0s;
 }

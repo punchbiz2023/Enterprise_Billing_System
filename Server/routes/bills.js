@@ -10,6 +10,9 @@ const router = express.Router();
 
 const client = postgres(process.env.DATABASE_URL);
 const db3 = drizzle(client, { schema: { BillForm }, logger: true });
+
+
+
 router.get('/', async (req, res) => {
     try {
       const orders = await db3.select().from(BillForm);

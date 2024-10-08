@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import SidePanel from '../sales/SidePanel';
+import SidePanel from '../Sales/SidePanel';
 
 
 const Invoice = () => {
@@ -68,7 +68,7 @@ const Invoice = () => {
             placeholder="Search by name..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="px-4 py-2 border border-gray-600 rounded w-1/3"
+            className="bg-gray-100 px-4 py-2 border border-gray-600 rounded w-1/3"
           />
 
           {/* Buttons on the right */}
@@ -140,7 +140,7 @@ const Invoice = () => {
                       )}
                     </td>
                     <td className="py-2 px-4 text-center border-b">
-                        {invoice.name}
+                        <Link to={`/dashboard/sales/invoice/${invoice.sno}` }className="text-blue-500 hover:underline">{invoice.name}</Link>
                     </td>
                     <td className="py-2 px-4 text-center border-b">{invoice.duedate}</td>
                     <td className="py-2 px-4 text-center border-b">{invoice.taxtype}</td>

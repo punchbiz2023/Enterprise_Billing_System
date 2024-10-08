@@ -1,0 +1,11 @@
+/* src/components/sales/sales.css */
+.reports-container {
+    display: flex;
+  }
+  
+  .reports-content {
+    margin-left: 200px; /* Adjust this to match the width of your Navbar */
+    padding: 20px;
+    flex: 1;
+  }
+  

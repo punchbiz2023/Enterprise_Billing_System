@@ -5,19 +5,14 @@ import axios from 'axios'; // Import axios
 
 const BillForm = () => {
     const [vendor, setVendor] = useState('');
-    const [vendors, setVendors] = useState([]);  
-    const [customer, setCustomer] = useState('');
-    const [deliveryType, setDeliveryType] = useState('organization');
+    const [vendors, setVendors] = useState([]);
     const [billNo, setbillNo] = useState('');
     const [reference, setReference] = useState('');
     const [date, setDate] = useState('');
     const [dueDate, setdueDate] = useState('');
     const [paymentTerms, setPaymentTerms] = useState('');
     const [shipmentPreference, setShipmentPreference] = useState('');
-    const [items, setItems] = useState([{ id: 1, account: '', quantity: 1, rate: 0, amount: 0 }]);
-    const [discountType, setDiscountType] = useState('%');
-    const [taxType, setTaxType] = useState('');
-    const [tcsTds, setTcsTds] = useState('TCS');
+    const [items, setItems] = useState([{ id: 1, quantity: 1, rate: 0, amount: 0 }]);
     const [gstPercentage, setGstPercentage] = useState(0);
     const [gstAmount, setGstAmount] = useState(0);
     const [subtotal, setSubtotal] = useState(0);
@@ -41,7 +36,7 @@ const BillForm = () => {
         const fetchVendors = async () => {
             try {
                 const response = await axios.get('http://localhost:3001/api/vendor');
-                setVendors(response.data); 
+                setVendors(response.data);
             } catch (error) {
                 console.error('Error fetching vendor data:', error);
             }
@@ -166,7 +161,10 @@ const BillForm = () => {
                                             value={item.quantity}
                                             onChange={(e) => setItems(prevItems => {
                                                 const updatedItems = [...prevItems];
-                                                updatedItems[index].quantity = e.target.value;
+                                                const quantity = e.target.value;
+                                                const rate = updatedItems[index].rate;
+                                                updatedItems[index].quantity = quantity;
+                                                updatedItems[index].amount = parseFloat(quantity) * parseFloat(rate);
                                                 return updatedItems;
                                             })}
                                         />
@@ -177,12 +175,16 @@ const BillForm = () => {
                                             value={item.rate}
                                             onChange={(e) => setItems(prevItems => {
                                                 const updatedItems = [...prevItems];
-                                                updatedItems[index].rate = e.target.value;
+                                                const rate = e.target.value;
+                                                const quantity = updatedItems[index].quantity;
+                                                updatedItems[index].rate = rate;
+                                                updatedItems[index].amount = parseFloat(quantity) * parseFloat(rate);
                                                 return updatedItems;
                                             })}
                                         />
                                     </td>
-                                    <td>{parseFloat(item.rate) * parseFloat(item.quantity)}</td>
+                                    <td>{item.amount.toFixed(2)}</td>
+
                                     <td><button type="button" onClick={() => removeItem(index)}>Remove</button></td>
                                 </tr>
                             ))}
@@ -226,4 +228,3 @@ const BillForm = () => {
 };
 
 export default BillForm;
-    

@@ -10,13 +10,25 @@ const router = express.Router();
 const client = postgres(process.env.DATABASE_URL);
 const db5 = drizzle(client, { schema: { Estimate }, logger: true });
 
+
+router.get('/', async (req, res) => {
+  try {
+    const Estimates = await db5.select().from(Estimate);
+    res.json(Estimates);
+  } catch (error) {
+    console.error('Error fetching Estimates:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
 // Add a new estimate
 router.post('/', async (req, res) => {
   try {
-    const { customer, quoteNumber, reference, quoteDate, expiryDate, salesperson, projectName, subject, items, subtotal } = req.body;
+    const { customer, quoteNumber, reference, quoteDate, expiryDate, salesperson, projectName, subject, items, taxtype, taxrate, total } = req.body;
 
     // Validate input
-    if (!customer || !quoteNumber || !quoteDate || !expiryDate || !salesperson || !projectName || !items || !subtotal) {
+    if (!customer || !quoteNumber || !quoteDate || !expiryDate || !salesperson || !projectName || !items || !total) {
       return res.status(400).json({ error: 'Required fields are missing' });
     }
 
@@ -24,14 +36,16 @@ router.post('/', async (req, res) => {
     await db5.insert(Estimate).values({
       cname: customer,
       quotenum: quoteNumber,
-      refnum: reference,
-      qdate: new Date(quoteDate),
-      expdate: new Date(expiryDate),
+      refnum: reference || null,
+      qdate: quoteDate,
+      expdate: expiryDate,
       salesperson: salesperson,
       project: projectName,
       subject: subject || null,
-      itemtable: itemtable,
-      subtotal: subtotal
+      itemtable: items, // items should be passed as an array or object
+      taxtype: taxtype, // passed as text
+      taxrate: taxrate, // passed as text or number
+      total: total // passed as a numeric value
     });
 
     res.status(201).json({ message: 'Estimate added successfully' });
@@ -40,5 +54,19 @@ router.post('/', async (req, res) => {
     res.status(500).json({ error: 'An error occurred while adding the estimate' });
   }
 });
+
+
+router.delete('/',async(req,res)=>{
+  const { ids } = req.body;
+try {
+  for (const id of ids) {
+    await db5.delete(Estimate).where(eq(Estimate.sno, id));
+  }
+  res.status(200).json({ message: 'Estimate deleted successfully' });
+} catch (error) {
+  console.error('Error deleting Estimate:', error);
+  res.status(500).json({ error: 'Internal Server Error' });
+}
+})
 
 export default router;
