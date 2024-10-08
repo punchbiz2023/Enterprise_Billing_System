@@ -101,7 +101,7 @@ const BillForm = () => {
                 <h2 className="text-2xl font-semibold mb-10 mt-20 text-gray-700">Create Bill</h2>
 
                 <div className="vendor-section">
-                    <label>Vendor Name*</label>
+                    <label>Vendor Name</label>
                     <select value={vendor} onChange={(e) => setVendor(e.target.value)}>
                         <option value="">Select a Vendor</option>
                         {vendors.map((vendor) => (
@@ -114,9 +114,9 @@ const BillForm = () => {
 
                 <div className="purchase-order-details">
                     <label>Bill Number</label>
-                    <input type="text" value={billNo} onChange={(e) => setbillNo(e.target.value)} />
+                    <input type="text" value={billNo} placeholder='Enter Bill Number'required onChange={(e) => setbillNo(e.target.value)} />
                     <label>Order Number</label>
-                    <input type="text" value={reference} onChange={(e) => setReference(e.target.value)} />
+                    <input type="text" value={reference} placeholder='Enter Order Number'required onChange={(e) => setReference(e.target.value)} />
                     <label>Bill Date</label>
                     <input type="text" value={date} readOnly />
                     <label>Due Date</label>

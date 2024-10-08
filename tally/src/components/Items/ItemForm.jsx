@@ -77,6 +77,7 @@ const ItemForm = () => {
                             name="name"
                             value={formState.newItem.name}
                             onChange={handleInputChange}
+                            placeholder='Enter Item name here'
                             className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                             required
                         />
@@ -89,6 +90,7 @@ const ItemForm = () => {
                         name="itemCode"
                         value={formState.newItem.itemCode}
                         onChange={handleInputChange}
+                        placeholder="Enter Item's code"
                         className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                         required
                     />
@@ -124,6 +126,7 @@ const ItemForm = () => {
                         name="hsnCode"
                         value={formState.newItem.hsnCode}
                         onChange={handleInputChange}
+                        placeholder='Enter HSN Code'
                         className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                         required
                     />
@@ -149,6 +152,7 @@ const ItemForm = () => {
                                 name="gst"
                                 value={formState.newItem.gst}
                                 onChange={handleInputChange}
+                                placeholder='Enter GST Value'
                                 className="w-60% px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                                 required
                             />
@@ -168,8 +172,9 @@ const ItemForm = () => {
                                 name="sellingPrice"
                                 value={formState.newItem.sellingPrice}
                                 onChange={handleInputChange}
+                                placeholder='Enter Selling Price'
                                 className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                                required
+                               
                             />
                         </div>
                         <div className="w-1/2">
@@ -179,7 +184,6 @@ const ItemForm = () => {
                                 value={formState.newItem.salesAccount}
                                 onChange={handleInputChange}
                                 className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                                required
                             >
                                 <option value="Sales">Sales</option>
                                 <option value="Discount">Discount</option>
@@ -196,7 +200,8 @@ const ItemForm = () => {
                             name="descriptionSales"
                             value={formState.newItem.descriptionSales}
                             onChange={handleInputChange}
-                            className="w-full px-4 py-2 mt-1 h-12 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                            placeholder='Give some Description'
+                            className="w-full px-4 py-2 mt-1 h-16 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                         />
                     </div>
                 </div>
@@ -212,6 +217,7 @@ const ItemForm = () => {
                                 name="costPrice"
                                 value={formState.newItem.costPrice}
                                 onChange={handleInputChange}
+                                placeholder='Enter Cost Price'
                                 className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                                 required
                             />
@@ -237,7 +243,8 @@ const ItemForm = () => {
                             name="descriptionPurchase"
                             value={formState.newItem.descriptionPurchase}
                             onChange={handleInputChange}
-                            className="w-full px-4 py-2 mt-1 h-12 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                            placeholder='Give some Description'
+                            className="w-full px-4 py-2 mt-1 h-16 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                         />
                     </div>
                 </div>

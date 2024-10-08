@@ -321,6 +321,8 @@ const Order = () => {
                   type="text"
                   value={customerState}
                   readOnly
+                  required
+                  placeholder='Enter Customer state'
                   className="border border-gray-300 rounded-md p-2 w-full focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
@@ -331,6 +333,8 @@ const Order = () => {
                   type="text"
                   value={customerAddress}
                   onChange={(e) => setCustomerAddress(e.target.value)}
+                  placeholder='Enter Customer Address'
+                  required
                   className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
                 />
               </div>
@@ -340,6 +344,8 @@ const Order = () => {
                   type="text"
                   value={customerPh}
                   onChange={(e) => setCustomerPh(e.target.value)}
+                  placeholder='Enter Customer Phone number'
+                  required
                   className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
                 />
               </div>
@@ -349,6 +355,8 @@ const Order = () => {
                   type="text"
                   value={customerMail}
                   onChange={(e) => setCustomerMail(e.target.value)}
+                  placeholder='Enter Customer MailID'
+                  required
                   className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
                 />
               </div>
@@ -358,6 +366,8 @@ const Order = () => {
                   type="text"
                   value={invoiceNumber}
                   onChange={(e) => setInvoiceNumber(e.target.value)}
+                  placeholder='Enter Invoice number'
+                  required
                   className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
                 />
               </div>
@@ -367,6 +377,8 @@ const Order = () => {
                   type="text"
                   value={salesOrder}
                   onChange={(e) => setsalesOrder(e.target.value)}
+                  placeholder='Enter order number'
+                  required
                   className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
                 />
               </div>
@@ -557,7 +569,8 @@ const Order = () => {
                 type="text"
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                placeholder='Enter other details'
+                className="mt-1 block w-full border h-16 border-gray-300 rounded-md shadow-sm p-2"
               />
             </div>
             <label htmlFor="salesperson" className="block text-sm font-medium text-gray-700">

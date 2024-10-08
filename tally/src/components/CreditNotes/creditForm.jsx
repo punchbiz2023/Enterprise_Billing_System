@@ -307,11 +307,13 @@ const CreditNotes = () => {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700">Credit Note #*</label>
+                <label className="block text-sm font-medium text-gray-700">Credit Note #</label>
                 <input
                   type="text"
                   value={creditNumber}
                   onChange={(e) => setcreditNumber(e.target.value)}
+                  placeholder='Enter Credit Number'
+                  required
                   className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
                 />
               </div>
@@ -321,6 +323,8 @@ const CreditNotes = () => {
                   type="text"
                   value={referenceNumber}
                   onChange={(e) => setreferenceNumber(e.target.value)}
+                  placeholder='Enter reference number'
+                  required
                   className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
                 />
               </div>
@@ -467,11 +471,12 @@ const CreditNotes = () => {
               Add New Item
             </button>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Subject</label>
+              <label className="block text-sm font-medium h-16 text-gray-700">Subject</label>
               <input
                 type="text"
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
+                placeholder='Enter subject here'
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
               />
             </div>
@@ -479,7 +484,7 @@ const CreditNotes = () => {
               <label className="block text-sm font-medium text-gray-700">Customer Notes</label>
               <input
                 type="text"
-                
+                placeholder='Enter notes here'
                 value={customerNotes}
                 onChange={(e) => setcustomerNotes(e.target.value)}
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"

@@ -72,6 +72,8 @@ const AddVendor = () => {
                             type="text"
                             name="name"
                             value={newVendor.name}
+                            placeholder='Enter vendor name'
+                            required
                             onChange={handleInputChange}
                             className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                         />
@@ -84,6 +86,8 @@ const AddVendor = () => {
                         name="company"
                         value={newVendor.company}
                         onChange={handleInputChange}
+                        placeholder='Enter vendor company name'
+                        required
                         className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                     />
                 </div>
@@ -94,6 +98,7 @@ const AddVendor = () => {
                         name="dispname"
                         value={newVendor.dispname}
                         onChange={handleInputChange}
+                        placeholder='Enter the name should be displayed'
                         className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                         required
                     />
@@ -105,6 +110,7 @@ const AddVendor = () => {
                         name="mail"
                         value={newVendor.mail}
                         onChange={handleInputChange}
+                        placeholder='Enter the email id'
                         className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                         required
                     />
@@ -117,6 +123,8 @@ const AddVendor = () => {
                             name="workphone"
                             value={newVendor.workphone}
                             onChange={handleInputChange}
+                            placeholder='Enter the work phone number'
+                            required
                             className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                         />
                     </div>
@@ -127,6 +135,8 @@ const AddVendor = () => {
                             name="mobilephone"
                             value={newVendor.mobilephone}
                             onChange={handleInputChange}
+                            placeholder='Enter your mobile number'
+                            required
                             className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                         />
                     </div>
@@ -138,6 +148,8 @@ const AddVendor = () => {
                         name="panno"
                         value={newVendor.panno}
                         onChange={handleInputChange}
+                        placeholder='Enter the PAN card number'
+                        required
                         className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                     />
                 </div>
@@ -148,6 +160,8 @@ const AddVendor = () => {
                         name="gstno"
                         value={newVendor.gstno}
                         onChange={handleInputChange}
+                        placeholder='Enter the GST number'
+                        required
                         className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                     />
                 </div>
@@ -169,6 +183,8 @@ const AddVendor = () => {
                         name="openingbalance"
                         value={newVendor.openingbalance}
                         onChange={handleInputChange}
+                        placeholder='Enter the opening balance amount'
+                        required
                         className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                     />
                 </div>
@@ -195,6 +211,8 @@ const AddVendor = () => {
                                     name={field}
                                     value={newVendor.billaddress[field] || ''}
                                     onChange={(e) => handleAddressChange(e, 'billaddress')}
+                                    placeholder={`Enter ${field.charAt(0).toUpperCase() + field.slice(1)}`}
+                                    required
                                     className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                                 />
                             </div>
@@ -213,6 +231,8 @@ const AddVendor = () => {
                                     name={field}
                                     value={newVendor.shipaddress[field] || ''}
                                     onChange={(e) => handleAddressChange(e, 'shipaddress')}
+                                    placeholder={`Enter ${field.charAt(0).toUpperCase() + field.slice(1)}`}
+                                    required
                                     className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                                 />
                             </div>
