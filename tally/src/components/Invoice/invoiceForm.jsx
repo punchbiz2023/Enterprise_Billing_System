@@ -301,30 +301,27 @@ const InvoiceForm = () => {
     return (Math.round(total * 100) / 100).toFixed(2);
   };
 
-
   const numberToWords = (num) => {
     const singleDigits = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
     const doubleDigits = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
-    const teens = ['Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
-    const tens = ['Ten', ...teens];
-
+    const teens = ['Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+  
     const higherUnits = ['', 'Thousand', 'Lakh', 'Crore'];
-
+  
     if (num === 0) return 'Zero Rupees Only';
-
+  
     let words = '';
-
-
+  
     const convertBelowThousand = (n) => {
       let str = '';
       if (n > 99) {
         str += singleDigits[Math.floor(n / 100)] + ' Hundred ';
         n %= 100;
       }
-      if (n > 10 && n < 20) {
-        str += teens[n - 11] + ' ';
+      if (n >= 10 && n < 20) {
+        str += teens[n - 10] + ' ';
       } else {
-        if (n >= 10) {
+        if (n >= 20) {
           str += doubleDigits[Math.floor(n / 10)] + ' ';
           n %= 10;
         }
@@ -334,21 +331,39 @@ const InvoiceForm = () => {
       }
       return str.trim();
     };
-
-
-    let unitIndex = 0;
-    while (num > 0) {
-      let chunk = num % 1000;
-      if (chunk !== 0) {
-        words = convertBelowThousand(chunk) + (higherUnits[unitIndex] ? ' ' + higherUnits[unitIndex] : '') + ' ' + words;
-      }
+  
+    const getChunks = (num) => {
+      let chunks = [];
+      
+      // Extract last three digits (hundreds, tens, and ones)
+      chunks.push(num % 1000);
       num = Math.floor(num / 1000);
-      unitIndex++;
+      
+      // Extract thousands (next two digits)
+      while (num > 0) {
+        chunks.push(num % 100); // Lakh and Crore are in pairs of two digits
+        num = Math.floor(num / 100);
+      }
+  
+      return chunks.reverse();
+    };
+  
+    const chunks = getChunks(num);
+    let unitIndex = chunks.length - 1;
+  
+    // Process the chunks in the order needed for the Indian numbering system
+    for (let i = 0; i < chunks.length; i++) {
+      if (chunks[i] !== 0) {
+        words += convertBelowThousand(chunks[i]) + (higherUnits[unitIndex] ? ' ' + higherUnits[unitIndex] : '') + ' ';
+      }
+      unitIndex--;
     }
-
+  
     return words.trim() + ' Rupees Only';
   };
-
+  
+  
+  
 
   const handleTaxChange = (e) => {
     const value = e.target.value;
@@ -378,7 +393,6 @@ const InvoiceForm = () => {
   };
 
 
-
   return (
     <div className='flex'>
       <div className="w-1/5">
@@ -393,7 +407,7 @@ const InvoiceForm = () => {
           }}>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium mb-1">Customer Name*</label>
+                <label className="block text-sm font-medium mb-1">Customer Name</label>
                 <div>
                   <select
                     value={customer}
@@ -414,7 +428,9 @@ const InvoiceForm = () => {
                 <input
                   type="text"
                   value={customerState}
+                  placeholder='Enter Customer State'
                   readOnly
+                  required
                   className="border border-gray-300 rounded-md p-2 w-full focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
@@ -426,6 +442,8 @@ const InvoiceForm = () => {
                   value={customerPh}
                   // onChange={(e) => setCustomerPh(e.target.value)}
                   readOnly
+                  required
+                  placeholder='Enter Customer Phone number'
                   className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
                 />
               </div>
@@ -436,6 +454,8 @@ const InvoiceForm = () => {
                   value={customerMail}
                   // onChange={(e) => setCustomerMail(e.target.value)}
                   readOnly
+                  required
+                  placeholder='Enter customer Email'
                   className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
                 />
               </div>
@@ -444,18 +464,22 @@ const InvoiceForm = () => {
                 <input
                   type="text"
                   value={customerAddress}
+                  required
+                  placeholder='Enter Customer Address'
                   onChange={(e) => setCustomerAddress(e.target.value)}
                   // readOnly
                   className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Invoice #*</label>
+                <label className="block text-sm font-medium text-gray-700">Invoice #</label>
                 <input
                   type="text"
                   value={invoiceNumber}
                   onChange={(e) => setInvoiceNumber(e.target.value)}
+                  placeholder='Enter Invoice number'
                   className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                  required
                 />
               </div>
             </div>
@@ -493,7 +517,6 @@ const InvoiceForm = () => {
               </div>
             </div>
 
-            {/* Items Table */}
             <table className="w-full table-auto mt-6">
               <thead>
                 <tr>
@@ -628,7 +651,8 @@ const InvoiceForm = () => {
                 type="text"
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                placeholder='Enter other details'
+                className="mt-1 block w-full border h-16 border-gray-300 rounded-md shadow-sm p-2"
               />
             </div>
             <label htmlFor="salesperson" className="block text-sm font-medium text-gray-700">
@@ -650,7 +674,7 @@ const InvoiceForm = () => {
               Add Salesperson
             </button>
 
-            {/* Tax and Adjustment Section */}
+            
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700">Tax Type</label>
@@ -689,7 +713,7 @@ const InvoiceForm = () => {
                     <option value="3.75">Commission or Brokerage (Reduced) [3.75%]</option>
                     <option value="10">Dividend [10%]</option>
                     <option value="7.5">Dividend (Reduced) [7.5%]</option>
-                    {/* Add more options as required */}
+                 
                   </select>
                 </div>
               )}

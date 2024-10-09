@@ -76,11 +76,11 @@ const Delivery = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
             <div>
               <label className="block text-sm font-medium">Delivery Challan#*</label>
-              <input type="text" className="border border-gray-300 rounded-md p-2 w-full" />
+              <input type="text" placeholder='Enter delivery challan number' required className="border border-gray-300 rounded-md p-2 w-full" />
             </div>
             <div>
               <label className="block text-sm font-medium">Reference#</label>
-              <input type="text" className="border border-gray-300 rounded-md p-2 w-full" />
+              <input type="text" placeholder='Enter Reference id' required className="border border-gray-300 rounded-md p-2 w-full" />
             </div>
           </div>
 
@@ -179,13 +179,13 @@ const Delivery = () => {
           {/* Customer Notes */}
           <div className="mb-4">
             <label className="block text-sm font-medium">Customer Notes</label>
-            <textarea className="border border-gray-300 rounded-md p-2 w-full"></textarea>
+            <textarea placeholder='Add notes here' className="border border-gray-300 rounded-md p-2 w-full"></textarea>
           </div>
 
           {/* Terms & Conditions */}
           <div className="mb-4">
             <label className="block text-sm font-medium">Terms & Conditions</label>
-            <textarea className="border border-gray-300 rounded-md p-2 w-full"></textarea>
+            <textarea placeholder='Enter terms and conditions here' required className="border border-gray-300 rounded-md p-2 w-full"></textarea>
           </div>
 
           {/* Upload Files */}

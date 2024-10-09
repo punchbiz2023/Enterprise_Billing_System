@@ -397,18 +397,20 @@ const Estimate = () => {
                   type="text"
                   value={customerState}
                   readOnly
+                  placeholder='Enter Customer state'
+                  required
                   className="border border-gray-300 rounded-md p-2 w-full focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
 
               <div className="form-group">
                 <label>Quote#</label>
-                <input type="text" value={quoteNumber} onChange={(e) => setQuoteNumber(e.target.value)} />
+                <input type="text" value={quoteNumber} required placeholder='Enter Quote number' onChange={(e) => setQuoteNumber(e.target.value)} />
               </div>
 
               <div className="form-group">
                 <label>Reference#</label>
-                <input type="text" value={reference} onChange={(e) => setReference(e.target.value)} />
+                <input type="text" value={reference} required placeholder='Enter Reference id'  required onChange={(e) => setReference(e.target.value)} />
               </div>
 
               <div className="form-group">
@@ -567,7 +569,8 @@ const Estimate = () => {
                 type="text"
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                placeholder='Add more details here'
+                className="mt-1 block w-full border h-16 border-gray-300 rounded-md shadow-sm p-2"
               />
             </div>
             <label htmlFor="salesperson" className="block text-sm font-medium text-gray-700">

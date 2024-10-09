@@ -107,7 +107,7 @@ const PurchaseOrder = () => {
 
             <form >
                 <div className="vendor-section">
-                    <label>Vendor Name*</label>
+                    <label>Vendor Name</label>
                     <select value={vendor} onChange={(e) => setVendor(e.target.value)}>
                         <option value="">Select a Vendor</option>
                         {vendors.map((vendor) => (
@@ -144,11 +144,11 @@ const PurchaseOrder = () => {
 
                 <div className="purchase-order-details">
                     <label>Purchase Order#</label>
-                    <input type="text" value={purchaseOrderNo} readOnly />
+                    <input type="text" value={purchaseOrderNo} required readOnly />
                     <label>Reference#</label>
-                    <input type="text" value={reference} onChange={(e) => setReference(e.target.value)} />
+                    <input type="text" value={reference} placeholder='Enter the reference id' required onChange={(e) => setReference(e.target.value)} />
                     <label>Date</label>
-                    <input type="text" value={date} readOnly />
+                    <input type="text" value={date} readOnly required/>
                     <label>Expected Delivery Date</label>
                     <input
                         type="date"
@@ -168,7 +168,7 @@ const PurchaseOrder = () => {
                     </select>
 
                     <label>Shipment Preference</label>
-                    <input type="text" placeholder="Choose the shipment preference" value={shipmentPreference} onChange={(e) => setShipmentPreference(e.target.value)} />
+                    <input type="text" placeholder="Choose the shipment preference" required value={shipmentPreference} onChange={(e) => setShipmentPreference(e.target.value)} />
                 </div>
 
                 <div className="item-table">

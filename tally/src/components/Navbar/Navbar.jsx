@@ -29,8 +29,8 @@ const Navbar = () => {
               <span className="text-white text-xs mt-1">Sales</span>
             </Link>
           </li>
-          <li className="flex flex-col items-center mb-4">
-            <Link to="/dashboard/purchase">
+          <li className="">
+            <Link to="/dashboard/purchase" className='flex flex-col items-center justify-center'>
               <IoBagOutline className='text-white ml-1 h-7 w-7' />
               <span className="text-white text-xs mt-1">Purchase</span>
             </Link>

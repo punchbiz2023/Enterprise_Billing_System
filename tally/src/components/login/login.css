@@ -1,54 +1,80 @@
-/* Container to center the login box */
+/* New wrapper to hold the login container */
 .login-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 1000;
-  width: 100vw;
-  height: 100vh;
-  background-color: #f4f5f7; /* Softer off-white for background */
-  transition: background-color 0.3s ease-in-out; /* Smooth background transition */
+  background-color: #f0f0f0;
+   /* Optional: Background color for the full view */
 }
 
-.login-box {
-  width: 400px;
+/* Updated container to hold both image and login box */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 50px; /* Space between image and form */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Shadow effect */
+  border-radius: 12px; /* Rounded corners */
+  background-color: #ffffff; /* White background for the container */
   padding: 40px;
-  border: 1px solid #e0e0e0;
-  border-radius: 12px;
-  background-color: #ffffff; /* Professional clean white */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1), 0 2px 20px rgba(255, 255, 255, 0.1); /* Subtle glow */
-  text-align: center;
-  transition: box-shadow 0.3s ease, transform 0.3s ease; /* Smooth shadow and transform transition */
+  width:70%; /* Padding inside the container */
 }
 
-.login-box:hover {
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* Enhanced glow on hover */
-  transform: translateY(-5px); /* Slight lift on hover */
+/* Image container */
+.image-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
 }
 
-.signup-box {
-  text-align: center;
-  transition: all 0.3s ease;
+.background-image {
+  width: 670px; /* Resize the image */
+  height: 680px;
 }
 
-.signup-text {
-  margin-bottom: 10px;
-  color: #555; /* Softer text color */
+/* Login box */
+.login-box {
+  flex: 1;
+  max-width: 400px;
 }
 
-.signup-link {
-  color: #007bff; /* Subtle blue tone for link */
+/* Centering the buttons within the login box */
+.login-btn, .google-signin-btn {
+  display: flex; /* Use flexbox for centering */
+  align-items: center; /* Center vertically */
+  justify-content: center; /* Center horizontally */
+  margin: 20px auto; /* Center the buttons */
+  width: 100%;
+  max-width: 220px; /* Button width */
+  padding: 12px;
+  border: none;
+  border-radius: 50px;
+  font-size: 16px;
   cursor: pointer;
-  font-weight: bold;
-  transition: color 0.3s ease; /* Smooth color transition */
+  color: #fff;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 }
 
-.signup-link:hover {
-  color: #0056b3; /* Darker blue on hover */
+/* Specific styles for each button */
+.login-btn {
+  background-color: #156950;
+}
+
+.login-btn:hover {
+  background-color: #45a04995;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* Stronger shadow on hover */
+  transform: translateY(-3px); /* Button lift on hover */
+}
+
+.google-signin-btn {
+  background-color: #4285F4;
+}
+
+.google-signin-btn:hover {
+  background-color: #357ae8;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* Stronger shadow on hover */
+  transform: translateY(-3px); /* Button lift on hover */
 }
 
 /* Title styling */
@@ -57,7 +83,7 @@
   font-size: 26px;
   color: #333;
   font-weight: bold;
-  transition: opacity 0.3s ease; /* Fade-in effect */
+  transition: opacity 0.3s ease;
 }
 
 /* Input field container */
@@ -67,82 +93,28 @@
   transition: all 0.3s ease;
 }
 
-/* Input label styling */
-.input-label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-  color: #555;
-  transition: color 0.3s ease;
+.input-container {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 6px;
 }
 
-/* Input control styling */
 .input-control {
   width: 100%;
   padding: 12px;
   box-sizing: border-box;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  border: none;
   font-size: 15px;
   background-color: #f9f9f9;
   color: #333;
-  transition: all 0.3s ease; /* Smooth transition for input focus */
+  transition: all 0.3s ease;
 }
 
 .input-control:focus {
-  border-color: #007bff; /* Focus border color */
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Soft blue glow on focus */
-  background-color: #ffffff; /* Brighter white on focus */
-}
-
-/* Button styling */
-.login-btn {
-  width: 100%;
-  padding: 12px;
-  margin-top: 15px;
-  border: none;
-  border-radius: 50px;
-  font-size: 16px;
-  cursor: pointer;
-  font-weight: bold;
-  color: #fff;
-  background-color: #4CAF50;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft button shadow */
-  transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease; /* Smooth transition */
-}
-
-.login-btn:hover {
-  background-color: #45a049; /* Slight color change */
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* Stronger shadow on hover */
-  transform: translateY(-3px); /* Button lift on hover */
-}
-
-.google-signin-btn {
-  width: 100%;
-  padding: 12px;
-  margin-top: 10px;
-  border: none;
-  border-radius: 50px;
-  font-size: 16px;
-  cursor: pointer;
-  color: #fff;
-  background-color: #4285F4; /* Google Blue */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
-}
-
-.google-signin-btn:hover {
-  background-color: #357ae8;
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* Stronger shadow on hover */
-  transform: translateY(-3px); /* Button lift on hover */
+  outline: none;
+  background-color: #ffffff;
 }
 
 /* Notification styling */
@@ -152,7 +124,10 @@
   font-weight: bold;
   transition: opacity 0.3s ease; /* Smooth fade-in for notifications */
 }
-
+.google-signin-btn .FaGoogle,
+.login-btn .FaLock {
+  margin-right: 8px; /* Space between icon and text */
+}
 /* Autofill input color */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
