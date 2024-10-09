@@ -8,7 +8,7 @@ import './Navbar.css';
 const Navbar = () => {
   return (
     <div className="navbar">
-      <div className='inner-div bg-[#2F4F4F]'>
+      <div className='inner-div bg-[#5C5C7A]'>
         <ul className="flex flex-col items-center">
           <li className="flex flex-col items-center mb-4">
             <Link to="/dashboard">

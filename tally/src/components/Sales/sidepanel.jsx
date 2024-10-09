@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import './sidepanel.css'; // Import the CSS file
+import './sidepanel.css' // Import the CSS file
 
 const SidePanel = () => {
   const location = useLocation();
