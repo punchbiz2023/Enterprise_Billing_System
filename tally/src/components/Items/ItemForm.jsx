@@ -16,8 +16,12 @@ const ItemForm = () => {
             descriptionSales: '',
             descriptionPurchase: '',
             type: 'Goods',
-            taxPayable: false, 
-            gst: '',           
+            taxPayable: false,
+            gst: '',
+            addInventory: false,
+            itemQuantity: '',
+            itemOpeningStock: '',
+            closingStockAlert: '',
         }
     });
 
@@ -41,48 +45,98 @@ const ItemForm = () => {
     };
 
     return (
-        <div className="max-w-xl mx-auto p-6 bg-white rounded-lg shadow-md mt-52">
-            <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">Add New Item</h1>
-            <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="flex justify-around space-x-4">
-                    <div className="w-1/2">
-                        <label className="block text-sm font-medium text-gray-700">Type</label>
-                        <div className="mt-1">
-                            <label className="mr-4">
-                                <input
-                                    type="radio"
-                                    name="type"
-                                    value="Goods"
-                                    checked={formState.newItem.type === 'Goods'}
-                                    onChange={handleInputChange}
-                                />{' '}
-                                Goods
-                            </label>
-                            <label>
-                                <input
-                                    type="radio"
-                                    name="type"
-                                    value="Service"
-                                    checked={formState.newItem.type === 'Service'}
-                                    onChange={handleInputChange}
-                                />{' '}
-                                Service
-                            </label>
+        <div className="max-w-4xl mx-auto p-8 bg-white rounded-lg shadow-md mt-10">
+            <h1 className="text-3xl font-semibold text-gray-900 mb-8 text-center">Add New Item</h1>
+            <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Add Inventory Checkbox */}
+                <div className="flex items-center space-x-2 justify-start">
+    <input
+        type="checkbox"
+        name="addInventory"
+        checked={formState.newItem.addInventory}
+        onChange={handleInputChange}
+        className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+    />
+    <label className="text-sm font-medium text-gray-700">Opening Stock</label>
+</div>
+
+
+
+                {/* Inventory Fields (conditionally rendered) */}
+                {formState.newItem.addInventory && (
+                    <div className="col-span-2 space-y-4">
+                        
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700">Opening Stock</label>
+                            <input
+                                type="number"
+                                name="itemOpeningStock"
+                                value={formState.newItem.itemOpeningStock}
+                                onChange={handleInputChange}
+                                placeholder="Enter opening stock"
+                                className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700">Closing Stock Alert</label>
+                            <input
+                                type="number"
+                                name="closingStockAlert"
+                                value={formState.newItem.closingStockAlert}
+                                onChange={handleInputChange}
+                                placeholder="Enter stock alert threshold"
+                                className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                                required
+                            />
                         </div>
                     </div>
-                    <div className="w-100">
-                        <label className="block text-sm font-medium text-gray-700">Name</label>
-                        <input
-                            type="text"
-                            name="name"
-                            value={formState.newItem.name}
-                            onChange={handleInputChange}
-                            placeholder='Enter Item name here'
-                            className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                            required
-                        />
-                    </div>
+                )}
+
+               {/* Type Selection */}
+<div className="col-span-2 text-left ">
+    <label className="block text-sm font-medium text-gray-700">Type</label>
+    <div className="flex items-center space-x-6 mt-2">
+        <label>
+            <input
+                type="radio"
+                name="type"
+                value="Goods"
+                checked={formState.newItem.type === 'Goods'}
+                onChange={handleInputChange}
+                className="mr-2"
+            />
+            Goods
+        </label>
+        <label>
+            <input
+                type="radio"
+                name="type"
+                value="Service"
+                checked={formState.newItem.type === 'Service'}
+                onChange={handleInputChange}
+                className="mr-2"
+            />
+            Service
+        </label>
+    </div>
+</div>
+
+
+                {/* Other Form Fields */}
+                <div>
+                    <label className="block text-sm font-medium text-gray-700">Name</label>
+                    <input
+                        type="text"
+                        name="name"
+                        value={formState.newItem.name}
+                        onChange={handleInputChange}
+                        placeholder="Enter Item Name"
+                        className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                        required
+                    />
                 </div>
+
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Item Code</label>
                     <input
@@ -90,35 +144,12 @@ const ItemForm = () => {
                         name="itemCode"
                         value={formState.newItem.itemCode}
                         onChange={handleInputChange}
-                        placeholder="Enter Item's code"
-                        className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Enter Item Code"
+                        className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                         required
                     />
                 </div>
-                <div>
-                    <label className="block text-sm font-medium text-gray-700">Unit</label>
-                    <select
-                        name="unit"
-                        value={formState.newItem.unit}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                        required
->
-                        <option value="BOX">BOX - box</option>
-                        <option value="Service">Service</option>
-                        <option value="CMS">CMS - cm</option>
-                        <option value="DOZ">DOZ - dz</option>
-                        <option value="FTS">FTS - ft</option>
-                        <option value="GMS">GMS - g</option>
-                        <option value="KGS">KGS - kg</option>
-                        <option value="KME">KME - km</option>
-                        <option value="LBS">LBS - lb</option>
-                        <option value="MGS">MGS - mg</option>
-                        <option value="MLT">MLT - ml</option>
-                        <option value="MTR">MTR - m</option>
-                        <option value="PCS">PCS - pcs</option>
-                    </select>
-                </div>
+
                 <div>
                     <label className="block text-sm font-medium text-gray-700">HSN Code</label>
                     <input
@@ -126,15 +157,15 @@ const ItemForm = () => {
                         name="hsnCode"
                         value={formState.newItem.hsnCode}
                         onChange={handleInputChange}
-                        placeholder='Enter HSN Code'
-                        className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Enter HSN Code"
+                        className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                         required
                     />
                 </div>
 
-                {/* Tax Payable Checkbox and GST Input */}
-                <div className="flex">
-                    <div className="flex">
+                {/* Tax Payable Checkbox */}
+                <div className="col-span-2 flex items-center space-x-6">
+                    <div>
                         <input
                             type="checkbox"
                             name="taxPayable"
@@ -142,119 +173,123 @@ const ItemForm = () => {
                             onChange={handleInputChange}
                             className="h-4 w-4 text-blue-600 border-gray-300 rounded"
                         />
-                        <label className="ml-2 font-medium text-gray-700">Tax Payable</label>
+                        <label className="ml-2 text-gray-700 font-medium">Tax Payable</label>
                     </div>
                     {formState.newItem.taxPayable && (
-                        <div className="flex space-x-2">
+                        <div className="w-1/2">
                             <label className="block text-sm font-medium text-gray-700">GST (%)</label>
                             <input
                                 type="number"
                                 name="gst"
                                 value={formState.newItem.gst}
                                 onChange={handleInputChange}
-                                placeholder='Enter GST Value'
-                                className="w-60% px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                                placeholder="Enter GST Value"
+                                className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                                 required
                             />
                         </div>
                     )}
                 </div>
 
-
                 {/* Sales Information */}
-                <div className="border-t pt-4">
-                    <h2 className="text-lg font-medium text-gray-800">Sales Information</h2>
-                    <div className="flex space-x-4">
-                        <div className="w-1/2">
+                <div className="col-span-2 border-t pt-4">
+                    <h2 className="text-lg font-semibold text-gray-800">Sales Information</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
                             <label className="block text-sm font-medium text-gray-700">Selling Price</label>
                             <input
                                 type="text"
                                 name="sellingPrice"
                                 value={formState.newItem.sellingPrice}
                                 onChange={handleInputChange}
-                                placeholder='Enter Selling Price'
-                                className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                               
+                                placeholder="Enter Selling Price"
+                                className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                             />
                         </div>
-                        <div className="w-1/2">
-                            <label className="block text-sm font-medium text-gray-700">Account</label>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700">Sales Account</label>
                             <select
                                 name="salesAccount"
                                 value={formState.newItem.salesAccount}
                                 onChange={handleInputChange}
-                                className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                                className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                             >
                                 <option value="Sales">Sales</option>
                                 <option value="Discount">Discount</option>
-                                <option value="General Income">General Income</option>
-                                <option value="Interest Income">Interest Income</option>
-                                <option value="Late fee Income">Late fee Income</option>
-                                <option value="Shipping Charges">Shipping Charges</option>
+                                {/* Add more accounts as needed */}
                             </select>
                         </div>
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">Description</label>
+                        <label className="block text-sm font-medium text-gray-700">Description (Sales)</label>
                         <textarea
                             name="descriptionSales"
                             value={formState.newItem.descriptionSales}
                             onChange={handleInputChange}
-                            placeholder='Give some Description'
-                            className="w-full px-4 py-2 mt-1 h-16 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="Enter Description"
+                            className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                         />
                     </div>
                 </div>
 
                 {/* Purchase Information */}
-                <div className="border-t pt-4">
-                    <h2 className="text-lg font-medium text-gray-800">Purchase Information</h2>
-                    <div className="flex space-x-4">
-                        <div className="w-1/2">
+                <div className="col-span-2 border-t pt-4">
+                    <h2 className="text-lg font-semibold text-gray-800">Purchase Information</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
                             <label className="block text-sm font-medium text-gray-700">Cost Price</label>
                             <input
                                 type="text"
                                 name="costPrice"
                                 value={formState.newItem.costPrice}
                                 onChange={handleInputChange}
-                                placeholder='Enter Cost Price'
-                                className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                                placeholder="Enter Cost Price"
+                                className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                                 required
                             />
                         </div>
-                        <div className="w-1/2">
-                            <label className="block text-sm font-medium text-gray-700">Account</label>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700">Purchase Account</label>
                             <select
                                 name="purchaseAccount"
                                 value={formState.newItem.purchaseAccount}
                                 onChange={handleInputChange}
-                                className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                                className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                                 required
                             >
                                 <option value="Cost of Goods Sold">Cost of Goods Sold</option>
-                                <option value="General Expense">General Expense</option>
-                                <option value="Shipping Charges">Shipping Charges</option>
+                                {/* Add more options */}
                             </select>
                         </div>
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">Description</label>
+                        <label className="block text-sm font-medium text-gray-700">Description (Purchase)</label>
                         <textarea
                             name="descriptionPurchase"
                             value={formState.newItem.descriptionPurchase}
                             onChange={handleInputChange}
-                            placeholder='Give some Description'
-                            className="w-full px-4 py-2 mt-1 h-16 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="Enter Description"
+                            className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                         />
                     </div>
                 </div>
 
-                <div className="text-center">
+
+                
+                {/* Form Actions */}
+                <div className="col-span-2 flex justify-end mt-6">
                     <button
                         type="submit"
-                        className="px-6 py-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:bg-blue-700"
+                        className="px-6 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                     >
                         Add Item
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => navigate('/dashboard/items')}
+                        className="ml-4 px-6 py-2 text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                    >
+                        Cancel
                     </button>
                 </div>
             </form>

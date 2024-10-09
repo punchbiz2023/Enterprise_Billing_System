@@ -3,12 +3,14 @@ import { Link } from 'react-router-dom';
 import { CiBoxList, CiShoppingCart,CiBag1 } from "react-icons/ci";
 import { IoBagOutline } from "react-icons/io5";
 import { BsGraphUp } from "react-icons/bs";
+import { MdInventory } from 'react-icons/md';
+
 import './Navbar.css';
 
 const Navbar = () => {
   return (
     <div className="navbar">
-      <div className='inner-div bg-[#2F4F4F] space-x-2'>
+      <div className='inner-div bg-[#1E1E2E] space-x-2'>
         <ul className="flex flex-col items-center">
           <li className="flex flex-col items-center mb-4">
             <Link to="/dashboard">
@@ -36,11 +38,19 @@ const Navbar = () => {
             </Link>
           </li>
           <li className="flex flex-col items-center mb-4">
+              <Link to="/dashboard/inventory">
+                  <MdInventory className='text-white ml-1 h-7 w-7' />
+                  <span className="text-white text-xs mt-1">Inventory</span>
+              </Link>
+          </li>
+          <li className="flex flex-col items-center mb-4">
             <Link to="/dashboard/report">
               <BsGraphUp className='text-white ml-1 h-7 w-7' />
               <span className="text-white text-xs mt-1">Reports</span>
             </Link>
           </li>
+          
+
         </ul>
       </div>
     </div>

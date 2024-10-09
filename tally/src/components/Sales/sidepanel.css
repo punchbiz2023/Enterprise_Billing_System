@@ -5,7 +5,7 @@
   left: 100px;
   height: calc(100vh - 70px);
   width: 150px;
-  background-color: #4F4F4F;
+  background-color: #4f4f4f;
   padding: 20px;
   box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.1);
   overflow-y: auto;
