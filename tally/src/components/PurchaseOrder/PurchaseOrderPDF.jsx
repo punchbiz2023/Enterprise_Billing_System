@@ -106,10 +106,6 @@ const styles = StyleSheet.create({
   },
 });
 
-const formatCurrency = (value) => {
-  return value.toFixed(2); 
-};
-
 const PurchaseOrderPDF = ({ formData }) => (
   <Document>
     <Page size="A4" style={styles.page}>
@@ -150,10 +146,10 @@ const PurchaseOrderPDF = ({ formData }) => (
           {formData.items.map((item, index) => (
             <View key={index} style={styles.tableRow}>
               <Text style={[styles.tableCol, styles.tableColSmall]}>{index + 1}</Text>
-              <Text style={[styles.tableCol, styles.tableColLarge]}>{item.name}</Text>
+              <Text style={[styles.tableCol, styles.tableColLarge]}>{item.account}</Text>
               <Text style={[styles.tableCol, styles.tableColSmall]}>{item.quantity}</Text>
-              <Text style={[styles.tableCol, styles.tableColMedium]}>{formatCurrency(item.rate)}</Text>
-              <Text style={[styles.tableCol, styles.tableColMedium]}>{formatCurrency(item.quantity * item.rate)}</Text>
+              <Text style={[styles.tableCol, styles.tableColMedium]}>{item.rate}</Text>
+              <Text style={[styles.tableCol, styles.tableColMedium]}>{item.quantity * item.rate}</Text>
             </View>
           ))}
         </View>
@@ -162,15 +158,15 @@ const PurchaseOrderPDF = ({ formData }) => (
         <View style={styles.summaryBlock}>
           <View style={styles.summaryRow}>
             <Text style={styles.summaryLabel}>Subtotal:</Text>
-            <Text style={styles.summaryValue}>{formatCurrency(formData.subtotal)}</Text>
+            <Text style={styles.summaryValue}>{formData.subtotal}</Text>
           </View>
           <View style={styles.summaryRow}>
             <Text style={styles.summaryLabel}>GST ({formData.gstPercentage}%):</Text>
-            <Text style={styles.summaryValue}>{formatCurrency(formData.gstAmount)}</Text>
+            <Text style={styles.summaryValue}>{formData.gstAmount}</Text>
           </View>
           <View style={styles.summaryRow}>
             <Text style={styles.summaryLabel}>Grand Total:</Text>
-            <Text style={styles.summaryValue}>{formatCurrency(formData.grandTotal)}</Text>
+            <Text style={styles.summaryValue}>{formData.grandTotal}</Text>
           </View>
         </View>
 
