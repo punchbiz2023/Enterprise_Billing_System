@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import './PurchaseOrder.css';
 import SidePanel from '../Purchase/Sidepanel';
 import * as XLSX from 'xlsx';
+import PurchaseOrderPDF from './PurchaseOrderPDF';
+import { pdf } from '@react-pdf/renderer';
+
 
 const PurchaseOrder = () => {
     const [vendor, setVendor] = useState('');
@@ -114,6 +117,45 @@ const PurchaseOrder = () => {
         XLSX.utils.book_append_sheet(workbook, worksheet, 'Items');
         XLSX.writeFile(workbook, 'PurchaseOrderItems.xlsx');
     };
+
+    const handleDownload = async () => {
+        const formData = {
+            vendor,
+            date,
+            deliveryDate,
+            purchaseOrderNo,
+            reference,
+            items,
+            subtotal,
+            gstAmount,
+            grandTotal,
+            vendorEmail
+        };
+    
+        try {
+            // Render the PDF as a Blob
+            const blob = await pdf(<PurchaseOrderPDF formData={formData} />).toBlob();
+            
+            // Create a temporary link element
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'purchase_order.pdf';
+    
+            // Append link to the body (required for Firefox)
+            document.body.appendChild(link);
+    
+            // Trigger the download
+            link.click();
+    
+            // Remove the link after the download is triggered
+            document.body.removeChild(link);
+        } catch (error) {
+            console.error('Error generating PDF:', error);
+        }
+    };
+    
+    
+    
 
     return (
         <div>
@@ -336,6 +378,12 @@ const PurchaseOrder = () => {
         onClick={exportToExcel}
     >
         Export to Excel
+    </button>
+    <button type="Genertae PDF"
+        className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-500 hover:bg-blue-600"
+        onClick={handleDownload}
+    >
+              Generate PDF
     </button>
 </div>
 
