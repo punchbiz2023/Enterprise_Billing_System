@@ -146,7 +146,7 @@ const PurchaseOrderPDF = ({ formData }) => (
           {formData.items.map((item, index) => (
             <View key={index} style={styles.tableRow}>
               <Text style={[styles.tableCol, styles.tableColSmall]}>{index + 1}</Text>
-              <Text style={[styles.tableCol, styles.tableColLarge]}>{item.name}</Text>
+              <Text style={[styles.tableCol, styles.tableColLarge]}>{item.account}</Text>
               <Text style={[styles.tableCol, styles.tableColSmall]}>{item.quantity}</Text>
               <Text style={[styles.tableCol, styles.tableColMedium]}>{item.rate}</Text>
               <Text style={[styles.tableCol, styles.tableColMedium]}>{item.quantity * item.rate}</Text>
