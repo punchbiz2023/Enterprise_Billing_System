@@ -94,12 +94,7 @@ const PurchaseOrder = () => {
                 body: JSON.stringify(orderData),
             });
 
-            if (response.ok) {
-                alert("Order has been successfully sent to the vendor's email.");
-                // Optionally, reset the form here
-            } else {
-                alert("Failed to send the order. Please try again.");
-            }
+            
         } catch (error) {
             console.error('Error posting order data:', error);
             alert("An error occurred while sending the order.");
