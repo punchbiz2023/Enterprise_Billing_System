@@ -37,6 +37,7 @@ import BillDetails from './components/Bills/BillDetails.jsx';
 import PurchaseOrderDetails from './components/PurchaseOrder/PurchaseOrderDetails.jsx';
 import Reports from './components/Reports/Reports.jsx';
 import CreditNotes from './components/CreditNotes/creditForm.jsx';
+import Inventory from './components/Inventory/inventory.jsx';
 function MainLayout({ children }) {
   return (
     <>
@@ -94,6 +95,7 @@ function App() {
         <Route path='/dashboard/purchase/bill' element={<MainLayout><Bill/></MainLayout>}/>
         <Route path='/dashboard/purchase/bill/:id' element={<MainLayout><BillDetails/></MainLayout>}/>
         <Route path='/dashboard/sales/credit' element={<MainLayout><CreditNotes/></MainLayout>}/>
+        <Route path='/dashboard/inventory' element={<MainLayout><Inventory/></MainLayout>}/>
       </Routes>
     </Router>
   );

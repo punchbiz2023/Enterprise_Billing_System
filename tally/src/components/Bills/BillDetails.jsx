@@ -34,39 +34,86 @@ const BillDetails = () => {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-200 p-4 mt-10">
-      <div className="bg-white shadow-xl p-8 rounded-lg max-w-4xl w-full border border-gray-200">
-        <h1 className="text-4xl font-bold mb-6 text-center text-gray-800">Bill Details</h1>
-        <div className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <p className="text-lg"><span className="font-semibold text-gray-700">Name:</span> {bill.name || 'None'}</p>
-              <p className="text-lg"><span className="font-semibold text-gray-700">Bill Number:</span> {bill.billnumber || 'None'}</p>
-              <p className="text-lg"><span className="font-semibold text-gray-700">Order Number:</span> {bill.orderno || 'None'}</p>
-              <p className="text-lg"><span className="font-semibold text-gray-700">Bill Date:</span> {bill.billdate || 'None'}</p>
-              <p className="text-lg"><span className="font-semibold text-gray-700">Due Date:</span> {bill.duedate || 'None'}</p>
-              <p className="text-lg"><span className="font-semibold text-gray-700">Terms:</span> {bill.terms || 'None'}</p>
-              <p className="text-lg"><span className="font-semibold text-gray-700">Mode of Shipment:</span> {bill.modeofshipment || 'None'}</p>
-              <p className="text-lg"><span className="font-semibold text-gray-700">GST:</span> {bill.gst || 'None'}</p>
-              <p className="text-lg"><span className="font-semibold text-gray-700">Total:</span> {bill.total || 'None'}</p>
-            </div>
-          </div>
+    <div className="flex flex-col items-center min-h-screen bg-gray-100 p-6">
+      <div className="bg-white shadow-xl p-6 rounded-lg w-full max-w-5xl border border-gray-200">
+        <h1 className="text-3xl font-semibold mb-6 text-center text-gray-800">Bill Details</h1>
 
-          <div className="mt-8">
-            <h2 className="text-2xl font-semibold mb-4 text-gray-800">Item Details</h2>
-            <div className="bg-gray-50 p-4 rounded-lg border border-gray-300 space-y-4">
-              {bill.itemdetails.map((item, index) => (
-                <div key={index} className="bg-white p-4 rounded-lg border border-gray-200">
-                  {Object.entries(item).map(([key, value]) => (
-                    <div key={key} className="text-lg">
-                      <span className="font-semibold text-gray-700">{key}:</span> {value ? value : "None"}
-                    </div>
-                  ))}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+        {/* Bill Information Table */}
+        <table className="min-w-full bg-white border-collapse border border-gray-300 mb-6">
+          <thead>
+            <tr className="bg-gray-100">
+              <th className="text-left py-3 px-4 border-b border-gray-300">Field</th>
+              <th className="text-left py-3 px-4 border-b border-gray-300">Details</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td className="py-3 px-4 border-b border-gray-300">Name</td>
+              <td className="py-3 px-4 border-b border-gray-300">{bill.name || 'None'}</td>
+            </tr>
+            <tr>
+              <td className="py-3 px-4 border-b border-gray-300">Bill Number</td>
+              <td className="py-3 px-4 border-b border-gray-300">{bill.billnumber || 'None'}</td>
+            </tr>
+            <tr>
+              <td className="py-3 px-4 border-b border-gray-300">Order Number</td>
+              <td className="py-3 px-4 border-b border-gray-300">{bill.orderno || 'None'}</td>
+            </tr>
+            <tr>
+              <td className="py-3 px-4 border-b border-gray-300">Bill Date</td>
+              <td className="py-3 px-4 border-b border-gray-300">{bill.billdate || 'None'}</td>
+            </tr>
+            <tr>
+              <td className="py-3 px-4 border-b border-gray-300">Due Date</td>
+              <td className="py-3 px-4 border-b border-gray-300">{bill.duedate || 'None'}</td>
+            </tr>
+            <tr>
+              <td className="py-3 px-4 border-b border-gray-300">Terms</td>
+              <td className="py-3 px-4 border-b border-gray-300">{bill.terms || 'None'}</td>
+            </tr>
+            <tr>
+              <td className="py-3 px-4 border-b border-gray-300">Mode of Shipment</td>
+              <td className="py-3 px-4 border-b border-gray-300">{bill.modeofshipment || 'None'}</td>
+            </tr>
+            <tr>
+              <td className="py-3 px-4 border-b border-gray-300">GST</td>
+              <td className="py-3 px-4 border-b border-gray-300">{bill.gst || 'None'}</td>
+            </tr>
+            <tr>
+              <td className="py-3 px-4 border-b border-gray-300">Total</td>
+              <td className="py-3 px-4 border-b border-gray-300">{bill.total || 'None'}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        {/* Item Details Table */}
+        <h2 className="text-2xl font-semibold mb-4 text-gray-800">Item Details</h2>
+        <table className="min-w-full bg-white border-collapse border border-gray-300">
+          <thead>
+            <tr className="bg-gray-100">
+              <th className="text-left py-3 px-4 border-b border-gray-300">S.No</th>
+              <th className="text-left py-3 px-4 border-b border-gray-300">Item Name</th>
+              <th className="text-left py-3 px-4 border-b border-gray-300">Quantity</th>
+              <th className="text-left py-3 px-4 border-b border-gray-300">Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            {bill.itemdetails.length > 0 ? (
+              bill.itemdetails.map((item, index) => (
+                <tr key={index} className="hover:bg-gray-100">
+                  <td className="py-3 px-4 border-b border-gray-300">{index + 1}</td>
+                  <td className="py-3 px-4 border-b border-gray-300">{item.name || 'None'}</td>
+                  <td className="py-3 px-4 border-b border-gray-300">{item.quantity || 'None'}</td>
+                  <td className="py-3 px-4 border-b border-gray-300">{item.price || 'None'}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="4" className="text-center py-3 text-gray-500">No items found</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
     </div>
   );

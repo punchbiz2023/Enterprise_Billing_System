@@ -410,7 +410,7 @@ const Estimate = () => {
 
               <div className="form-group">
                 <label>Reference#</label>
-                <input type="text" value={reference} required placeholder='Enter Reference id'  required onChange={(e) => setReference(e.target.value)} />
+                <input type="text" value={reference} required placeholder='Enter Reference id'  onChange={(e) => setReference(e.target.value)} />
               </div>
 
               <div className="form-group">

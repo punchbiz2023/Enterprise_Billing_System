@@ -177,3 +177,4 @@ export const SalesOrder = pgTable('salesorder', {
   taxrate: text('taxrate').notNull(),
   total: numeric('total').notNull()
 })
+
