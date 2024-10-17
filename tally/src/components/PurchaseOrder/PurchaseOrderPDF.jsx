@@ -1,77 +1,184 @@
-// // PurchaseOrderPDF.jsx
-// import React from 'react';
-// import { Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer';
+import React from 'react';
+import logo from '../../assets/Punchbiz_logo.jpg';
+import { Page, Text, View, Document, StyleSheet, Image, Font } from '@react-pdf/renderer';
 
-// const styles = StyleSheet.create({
-//     page: {
-//         flexDirection: 'column',
-//         padding: 20,
-//         fontSize: 12,
-//         fontFamily: 'Helvetica',
-//     },
-//     section: {
-//         marginBottom: 10,
-//     },
-//     table: {
-//         display: 'table',
-//         width: 'auto',
-//         margin: '10px 0',
-//     },
-//     tableRow: {
-//         margin: 'auto',
-//         flexDirection: 'row',
-//     },
-//     tableCol: {
-//         width: '25%',
-//         border: '1px solid #000',
-//         padding: 5,
-//     },
-//     title: {
-//         fontSize: 18,
-//         marginBottom: 20,
-//         textAlign: 'center',
-//     },
-// });
+Font.register({
+  family: 'Open Sans',
+  src: 'https://fonts.gstatic.com/s/opensans/v18/mem8YaGs126MiZpBA-UFVZ0e.ttf',
+});
 
-// const PurchaseOrderPDF = ({ orderData }) => (
-//     <Document>
-//         <Page size="A4" style={styles.page}>
-//             <Text style={styles.title}>Purchase Order</Text>
-//             <View style={styles.section}>
-//                 <Text><strong>Vendor:</strong> {orderData.name}</Text>
-//                 <Text><strong>Delivery Type:</strong> {orderData.delivery}</Text>
-//                 <Text><strong>Order Number:</strong> {orderData.orderno}</Text>
-//                 <Text><strong>Reference:</strong> {orderData.ref}</Text>
-//                 <Text><strong>Date:</strong> {orderData.date}</Text>
-//                 <Text><strong>Expected Delivery Date:</strong> {orderData.deliverydate}</Text>
-//                 <Text><strong>Payment Terms:</strong> {orderData.terms}</Text>
-//                 <Text><strong>Mode of Shipment:</strong> {orderData.modeofshipment}</Text>
-//             </View>
-//             <View style={styles.section}>
-//                 <Text style={{ fontWeight: 'bold' }}>Item Details:</Text>
-//                 <View style={styles.table}>
-//                     <View style={styles.tableRow}>
-//                         <View style={styles.tableCol}><Text>Item</Text></View>
-//                         <View style={styles.tableCol}><Text>Quantity</Text></View>
-//                         <View style={styles.tableCol}><Text>Rate</Text></View>
-//                         <View style={styles.tableCol}><Text>Amount</Text></View>
-//                     </View>
-//                     {orderData.itemdetails.map((item, index) => (
-//                         <View style={styles.tableRow} key={index}>
-//                             <View style={styles.tableCol}><Text>{item.account}</Text></View>
-//                             <View style={styles.tableCol}><Text>{item.quantity}</Text></View>
-//                             <View style={styles.tableCol}><Text>{item.rate}</Text></View>
-//                             <View style={styles.tableCol}><Text>{(item.rate * item.quantity).toFixed(2)}</Text></View>
-//                         </View>
-//                     ))}
-//                 </View>
-//                 <Text><strong>Subtotal:</strong> ₹ {orderData.total.toFixed(2)}</Text>
-//                 <Text><strong>GST:</strong> {orderData.gst} %</Text>
-//                 <Text><strong>GST Amount:</strong> ₹ {(orderData.total * orderData.gst / 100).toFixed(2)}</Text>
-//                 <Text><strong>Grand Total:</strong> ₹ {orderData.total.toFixed(2)}</Text>
-//             </View>
-//         </Page>
-//     </Document>
-// );
+const styles = StyleSheet.create({
+  page: {
+    fontFamily: 'Open Sans',
+    padding: 40,
+    fontSize: 12,
+    lineHeight: 1.6,
+    color: '#333',
+  },
+  logo: {
+    width: 60,
+    height: 60,
+    marginBottom: 10,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 30,
+  },
+  titleWrapper: {
+    flexGrow: 1,
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 22,
+    textAlign: 'center',
+    letterSpacing: 1,
+    textTransform: 'uppercase',
+  },
+  details: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  flexColumn: {
+    flexDirection: 'column',
+    width: '50%',
+  },
+  boldText: {
+    fontWeight: 'bold',
+    color: '#000',
+  },
+  table: {
+    display: 'table',
+    width: '100%',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    marginTop: 20,
+    borderColor: '#000',
+  },
+  tableRow: {
+    flexDirection: 'row',
+  },
+  tableCol: {
+    borderStyle: 'solid',
+    borderWidth: 1,
+    padding: 5,
+    textAlign: 'center',
+    borderColor: '#000',
+  },
+  tableColSmall: {
+    width: '10%', // Adjust the size for the "#" and "Qty" columns
+  },
+  tableColMedium: {
+    width: '20%', // Adjust for "Rate" and "Amount"
+  },
+  tableColLarge: {
+    width: '60%', // Adjust for "Item"
+    textAlign: 'left',
+  },
+  summaryBlock: {
+    marginTop: 20,
+    width: '100%',
+    borderWidth: 1,
+    padding: 10,
+    borderColor: '#000',
+  },
+  summaryRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 4,
+  },
+  summaryLabel: {
+    fontWeight: 'bold',
+    textAlign: 'left',
+    width: '70%',
+  },
+  summaryValue: {
+    textAlign: 'right',
+    width: '30%',
+  },
+  footer: {
+    textAlign: 'center',
+    marginTop: 30,
+    fontSize: 10,
+    color: '#555',
+  },
+});
 
-// export default PurchaseOrderPDF;
+const formatCurrency = (value) => {
+  return value.toFixed(2); 
+};
+
+const PurchaseOrderPDF = ({ formData }) => (
+  <Document>
+    <Page size="A4" style={styles.page}>
+      <View>
+        {/* Header Section */}
+        <View style={styles.header}>
+          <Image src={logo} style={styles.logo} />
+          <View style={styles.titleWrapper}>
+            <Text style={styles.title}>Purchase Order</Text>
+          </View>
+        </View>
+
+        {/* Vendor and Purchase Order Details */}
+        <View style={styles.details}>
+          <View style={styles.flexColumn}>
+            <Text style={styles.boldText}>Vendor:</Text>
+            <Text>{formData.vendor}</Text>
+            <Text>{formData.vendorEmail}</Text>
+          </View>
+          <View style={styles.flexColumn}>
+            <Text style={styles.boldText}>PO Number: {formData.purchaseOrderNo}</Text>
+            <Text>Date: {formData.date}</Text>
+            <Text>Delivery Date: {formData.deliveryDate}</Text>
+          </View>
+        </View>
+
+        {/* Table Header */}
+        <View style={styles.table}>
+          <View style={styles.tableRow}>
+            <Text style={[styles.tableCol, styles.tableColSmall, styles.boldText]}>S.no</Text>
+            <Text style={[styles.tableCol, styles.tableColLarge, styles.boldText]}>Item</Text>
+            <Text style={[styles.tableCol, styles.tableColSmall, styles.boldText]}>Qty</Text>
+            <Text style={[styles.tableCol, styles.tableColMedium, styles.boldText]}>Rate</Text>
+            <Text style={[styles.tableCol, styles.tableColMedium, styles.boldText]}>Amount</Text>
+          </View>
+
+          {/* Table Rows */}
+          {formData.items.map((item, index) => (
+            <View key={index} style={styles.tableRow}>
+              <Text style={[styles.tableCol, styles.tableColSmall]}>{index + 1}</Text>
+              <Text style={[styles.tableCol, styles.tableColLarge]}>{item.name}</Text>
+              <Text style={[styles.tableCol, styles.tableColSmall]}>{item.quantity}</Text>
+              <Text style={[styles.tableCol, styles.tableColMedium]}>{formatCurrency(item.rate)}</Text>
+              <Text style={[styles.tableCol, styles.tableColMedium]}>{formatCurrency(item.quantity * item.rate)}</Text>
+            </View>
+          ))}
+        </View>
+
+        {/* Summary */}
+        <View style={styles.summaryBlock}>
+          <View style={styles.summaryRow}>
+            <Text style={styles.summaryLabel}>Subtotal:</Text>
+            <Text style={styles.summaryValue}>{formatCurrency(formData.subtotal)}</Text>
+          </View>
+          <View style={styles.summaryRow}>
+            <Text style={styles.summaryLabel}>GST ({formData.gstPercentage}%):</Text>
+            <Text style={styles.summaryValue}>{formatCurrency(formData.gstAmount)}</Text>
+          </View>
+          <View style={styles.summaryRow}>
+            <Text style={styles.summaryLabel}>Grand Total:</Text>
+            <Text style={styles.summaryValue}>{formatCurrency(formData.grandTotal)}</Text>
+          </View>
+        </View>
+
+        {/* Footer */}
+        <Text style={styles.footer}>Thank you for your order!</Text>
+      </View>
+    </Page>
+  </Document>
+);
+
+export default PurchaseOrderPDF;

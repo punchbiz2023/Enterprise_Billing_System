@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import './PurchaseOrder.css';
 import SidePanel from '../Purchase/Sidepanel';
 import * as XLSX from 'xlsx';
+import PurchaseOrderPDF from './PurchaseOrderPDF';
+import { pdf } from '@react-pdf/renderer';
+
 
 const PurchaseOrder = () => {
     const [vendor, setVendor] = useState('');
@@ -114,6 +117,30 @@ const PurchaseOrder = () => {
         XLSX.utils.book_append_sheet(workbook, worksheet, 'Items');
         XLSX.writeFile(workbook, 'PurchaseOrderItems.xlsx');
     };
+
+    const handleDownload = async () => {
+        const formData = {
+            vendor,
+            date,
+            deliveryDate,
+            purchaseOrderNo,
+            reference,
+            items,
+            subtotal,
+            gstAmount,
+            grandTotal,
+            vendorEmail
+        };
+    
+        const blob = await pdf(<PurchaseOrderPDF formData={formData} />).toBlob();  // Use the formData
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'purchase_order.pdf';
+        link.click();
+    };
+    
+    
 
     return (
         <div>
@@ -336,6 +363,12 @@ const PurchaseOrder = () => {
         onClick={exportToExcel}
     >
         Export to Excel
+    </button>
+    <button type="Genertae PDF"
+        className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-500 hover:bg-blue-600"
+        onClick={handleDownload}
+    >
+              Generate PDF
     </button>
 </div>
 
