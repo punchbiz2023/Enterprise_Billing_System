@@ -149,3 +149,78 @@ border-radius: 5px;
 .actions button:hover {
 background-color: #45a049;
 }
+
+/* General Form Styles */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  font-weight: 600;
+  margin-bottom: 10px;
+  display: inline-block;
+  font-size: 16px;
+}
+
+.email-input {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  transition: border-color 0.3s ease;
+}
+
+.email-input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+/* Action Buttons Section */
+.action-buttons-section {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.button {
+  padding: 12px 25px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  text-transform: uppercase;
+}
+
+.submit-button {
+  background-color: #28a745;
+  color: white;
+}
+
+.submit-button:hover {
+  background-color: #218838;
+}
+
+.export-button {
+  background-color: #007bff;
+  color: white;
+}
+
+.export-button:hover {
+  background-color: #0056b3;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .action-buttons-section {
+      flex-direction: column;
+      gap: 10px;
+  }
+  
+  .button {
+      width: 100%;
+      text-align: center;
+  }
+}

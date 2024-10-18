@@ -116,13 +116,13 @@ const ExpenseForm = () => {
             <div className="mt-4">
               <label className="block text-sm font-medium text-gray-700">Date*</label>
               <input
-                type="date"
+                type="date" required
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
               />
             </div>
             <div className="mt-4">
               <label className="block text-sm font-medium text-gray-700">Expense Account*</label>
-              <select className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm">
+              <select required className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm">
                 <option>#Select an account#</option>
                 <option>Cost of Goods Sold</option>
                 <option>Job costing</option>
@@ -139,12 +139,12 @@ const ExpenseForm = () => {
                 <input
                   type="text"
                   className="flex-grow p-2 border border-l-0 border-gray-300 rounded-r-md"
-                  placeholder="Amount"
+                  placeholder="Amount" required
                 />
               </div>
             </div>
             <div className="mt-4">
-              <label className="block text-sm font-medium text-gray-700">Paid Through*</label>
+              <label className="block text-sm font-medium text-gray-700" >Paid Through*</label>
               <select className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm">
                 <option>Select an account</option>
                 <option>Petty Cash</option>
@@ -175,7 +175,7 @@ const ExpenseForm = () => {
                 <input
                   type="text"
                   className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                  placeholder="Invoice"
+                  placeholder="Invoice" required
                 />
               </div>
             </div>
@@ -185,7 +185,7 @@ const ExpenseForm = () => {
               <textarea
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 rows="3"
-                placeholder="Max. 500 characters"
+                placeholder="Max. 500 characters" 
               ></textarea>
             </div>
             {/* Upload Receipt */}

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { auth, provider } from './firebase'; 
 import { signInWithPopup } from 'firebase/auth'; 
 import { FaGoogle, FaLock, FaUser } from 'react-icons/fa';  // Icons
+import Loginlogo from '../../assets/Loginlogo.jpeg';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -35,13 +36,15 @@ const Login = () => {
   };
 
   return (
-    <div className="login-wrapper">
-      <div className="outer-box">
+    <div className="login-wrapper"> {/* New wrapper */}
+      <div className="login-container">
+        <div className="image-container">
+          <img src={Loginlogo} alt="Graduation" className="background-image" />
+        </div>
         <div className="login-box">
           <h2 className="login-title">Login</h2>
           <form onSubmit={handleSubmit}>
             <div className="input-field">
-              <label className="input-label">Email</label>
               <div className="input-container">
                 <FaUser className="icon" />
                 <input
@@ -55,7 +58,6 @@ const Login = () => {
               </div>
             </div>
             <div className="input-field">
-              <label className="input-label">Password</label>
               <div className="input-container">
                 <FaLock className="icon" />
                 <input
@@ -77,13 +79,15 @@ const Login = () => {
             <FaGoogle /> Sign in with Google
           </button>
 
-          {notification && <p className="notification">{notification}</p>}
-        </div>
+          <p className="signup-text text-center">
+  Not a user?{" "}
+  <span className="signup-link text-blue-500 cursor-pointer" onClick={() => navigate('/sign-up')}>
+    Register
+  </span>
+</p>
 
-        <div className="signup-box">
-          <p className="signup-text">
-            Not a user? <span className="signup-link" onClick={() => navigate('/sign-up')}>Register</span>
-          </p>
+
+          {notification && <p className="notification">{notification}</p>}
         </div>
       </div>
     </div>

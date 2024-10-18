@@ -104,7 +104,9 @@ const AddCustomer = () => {
                             name="name"
                             value={newCustomer.name}
                             onChange={handleInputChange}
+                            placeholder='Enter your name'
                             className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                            required
                         />
                     </div>
                 </div>
@@ -115,7 +117,9 @@ const AddCustomer = () => {
                         name="company"
                         value={newCustomer.company}
                         onChange={handleInputChange}
+                        placeholder='Enter Company name'
                         className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                        required
                     />
                 </div>
                 <div>
@@ -125,6 +129,7 @@ const AddCustomer = () => {
                         name="dispname"
                         value={newCustomer.dispname}
                         onChange={handleInputChange}
+                        placeholder='Enter name to be displayed'
                         className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                         required
                     />
@@ -136,6 +141,7 @@ const AddCustomer = () => {
                         name="mail"
                         value={newCustomer.mail}
                         onChange={handleInputChange}
+                        placeholder='Enter email'
                         className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                         required
                     />
@@ -148,7 +154,9 @@ const AddCustomer = () => {
                             name="workphone"
                             value={newCustomer.workphone}
                             onChange={handleInputChange}
+                            placeholder='Enter Work phone number'
                             className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                            required
                         />
                     </div>
                     <div>
@@ -158,7 +166,9 @@ const AddCustomer = () => {
                             name="mobilephone"
                             value={newCustomer.mobilephone}
                             onChange={handleInputChange}
+                            placeholder='Enter mobile number'
                             className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                            required
                         />
                     </div>
                 </div>
@@ -169,7 +179,9 @@ const AddCustomer = () => {
                         name="panno"
                         value={newCustomer.panno}
                         onChange={handleInputChange}
+                        placeholder='Enter PAN card number'
                         className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                        required
                     />
                 </div>
                 <div>
@@ -179,7 +191,9 @@ const AddCustomer = () => {
                         name="gstno"
                         value={newCustomer.gstno}
                         onChange={handleInputChange}
+                        placeholder='Enter GST number'
                         className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                        required
                     />
                 </div>
                 <div>
@@ -200,7 +214,9 @@ const AddCustomer = () => {
                         name="openingbalance"
                         value={newCustomer.openingbalance}
                         onChange={handleInputChange}
+                        placeholder='Enter amount for opening balance'
                         className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                        required
                     />
                 </div>
                 <div>
@@ -209,6 +225,7 @@ const AddCustomer = () => {
                         name="paymentterms"
                         value={newCustomer.paymentterms}
                         onChange={handleInputChange}
+
                         className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                     >
                         <option value="Due on Receipt">Due on Receipt</option>
@@ -216,22 +233,25 @@ const AddCustomer = () => {
                 </div>
 
                 <div>
-                    <h2 className="text-xl font-semibold text-gray-800 mt-8 mb-4">Billing Address</h2>
-                    <div className="space-y-4">
-                        {['doorNo', 'street', 'city', 'state', 'country', 'pinCode'].map((field) => (
-                            <div key={field}>
-                                <label className="block text-sm font-medium text-gray-700">{field}</label>
-                                <input
-                                    type="text"
-                                    name={field}
-                                    value={newCustomer.billaddress[field] || ''}
-                                    onChange={(e) => handleAddressChange(e, 'billaddress')}
-                                    className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                                />
-                            </div>
-                        ))}
-                    </div>
-                </div>
+    <h2 className="text-xl font-semibold text-gray-800 mt-8 mb-4">Billing Address</h2>
+    <div className="space-y-4">
+        {['doorNo', 'street', 'city', 'state', 'country', 'pinCode'].map((field) => (
+            <div key={field}>
+                <label className="block text-sm font-medium text-gray-700">{field}</label>
+                <input
+                    type="text"
+                    name={field}
+                    value={newCustomer.billaddress[field] || ''}
+                    placeholder={`Enter ${field.charAt(0).toUpperCase() + field.slice(1)}`}
+                    onChange={(e) => handleAddressChange(e, 'billaddress')}
+                    className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                    required
+                />
+            </div>
+        ))}
+    </div>
+</div>
+
 
                 <div>
                     <h2 className="text-xl font-semibold text-gray-800 mt-8 mb-4">Shipping Address</h2>
@@ -243,8 +263,10 @@ const AddCustomer = () => {
                                     type="text"
                                     name={field}
                                     value={newCustomer.shipaddress[field] || ''}
+                                    placeholder={`Enter ${field.charAt(0).toUpperCase() + field.slice(1)}`}
                                     onChange={(e) => handleAddressChange(e, 'shipaddress')}
                                     className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                                    required
                                 />
                             </div>
                         ))}
