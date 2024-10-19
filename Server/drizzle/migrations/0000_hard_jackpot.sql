@@ -46,6 +46,15 @@ CREATE TABLE IF NOT EXISTS "estimate" (
 	"total" numeric NOT NULL
 );
 --> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "inventory" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"item_name" varchar NOT NULL,
+	"hsn_code" varchar,
+	"quantity" numeric NOT NULL,
+	"rate" numeric NOT NULL,
+	"gst" numeric NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "invoice" (
 	"sno" serial PRIMARY KEY NOT NULL,
 	"name" text NOT NULL,
@@ -77,7 +86,7 @@ CREATE TABLE IF NOT EXISTS "items" (
 	"salesaccount" text NOT NULL,
 	"purchaseaccount" text NOT NULL,
 	"taxPayable" boolean,
-	"gst" numeric
+	"gst" numeric(5, 2)
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "project" (
@@ -125,7 +134,7 @@ CREATE TABLE IF NOT EXISTS "salesorder" (
 	"duedate" date NOT NULL,
 	"terms" text NOT NULL,
 	"itemdetails" json NOT NULL,
-	"subject" text NOT NULL,
+	"subject" text,
 	"salesperson" text NOT NULL,
 	"taxtype" text NOT NULL,
 	"taxrate" text NOT NULL,

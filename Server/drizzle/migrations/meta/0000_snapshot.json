@@ -1,5 +1,5 @@
 {
-  "id": "39bebc58-7ab7-4f9c-b088-4be7b1417f67",
+  "id": "7fc96f07-c7d3-4ecd-aa51-7b0ef66e732e",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -268,6 +268,52 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
+    "public.inventory": {
+      "name": "inventory",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "item_name": {
+          "name": "item_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "hsn_code": {
+          "name": "hsn_code",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "quantity": {
+          "name": "quantity",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rate": {
+          "name": "rate",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "gst": {
+          "name": "gst",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
     "public.invoice": {
       "name": "invoice",
       "schema": "",
@@ -446,7 +492,7 @@
         },
         "gst": {
           "name": "gst",
-          "type": "numeric",
+          "type": "numeric(5, 2)",
           "primaryKey": false,
           "notNull": false
         }
@@ -712,7 +758,7 @@
           "name": "subject",
           "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "salesperson": {
           "name": "salesperson",

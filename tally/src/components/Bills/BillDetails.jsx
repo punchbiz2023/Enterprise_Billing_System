@@ -11,19 +11,22 @@ const BillDetails = () => {
     const fetchBill = async () => {
       try {
         const response = await axios.get(`http://localhost:3001/api/bill`);
+
         // Find the bill based on the ID from the params
         const fetchedBill = response.data.find(bill => bill.sno === parseInt(id));
         
         setBill(fetchedBill);
         setLoading(false);
+        
       } catch (error) {
         console.error('Error fetching bill details:', error.response ? error.response.data : error.message);
         setLoading(false);
       }
     };
-
+    
     fetchBill();
   }, [id]);
+  console.log(bill);
 
   if (loading) {
     return <p className="text-center text-gray-500 text-lg">Loading...</p>;
@@ -36,7 +39,7 @@ const BillDetails = () => {
   return (
     <div className="flex flex-col items-center min-h-screen bg-gray-100 p-6">
       <div className="bg-white shadow-xl p-6 rounded-lg w-full max-w-5xl border border-gray-200">
-        <h1 className="text-3xl font-semibold mb-6 text-center text-gray-800">Bill Details</h1>
+        <h1 className="text-3xl font-semibold mb-6 mt-16  text-center text-gray-800">Bill Details</h1>
 
         {/* Bill Information Table */}
         <table className="min-w-full bg-white border-collapse border border-gray-300 mb-6">
@@ -102,9 +105,9 @@ const BillDetails = () => {
               bill.itemdetails.map((item, index) => (
                 <tr key={index} className="hover:bg-gray-100">
                   <td className="py-3 px-4 border-b border-gray-300">{index + 1}</td>
-                  <td className="py-3 px-4 border-b border-gray-300">{item.name || 'None'}</td>
+                  <td className="py-3 px-4 border-b border-gray-300">{item.iname || 'None'}</td>
                   <td className="py-3 px-4 border-b border-gray-300">{item.quantity || 'None'}</td>
-                  <td className="py-3 px-4 border-b border-gray-300">{item.price || 'None'}</td>
+                  <td className="py-3 px-4 border-b border-gray-300">{item.amount || 'None'}</td>
                 </tr>
               ))
             ) : (
