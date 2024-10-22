@@ -11,7 +11,7 @@ const SidePanel = () => {
         <li>
           <Link
             to="/dashboard/sales/customers"
-            className={`side-link ${location.pathname === '/dashboard/sales/customers' || location.pathname === '/dashboard/sales' ? 'active' : ''}`}
+            className={`side-link ${location.pathname === '/dashboard/sales/customers' }`}
           >
             Customers
           </Link>

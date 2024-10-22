@@ -10,7 +10,8 @@ import Invoice from './routes/invoice.js'
 import Project from './routes/projects.js'
 import Estimates from './routes/estimates.js'
 import  SalesOrder  from './routes/salesOrder.js';
-
+import inventory from './routes/inventory.js';
+import CreditNotes from './routes/creditNotes.js'
 import dotenv from 'dotenv';
 dotenv.config({ path: './.env' });
 
@@ -31,6 +32,8 @@ app.use('/api/invoice',Invoice)
 app.use('/api/projects',Project)
 app.use('/api/estimates',Estimates)
 app.use('/api/salesorder',SalesOrder)
+app.use('/api/inventory',inventory)
+app.use('/api/creditnote',CreditNotes)
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {

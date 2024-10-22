@@ -12,7 +12,7 @@ const BillForm = () => {
     const [dueDate, setdueDate] = useState('');
     const [paymentTerms, setPaymentTerms] = useState('');
     const [shipmentPreference, setShipmentPreference] = useState('');
-    const [items, setItems] = useState([{ id: 1, quantity: 1, rate: 0, amount: 0 }]);
+    const [items, setItems] = useState([{ id: 1,iname:'', quantity: 1, rate: 0, amount: 0 }]);
     const [gstPercentage, setGstPercentage] = useState(0);
     const [gstAmount, setGstAmount] = useState(0);
     const [subtotal, setSubtotal] = useState(0);
@@ -153,7 +153,11 @@ const BillForm = () => {
                             {items.map((item, index) => (
                                 <tr key={item.id}>
                                     <td>
-                                        <input type="text" placeholder="Type or click to select an item." />
+                                        <input type="text" placeholder="Type or click to select an item."onChange={(e)=>{
+                                            item.iname = e.target.value;
+                                            console.log(item.iname);
+                                            
+                                        }} />
                                     </td>
                                     <td>
                                         <input

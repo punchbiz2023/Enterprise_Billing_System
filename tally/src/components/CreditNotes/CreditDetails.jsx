@@ -2,29 +2,29 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
-const BillDetails = () => {
+const CreditDetails = () => {
   const { id } = useParams(); // Captures the id from the URL
-  const [bill, setBill] = useState(null);
+  const [note, setNote] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchBill = async () => {
+    const fetchNote = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/api/bill`);
+        const response = await axios.get(`http://localhost:3001/api/creditnote`);
 
-        // Find the bill based on the ID from the params
-        const fetchedBill = response.data.find(bill => bill.sno === parseInt(id));
+        // Find the note based on the ID from the params
+        const fetchedNote = response.data.find(note => note.sno === parseInt(id));
         
-        setBill(fetchedBill);
+        setNote(fetchedNote);
         setLoading(false);
         
       } catch (error) {
-        console.error('Error fetching bill details:', error.response ? error.response.data : error.message);
+        console.error('Error fetching note details:', error.response ? error.response.data : error.message);
         setLoading(false);
       }
     };
     
-    fetchBill();
+    fetchNote();
   }, [id]);
   
 
@@ -32,16 +32,16 @@ const BillDetails = () => {
     return <p className="text-center text-gray-500 text-lg">Loading...</p>;
   }
 
-  if (!bill) {
-    return <p className="text-center text-red-500 text-lg">Bill not found</p>;
+  if (!note) {
+    return <p className="text-center text-red-500 text-lg">Note not found</p>;
   }
 
   return (
     <div className="flex flex-col items-center min-h-screen bg-gray-100 p-6">
       <div className="bg-white shadow-xl p-6 rounded-lg w-full max-w-5xl border border-gray-200">
-        <h1 className="text-3xl font-semibold mb-6 mt-16  text-center text-gray-800">Bill Details</h1>
+        <h1 className="text-3xl font-semibold mb-6 mt-16  text-center text-gray-800">Note Details</h1>
 
-        {/* Bill Information Table */}
+        {/* note Information Table */}
         <table className="min-w-full bg-white border-collapse border border-gray-300 mb-6">
           <thead>
             <tr className="bg-gray-100">
@@ -52,39 +52,41 @@ const BillDetails = () => {
           <tbody>
             <tr>
               <td className="py-3 px-4 border-b border-gray-300">Name</td>
-              <td className="py-3 px-4 border-b border-gray-300">{bill.name || 'None'}</td>
+              <td className="py-3 px-4 border-b border-gray-300">{note.name || 'None'}</td>
             </tr>
             <tr>
-              <td className="py-3 px-4 border-b border-gray-300">Bill Number</td>
-              <td className="py-3 px-4 border-b border-gray-300">{bill.billnumber || 'None'}</td>
+              <td className="py-3 px-4 border-b border-gray-300">Note Number</td>
+              <td className="py-3 px-4 border-b border-gray-300">{note.creditno || 'None'}</td>
             </tr>
             <tr>
-              <td className="py-3 px-4 border-b border-gray-300">Order Number</td>
-              <td className="py-3 px-4 border-b border-gray-300">{bill.orderno || 'None'}</td>
+              <td className="py-3 px-4 border-b border-gray-300">Reference Number</td>
+              <td className="py-3 px-4 border-b border-gray-300">{note.refno || 'None'}</td>
             </tr>
+           
             <tr>
-              <td className="py-3 px-4 border-b border-gray-300">Bill Date</td>
-              <td className="py-3 px-4 border-b border-gray-300">{bill.billdate || 'None'}</td>
+              <td className="py-3 px-4 border-b border-gray-300">Note Date</td>
+              <td className="py-3 px-4 border-b border-gray-300">{note.creditdate || 'None'}</td>
             </tr>
+            
             <tr>
-              <td className="py-3 px-4 border-b border-gray-300">Due Date</td>
-              <td className="py-3 px-4 border-b border-gray-300">{bill.duedate || 'None'}</td>
+              <td className="py-3 px-4 border-b border-gray-300">Subject</td>
+              <td className="py-3 px-4 border-b border-gray-300">{note.subject || 'None'}</td>
             </tr>
             <tr>
               <td className="py-3 px-4 border-b border-gray-300">Terms</td>
-              <td className="py-3 px-4 border-b border-gray-300">{bill.terms || 'None'}</td>
+              <td className="py-3 px-4 border-b border-gray-300">{note.terms || 'None'}</td>
             </tr>
             <tr>
-              <td className="py-3 px-4 border-b border-gray-300">Mode of Shipment</td>
-              <td className="py-3 px-4 border-b border-gray-300">{bill.modeofshipment || 'None'}</td>
+              <td className="py-3 px-4 border-b border-gray-300">Salesperson</td>
+              <td className="py-3 px-4 border-b border-gray-300">{note.salesperson || 'None'}</td>
             </tr>
             <tr>
-              <td className="py-3 px-4 border-b border-gray-300">GST</td>
-              <td className="py-3 px-4 border-b border-gray-300">{bill.gst || 'None'}</td>
+              <td className="py-3 px-4 border-b border-gray-300">Tax</td>
+              <td className="py-3 px-4 border-b border-gray-300">{note.taxrate || 'None'}</td>
             </tr>
             <tr>
               <td className="py-3 px-4 border-b border-gray-300">Total</td>
-              <td className="py-3 px-4 border-b border-gray-300">{bill.total || 'None'}</td>
+              <td className="py-3 px-4 border-b border-gray-300">{note.amount || 'None'}</td>
             </tr>
           </tbody>
         </table>
@@ -101,11 +103,11 @@ const BillDetails = () => {
             </tr>
           </thead>
           <tbody>
-            {bill.itemdetails.length > 0 ? (
-              bill.itemdetails.map((item, index) => (
+            {note.itemdetails.length > 0 ? (
+              note.itemdetails.map((item, index) => (
                 <tr key={index} className="hover:bg-gray-100">
                   <td className="py-3 px-4 border-b border-gray-300">{index + 1}</td>
-                  <td className="py-3 px-4 border-b border-gray-300">{item.iname || 'None'}</td>
+                  <td className="py-3 px-4 border-b border-gray-300">{item.item || 'None'}</td>
                   <td className="py-3 px-4 border-b border-gray-300">{item.quantity || 'None'}</td>
                   <td className="py-3 px-4 border-b border-gray-300">{item.amount || 'None'}</td>
                 </tr>
@@ -122,4 +124,4 @@ const BillDetails = () => {
   );
 };
 
-export default BillDetails;
+export default CreditDetails;

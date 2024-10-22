@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import SidePanel from '../Reports/sidepanel';
+import SidePanel from '../Sales/SidePanel';
 import { Link, useNavigate } from 'react-router-dom';
 const CreditNotes = () => {
 
   const [salespersons, setSalespersons] = useState([]);
   const [salesperson, setSalesperson] = useState('')
   const [creditNumber, setcreditNumber] = useState('');
-  const [invoiceDate, setInvoiceDate] = useState('');
-  const [dueDate, setDueDate] = useState('');
   const [customerNotes, setcustomerNotes] = useState('');
   const [terms, setTerms] = useState('');
-  const [items, setItems] = useState([{ item: '', quantity: '', rate: '', discount: '', gst: '', sgst: '', amount: '' }]);
+  const [items, setItems] = useState([{ item: '', HsnCode: '', quantity: '', rate: '', discount: '', gst: '', sgst: '',cgst:'', amount: '' }]);
   const [availableItems, setAvailableItems] = useState([]);
   const [taxType, setTaxType] = useState('');
   const [tax, setTax] = useState(0);
@@ -19,16 +17,15 @@ const CreditNotes = () => {
   const [adjustment, setAdjustment] = useState(0);
   const [adjustmentType, setAdjustmentType] = useState('add');
   const [showCustomTax, setShowCustomTax] = useState(false);
-  const [paymentReceived, setPaymentReceived] = useState(false);
+
   const [customers, setCustomers] = useState([]);
   const [customer, setCustomer] = useState('');
   const [customerState, setCustomerState] = useState('');
-  const [isPaymentReceived, setIsPaymentReceived] = useState(false);
+
   const [referenceNumber, setreferenceNumber] = useState('');
   const [creditDate, setcreditDate] = useState('');
-  const [salesshipDate, setsalesshipDate] = useState('');
   const [subject, setSubject] = useState('');
- 
+
 
   const navigate = useNavigate();
 
@@ -67,16 +64,8 @@ const CreditNotes = () => {
     const selectedCustomer = customers.find((cust) => cust.name === selectedCustomerName);
     if (selectedCustomer) {
       setCustomerState(selectedCustomer.state);
-      setCustomerName(selectedCustomer.name)
-      // setCustomerAddress(JSON.stringify(selectedCustomer.billaddress)) 
-      setCustomerPh(selectedCustomer.workphone)
-      setCustomerMail(selectedCustomer.mail)
-
     } else {
       setCustomerState('');
-      setCustomerPh('');
-      setCustomerMail('');
-
     }
   };
 
@@ -92,34 +81,34 @@ const CreditNotes = () => {
 
 
   const handleSubmit = async (e) => {
+    
     e.preventDefault();
+      // console.log("Items before POST:", items);  // Log the items state
 
-    const orderDetails = {
-      name: customerName,
-      state: customerState,
-      caddress: customerAddress,
-      contact: customerPh,
-      mail: customerMail,
-      invoiceid: invoiceNumber,
-      orderno: salesOrder,
-      orderdate: salesDate,
-      shipmentdate: salesshipDate,
-      invoicedate: invoiceDate,
-      duedate: dueDate,
-      terms: terms,
+    const creditDetails = {
+      name: customer,
+      creditno: creditNumber,
+      refno:referenceNumber,
+      creditdate: creditDate,
       itemdetails: items,
       subject: subject,
+      notes: customerNotes,
+      terms: terms,
       salesperson: salesperson,
       taxtype: taxType,
       taxrate: tax,
-      total: calculateTotal()
+      amount: calculateTotal()
     };
+    // console.log("Credit Details before POST:", creditDetails);
+
 
     try {
-      const response = await axios.post('http://localhost:3001/api/salesorder', orderDetails);
-      navigate('/dashboard/sales/order')
+      const response = await axios.post('http://localhost:3001/api/creditnote', creditDetails);
+      // console.log("Post success");
+      
+      navigate('/dashboard/sales/credit')
     } catch (error) {
-      console.error('Error creating Sales Order:', error.response ? error.response.data : error.message);
+      console.error('Error creating Credit Notes:', error.response ? error.response.data : error.message);
     }
   };
 
@@ -228,9 +217,6 @@ const CreditNotes = () => {
 
     ('Subtotal:', subtotal);
 
-
-
-
     let total;
 
     if (taxType === 'TDS') {
@@ -305,7 +291,7 @@ const CreditNotes = () => {
                   </select>
                 </div>
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-700">Credit Note #</label>
                 <input
@@ -337,10 +323,10 @@ const CreditNotes = () => {
                   className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
                 />
               </div>
-              
+
             </div>
 
-           
+
 
             {/* Items Table */}
             <table className="w-full table-auto mt-6">
@@ -426,7 +412,7 @@ const CreditNotes = () => {
                     <td>
                       <input
                         type="number"
-                        value={items[index].sgst || ''}
+                        value={items[index].sgst || 0}
                         className="border p-2 w-full"
                         readOnly
                       />
@@ -434,7 +420,7 @@ const CreditNotes = () => {
                     <td>
                       <input
                         type="number"
-                        value={items[index].cgst || ''}
+                        value={items[index].cgst || 0}
                         className="border p-2 w-full"
                         readOnly
                       />
@@ -471,7 +457,7 @@ const CreditNotes = () => {
               Add New Item
             </button>
             <div>
-              <label className="block text-sm font-medium h-16 text-gray-700">Subject</label>
+              <label className="block text-sm font-medium h-6 text-gray-700">Subject</label>
               <input
                 type="text"
                 value={subject}
@@ -500,7 +486,7 @@ const CreditNotes = () => {
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
               />
             </div>
-            <label htmlFor="salesperson" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="salesperson" className="block text-sm h-2 font-medium text-gray-700">
               Salesperson
             </label>
             <select
