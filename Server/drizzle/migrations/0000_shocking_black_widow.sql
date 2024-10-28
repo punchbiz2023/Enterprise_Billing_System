@@ -102,7 +102,9 @@ CREATE TABLE IF NOT EXISTS "items" (
 	"salesaccount" text NOT NULL,
 	"purchaseaccount" text NOT NULL,
 	"taxPayable" boolean,
-	"gst" numeric(5, 2)
+	"gst" numeric(5, 2),
+	"quantity" numeric NOT NULL,
+	"openingStock" numeric NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "project" (

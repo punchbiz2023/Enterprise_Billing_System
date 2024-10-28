@@ -60,6 +60,8 @@ export const Items = pgTable('items', {
   purchaseaccount: text('purchaseaccount').notNull(),
   taxpayable: boolean('taxPayable'),
   gst: decimal('gst', { precision: 5, scale: 2 }),
+  quantity: numeric('quantity').notNull(),
+  openingstock: numeric('openingStock').notNull(),
 });
 
 export const Users = pgTable('users', {

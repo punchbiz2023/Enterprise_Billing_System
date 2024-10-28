@@ -71,26 +71,23 @@ const Items = () => {
         <div className="flex justify-between items-center mb-4">
           {/* Search Section */}
           <div className="relative w-[400px]">
-            {/* Input field with embedded dropdown */}
             <div className="flex border border-gray-400">
-                        {/* Dropdown after the search input */}
-                        <select
-                            value={searchBy}
-                            onChange={(e) => setSearchBy(e.target.value)}
-                            className="bg-gray-100 px-2 py-2 border border-gray-600 rounded-l text-gray-800 cursor-pointer focus:outline-none"
-                        >
-                            <option value="name">Name</option>
-                            <option value="itemcode">Item Code</option>
-                            <option value="type">Type</option>
-                        </select>
-                        <input
-                          type="text"
-                          placeholder={`Search by ${searchBy}`}
-                          value={searchQuery}
-                          onChange={(e) => setSearchQuery(e.target.value)}
-                          className="bg-gray-100 flex-grow px-3 py-2 focus:outline-none"
-                        />
-              {/* Search input field */}
+              <select
+                value={searchBy}
+                onChange={(e) => setSearchBy(e.target.value)}
+                className="bg-gray-100 px-2 py-2 border border-gray-600 rounded-l text-gray-800 cursor-pointer focus:outline-none"
+              >
+                <option value="name">Name</option>
+                <option value="itemcode">Item Code</option>
+                <option value="type">Type</option>
+              </select>
+              <input
+                type="text"
+                placeholder={`Search by ${searchBy}`}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="bg-gray-100 flex-grow px-3 py-2 focus:outline-none"
+              />
             </div>
           </div>
 
@@ -142,18 +139,20 @@ const Items = () => {
                 <th className="py-2 px-4 border-b text-center">Unit</th>
                 <th className="py-2 px-4 border-b text-center">Sales Description</th>
                 <th className="py-2 px-4 border-b text-center">Purchase Description</th>
+                <th className="py-2 px-4 border-b text-center">Quantity</th>           {/* Added Quantity Header */}
+                <th className="py-2 px-4 border-b text-center">Opening Stock</th>      {/* Added Opening Stock Header */}
               </tr>
             </thead>
             <tbody>
               {!dataLoaded ? (
                 <tr>
-                  <td colSpan="9" className="py-2 px-4 text-center text-gray-500">
+                  <td colSpan="11" className="py-2 px-4 text-center text-gray-500">
                     Loading Items...
                   </td>
                 </tr>
               ) : filteredItems.length === 0 ? (
                 <tr>
-                  <td colSpan="9" className="py-2 px-4 text-center text-gray-500">
+                  <td colSpan="11" className="py-2 px-4 text-center text-gray-500">
                     No Items found
                   </td>
                 </tr>
@@ -182,6 +181,8 @@ const Items = () => {
                     <td className="py-2 px-4 border-b text-center">{item.unit}</td>
                     <td className="py-2 px-4 border-b text-center">{item.salesdescription}</td>
                     <td className="py-2 px-4 border-b text-center">{item.purchasedescription}</td>
+                    <td className="py-2 px-4 border-b text-center">{item.quantity}</td>          {/* Added Quantity Data */}
+                    <td className="py-2 px-4 border-b text-center">{item.openingstock}</td>      {/* Added Opening Stock Data */}
                   </tr>
                 ))
               )}

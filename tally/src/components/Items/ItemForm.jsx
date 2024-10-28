@@ -57,7 +57,7 @@ const ItemForm = () => {
         onChange={handleInputChange}
         className="h-4 w-4 text-blue-600 border-gray-300 rounded"
     />
-    <label className="text-sm font-medium text-gray-700">Opening Stock</label>
+    <label className="text-sm font-medium text-gray-700">Add Inventory</label>
 </div>
 
 
@@ -158,6 +158,18 @@ const ItemForm = () => {
                         value={formState.newItem.hsnCode}
                         onChange={handleInputChange}
                         placeholder="Enter HSN Code"
+                        className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                        required
+                    />
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-gray-700">Quantity</label>
+                    <input
+                        type="number"
+                        name="itemQuantity"
+                        value={formState.newItem.itemQuantity}
+                        onChange={handleInputChange}
+                        placeholder="Enter Quantity"
                         className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                         required
                     />

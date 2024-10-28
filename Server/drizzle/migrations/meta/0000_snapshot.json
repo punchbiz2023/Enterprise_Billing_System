@@ -1,5 +1,5 @@
 {
-  "id": "4009b6c3-6cef-44a0-b073-3c40b1e2095b",
+  "id": "b91bf506-bc95-41c2-8ad0-5784fdf52da3",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -583,6 +583,18 @@
           "type": "numeric(5, 2)",
           "primaryKey": false,
           "notNull": false
+        },
+        "quantity": {
+          "name": "quantity",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "openingStock": {
+          "name": "openingStock",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
         }
       },
       "indexes": {},
