@@ -64,8 +64,9 @@ CREATE TABLE IF NOT EXISTS "estimate" (
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "inventory" (
 	"id" serial PRIMARY KEY NOT NULL,
-	"item_name" varchar NOT NULL,
-	"hsn_code" varchar NOT NULL,
+	"item_name" text NOT NULL,
+	"item_code" text NOT NULL,
+	"hsn_code" text NOT NULL,
 	"quantity" numeric NOT NULL,
 	"rate" numeric NOT NULL,
 	"gst" numeric NOT NULL

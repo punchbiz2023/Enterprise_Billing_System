@@ -1,4 +1,3 @@
-// inventory.js
 import express from 'express';
 import { eq } from 'drizzle-orm';
 import { InventoryTable } from '../drizzle/schema.js';
@@ -24,37 +23,56 @@ router.get('/', async (req, res) => {
 });
 
 // POST new inventory item
-// POST new inventory items (handling an array)
+// POST new inventory item
 router.post('/', async (req, res) => {
-  const items = req.body.items;  // expecting an array of items
+  const {
+    itemName,
+    itemCode,
+    hsnCode,
+    quantity,
+    rate,
+    gst
+  } = req.body;
 
   try {
-    const newItems = [];
-
-    for (const item of items) {
-      const { itemName, hsnCode, quantity, rate, gst } = item;
-
-      const [newItem] = await db
-        .insert(InventoryTable)
-        .values({
-          itemName: itemName,
-          hsnCode: hsnCode,
-          quantity: parseInt(quantity),
-          rate: parseFloat(rate),
-          gst: parseFloat(gst),
-        })
-        .returning();
-
-      newItems.push(newItem);
-    }
-
-    res.status(201).json(newItems);
+    const parsedGst = gst === "0.00" || gst === "" ? 0 : parseFloat(gst);
+    
+    const [newItem] = await db
+      .insert(InventoryTable)
+      .values({
+        itemName: itemName,
+        itemCode: itemCode,
+        hsnCode: hsnCode,
+        quantity: parseInt(quantity),
+        rate: parseFloat(rate),
+        gst: parsedGst,
+      })
+      .returning();
+      
+    res.status(201).json(newItem);
   } catch (error) {
     console.error('Error adding inventory item:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
+// Inventory update route
+router.post('/update', async (req, res) => {
+  const { items } = req.body; // Expecting an array of items with id and reduced quantity
+
+  try {
+    // Loop through each item and update its quantity
+    for (const item of items) {
+      await db.update(InventoryTable)
+        .set({ quantity: item.quantity }) // Set the new quantity
+        .where(eq(InventoryTable.id, item.id)); // Find by id
+    }
+    res.status(200).json({ message: 'Inventory updated successfully' });
+  } catch (error) {
+    console.error('Error updating inventory:', error); // Log the error
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 
 // DELETE inventory items
