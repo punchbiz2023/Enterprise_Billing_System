@@ -1,0 +1,50 @@
+/* Ensure consistent width and spacing for the side panel */
+.side-panel {
+    position: fixed;
+    top: 70px;
+    left: 100px;
+    height: calc(100vh - 70px);
+    width: 150px;
+    background-color: #7d7d8e;
+    padding: 20px;
+    box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    z-index: 1000;
+  }
+  
+  .side-panel ul {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 20px;
+  }
+  
+  .side-panel ul li {
+    margin: 15px 0;
+  }
+  
+  .side-panel ul li a.side-link {
+    color: white;
+    text-decoration: none;
+    display: block;
+    padding: 10px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  /* Active state for the link */
+  .side-panel ul li a.active {
+    background-color: #1f4b78; /* Blue color for the active link */
+    color: white;
+  }
+  
+  /* Ensure active link doesn't change color on hover */
+  .side-panel ul li a.active:hover {
+    background-color: #0d2a47; /* Keep the active background color */
+    color: white; /* Keep the text color the same */
+  }
+  
+  /* Regular hover effect for non-active links */
+  .side-panel ul li a.side-link:not(.active):hover {
+    background-color: #1f4b78; /* Lighten background on hover */
+    color: white; /* Retain text color */
+  }
+  

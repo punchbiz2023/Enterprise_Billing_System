@@ -4,6 +4,7 @@ import { Items } from '../drizzle/schema.js';
 import { eq } from 'drizzle-orm';
 import postgres from 'postgres';
 import dotenv from 'dotenv';
+
 dotenv.config({ path: './.env' });
 
 const router = express.Router();
@@ -24,10 +25,11 @@ router.post('/', async (req, res) => {
     purchaseAccount,
     descriptionSales,
     descriptionPurchase,
-    preferredVendor,
     taxPayable,
     gst,
-    type
+    type,
+    quantity,          // Added quantity
+    openingStock,     // Added opening stock
   } = req.body;
 
   try {
@@ -36,7 +38,7 @@ router.post('/', async (req, res) => {
       .values({
         name,
         unit,
-        itemcode: itemCode,  
+        itemcode: itemCode,
         hsncode: hsnCode,
         salesprice: Number(sellingPrice),
         costprice: Number(costPrice),
@@ -44,9 +46,11 @@ router.post('/', async (req, res) => {
         purchaseaccount: purchaseAccount,
         salesdescription: descriptionSales,
         purchasedescription: descriptionPurchase,
-        taxpayable: taxPayable,  
-        gst: Number(gst),  
+        taxpayable: taxPayable,
+        gst: Number(gst),
         type,
+        quantity: Number(quantity),           // Convert to Number
+        openingstock: Number(openingStock),   // Convert to Number
       })
       .returning();
 
@@ -64,16 +68,18 @@ router.get('/', async (req, res) => {
       .select({
         sno: Items.sno,
         name: Items.name,
-        itemcode: Items.itemcode,  
-        hsncode: Items.hsncode, 
+        itemcode: Items.itemcode,
+        hsncode: Items.hsncode,
         salesprice: Items.salesprice,
         costprice: Items.costprice,
         type: Items.type,
         unit: Items.unit,
         salesdescription: Items.salesdescription,
         purchasedescription: Items.purchasedescription,
-        taxpayable: Items.taxpayable, 
+        taxpayable: Items.taxpayable,
         gst: Items.gst,
+        quantity: Items.quantity,              // Include quantity in response
+        openingstock: Items.openingstock,      // Include opening stock in response
       })
       .from(Items);
 

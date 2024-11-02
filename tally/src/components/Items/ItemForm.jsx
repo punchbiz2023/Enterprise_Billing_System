@@ -6,6 +6,7 @@ const ItemForm = () => {
     const [formState, setFormState] = useState({
         newItem: {
             sno: '',
+            name:'',
             itemCode: '',
             unit: 'BOX',
             hsnCode: '',
@@ -19,8 +20,8 @@ const ItemForm = () => {
             taxPayable: false,
             gst: '',
             addInventory: false,
-            itemQuantity: '',
-            itemOpeningStock: '',
+            quantity: '',
+            openingStock: '',
             closingStockAlert: '',
         }
     });
@@ -36,8 +37,22 @@ const ItemForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        const inventItem = {
+            itemName: formState.newItem.name,
+            itemCode: formState.newItem.itemCode,
+            hsnCode: formState.newItem.hsnCode,
+            quantity: formState.newItem.quantity,
+            rate: formState.newItem.sellingPrice,
+            gst: formState.newItem.gst
+        };
+
+        console.log(inventItem);
+        
+
         try {
             await axios.post('http://localhost:3001/api/items', formState.newItem);
+            await axios.post('http://localhost:3001/api/inventory', inventItem);
             navigate('/dashboard/items');
         } catch (error) {
             console.error('Error adding item:', error.response ? error.response.data : error.message);
@@ -50,28 +65,28 @@ const ItemForm = () => {
             <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Add Inventory Checkbox */}
                 <div className="flex items-center space-x-2 justify-start">
-    <input
-        type="checkbox"
-        name="addInventory"
-        checked={formState.newItem.addInventory}
-        onChange={handleInputChange}
-        className="h-4 w-4 text-blue-600 border-gray-300 rounded"
-    />
-    <label className="text-sm font-medium text-gray-700">Opening Stock</label>
-</div>
+                    <input
+                        type="checkbox"
+                        name="addInventory"
+                        checked={formState.newItem.addInventory}
+                        onChange={handleInputChange}
+                        className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+                    />
+                    <label className="text-sm font-medium text-gray-700">Add Inventory</label>
+                </div>
 
 
 
                 {/* Inventory Fields (conditionally rendered) */}
                 {formState.newItem.addInventory && (
                     <div className="col-span-2 space-y-4">
-                        
+
                         <div>
                             <label className="block text-sm font-medium text-gray-700">Opening Stock</label>
                             <input
                                 type="number"
-                                name="itemOpeningStock"
-                                value={formState.newItem.itemOpeningStock}
+                                name="openingStock"
+                                value={formState.newItem.openingStock}
                                 onChange={handleInputChange}
                                 placeholder="Enter opening stock"
                                 className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
@@ -93,34 +108,34 @@ const ItemForm = () => {
                     </div>
                 )}
 
-               {/* Type Selection */}
-<div className="col-span-2 text-left ">
-    <label className="block text-sm font-medium text-gray-700">Type</label>
-    <div className="flex items-center space-x-6 mt-2">
-        <label>
-            <input
-                type="radio"
-                name="type"
-                value="Goods"
-                checked={formState.newItem.type === 'Goods'}
-                onChange={handleInputChange}
-                className="mr-2"
-            />
-            Goods
-        </label>
-        <label>
-            <input
-                type="radio"
-                name="type"
-                value="Service"
-                checked={formState.newItem.type === 'Service'}
-                onChange={handleInputChange}
-                className="mr-2"
-            />
-            Service
-        </label>
-    </div>
-</div>
+                {/* Type Selection */}
+                <div className="col-span-2 text-left ">
+                    <label className="block text-sm font-medium text-gray-700">Type</label>
+                    <div className="flex items-center space-x-6 mt-2">
+                        <label>
+                            <input
+                                type="radio"
+                                name="type"
+                                value="Goods"
+                                checked={formState.newItem.type === 'Goods'}
+                                onChange={handleInputChange}
+                                className="mr-2"
+                            />
+                            Goods
+                        </label>
+                        <label>
+                            <input
+                                type="radio"
+                                name="type"
+                                value="Service"
+                                checked={formState.newItem.type === 'Service'}
+                                onChange={handleInputChange}
+                                className="mr-2"
+                            />
+                            Service
+                        </label>
+                    </div>
+                </div>
 
 
                 {/* Other Form Fields */}
@@ -158,6 +173,18 @@ const ItemForm = () => {
                         value={formState.newItem.hsnCode}
                         onChange={handleInputChange}
                         placeholder="Enter HSN Code"
+                        className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                        required
+                    />
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-gray-700">Quantity</label>
+                    <input
+                        type="number"
+                        name="quantity"
+                        value={formState.newItem.quantity}
+                        onChange={handleInputChange}
+                        placeholder="Enter Quantity"
                         className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                         required
                     />
@@ -275,7 +302,7 @@ const ItemForm = () => {
                 </div>
 
 
-                
+
                 {/* Form Actions */}
                 <div className="col-span-2 flex justify-end mt-6">
                     <button

@@ -1,5 +1,5 @@
 {
-  "id": "39bebc58-7ab7-4f9c-b088-4be7b1417f67",
+  "id": "18cf8a64-2b0e-48f3-ab10-ca34ff46de0b",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -73,6 +73,94 @@
           "type": "numeric",
           "primaryKey": false,
           "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.creditnote": {
+      "name": "creditnote",
+      "schema": "",
+      "columns": {
+        "sno": {
+          "name": "sno",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "creditno": {
+          "name": "creditno",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "refno": {
+          "name": "refno",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "creditdate": {
+          "name": "creditdate",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "itemdetails": {
+          "name": "itemdetails",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "subject": {
+          "name": "subject",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "notes": {
+          "name": "notes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "terms": {
+          "name": "terms",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "salesperson": {
+          "name": "salesperson",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "taxtype": {
+          "name": "taxtype",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "taxrate": {
+          "name": "taxrate",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "amount": {
+          "name": "amount",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {},
@@ -268,6 +356,58 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
+    "public.inventory": {
+      "name": "inventory",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "item_name": {
+          "name": "item_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "item_code": {
+          "name": "item_code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "hsn_code": {
+          "name": "hsn_code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "quantity": {
+          "name": "quantity",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rate": {
+          "name": "rate",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "gst": {
+          "name": "gst",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
     "public.invoice": {
       "name": "invoice",
       "schema": "",
@@ -446,9 +586,21 @@
         },
         "gst": {
           "name": "gst",
-          "type": "numeric",
+          "type": "numeric(5, 2)",
           "primaryKey": false,
           "notNull": false
+        },
+        "quantity": {
+          "name": "quantity",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "openingStock": {
+          "name": "openingStock",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
         }
       },
       "indexes": {},
@@ -712,7 +864,7 @@
           "name": "subject",
           "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "salesperson": {
           "name": "salesperson",

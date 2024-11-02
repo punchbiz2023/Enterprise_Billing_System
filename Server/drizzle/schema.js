@@ -1,6 +1,13 @@
 import {
-  pgTable, serial, text, numeric, json, date, boolean, decimal
-
+  pgTable,
+  serial,
+  varchar,
+  text,
+  numeric,
+  json,
+  date,
+  boolean,
+  decimal,
 } from 'drizzle-orm/pg-core';
 
 export const CustTable = pgTable('customer', {
@@ -41,7 +48,7 @@ export const VendTable = pgTable('vendor', {
 export const Items = pgTable('items', {
   sno: serial('sno').primaryKey(),
   name: text('name').notNull(),
-  type: text("type").notNull(),
+  type: text('type').notNull(),
   unit: text('unit').notNull(),
   itemcode: text('itemCode'),
   hsncode: text('hsnCode'),
@@ -52,7 +59,9 @@ export const Items = pgTable('items', {
   salesaccount: text('salesaccount').notNull(),
   purchaseaccount: text('purchaseaccount').notNull(),
   taxpayable: boolean('taxPayable'),
-  gst: decimal('gst'),
+  gst: decimal('gst', { precision: 5, scale: 2 }),
+  quantity: numeric('quantity').notNull(),
+  openingstock: numeric('openingStock').notNull(),
 });
 
 export const Users = pgTable('users', {
@@ -64,8 +73,8 @@ export const Users = pgTable('users', {
   phone: numeric('phone').notNull(),
   gst: text('gst').notNull(),
   pan: text('pan').notNull(),
-  docs: text('docs')
-})
+  docs: text('docs'),
+});
 
 export const Estimate = pgTable('estimate', {
   sno: serial('sno').primaryKey(),
@@ -80,9 +89,8 @@ export const Estimate = pgTable('estimate', {
   salesperson: text('salesperson').notNull(),
   taxtype: text('taxtype').notNull(),
   taxrate: text('taxrate').notNull(),
-  total: numeric('total').notNull()
-})
-
+  total: numeric('total').notNull(),
+});
 
 export const Project = pgTable('project', {
   sno: serial('sno').primaryKey(),
@@ -97,16 +105,13 @@ export const Project = pgTable('project', {
   projecthours: text('projecthours').notNull(),
   users: json('users').notNull(),
   tasks: json('tasks').notNull(),
-
-})
-
+});
 
 export const SalesPerson = pgTable('salesperson', {
   sno: serial('sno').primaryKey(),
   name: text('name').notNull(),
-  mail: text('mail').notNull()
-})
-
+  mail: text('mail').notNull(),
+});
 
 export const PurchaseOrder = pgTable('purchaseorder', {
   sno: serial('sno').primaryKey(),
@@ -120,9 +125,8 @@ export const PurchaseOrder = pgTable('purchaseorder', {
   modeofshipment: text('modeofshipment'),
   itemdetails: json('itemdetails').notNull(),
   gst: numeric('gst').notNull(),
-  total: numeric('total').notNull()
-})
-
+  total: numeric('total').notNull(),
+});
 
 export const Invoice = pgTable('invoice', {
   sno: serial('sno').primaryKey(),
@@ -139,7 +143,7 @@ export const Invoice = pgTable('invoice', {
   taxtype: text('taxtype').notNull(),
   taxrate: text('taxrate').notNull(),
   amount: numeric('amount'),
-})
+});
 
 export const BillForm = pgTable('bill', {
   sno: serial('sno').primaryKey(),
@@ -152,9 +156,8 @@ export const BillForm = pgTable('bill', {
   modeofshipment: text('modeofshipment'),
   itemdetails: json('itemdetails').notNull(),
   gst: numeric('gst').notNull(),
-  total: numeric('total').notNull()
-})
-
+  total: numeric('total').notNull(),
+});
 
 export const SalesOrder = pgTable('salesorder', {
   sno: serial('sno').primaryKey(),
@@ -171,9 +174,37 @@ export const SalesOrder = pgTable('salesorder', {
   duedate: date('duedate').notNull(),
   terms: text('terms').notNull(),
   itemdetails: json('itemdetails').notNull(),
-  subject: text('subject').notNull(),
+  subject: text('subject'),
   salesperson: text('salesperson').notNull(),
   taxtype: text('taxtype').notNull(),
   taxrate: text('taxrate').notNull(),
-  total: numeric('total').notNull()
-})
+  total: numeric('total').notNull(),
+});
+
+// Inventory Table Definition
+export const InventoryTable = pgTable('inventory', {
+  id: serial('id').primaryKey(),
+  itemName: text('item_name').notNull(),
+  itemCode: text('item_code').notNull(),
+  hsnCode: text('hsn_code').notNull(),
+  quantity: numeric('quantity').notNull(), // Use numeric or decimal here
+  rate: numeric('rate').notNull(), // Use numeric or decimal here
+  gst: numeric('gst').notNull(), // Use numeric or decimal here
+});
+
+
+export const CreditNote = pgTable('creditnote', {
+  sno: serial('sno').primaryKey(),
+  name: text('name').notNull(),
+  creditno: text('creditno').notNull(),
+  refno: text('refno').notNull(),
+  creditdate: date('creditdate').notNull(),
+  itemdetails: json('itemdetails'),
+  subject: text('subject').notNull(),
+  notes: text('notes').notNull(),
+  terms: text('terms').notNull(),
+  salesperson: text('salesperson').notNull(),
+  taxtype: text('taxtype').notNull(),
+  taxrate: text('taxrate').notNull(),
+  amount: numeric('amount'),
+});

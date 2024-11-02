@@ -129,13 +129,28 @@ const PurchaseOrder = () => {
             vendorEmail
         };
     
-        const blob = await pdf(<PurchaseOrderPDF formData={formData} />).toBlob();  
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = 'purchase_order.pdf';
-        link.click();
+        try {
+            // Render the PDF as a Blob
+            const blob = await pdf(<PurchaseOrderPDF formData={formData} />).toBlob();
+            
+            // Create a temporary link element
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'purchase_order.pdf';
+    
+            // Append link to the body (required for Firefox)
+            document.body.appendChild(link);
+    
+            // Trigger the download
+            link.click();
+    
+            // Remove the link after the download is triggered
+            document.body.removeChild(link);
+        } catch (error) {
+            console.error('Error generating PDF:', error);
+        }
     };
+    
     
     
 

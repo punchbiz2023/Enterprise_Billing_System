@@ -30,10 +30,10 @@
 }
 
 .side-panel ul li a.active {
-  background-color: #007bff; /* Highlight color for active link */
+  background-color: #0d2a47; /* Highlight color for active link */
   color: #ffffff; /* Ensure text color is readable */
 }
 
 .side-panel ul li a:hover {
-  background-color:#3399ff; /* Light gray for hover effect */
+  background-color:#0d2a47; /* Light gray for hover effect */
 }
