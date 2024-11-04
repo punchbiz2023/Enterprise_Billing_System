@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS "bill" (
 	"duedate" date NOT NULL,
 	"terms" text NOT NULL,
 	"modeofshipment" text,
-	"itemdetails" json NOT NULL,
+	"itemdetails" jsonb NOT NULL,
 	"gst" numeric NOT NULL,
 	"total" numeric NOT NULL
 );
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS "creditnote" (
 	"creditno" text NOT NULL,
 	"refno" text NOT NULL,
 	"creditdate" date NOT NULL,
-	"itemdetails" json,
+	"itemdetails" jsonb,
 	"subject" text NOT NULL,
 	"notes" text NOT NULL,
 	"terms" text NOT NULL,
@@ -42,8 +42,8 @@ CREATE TABLE IF NOT EXISTS "customer" (
 	"currency" text NOT NULL,
 	"openingbalance" numeric NOT NULL,
 	"paymentterms" text NOT NULL,
-	"billaddress" json NOT NULL,
-	"shipaddress" json NOT NULL
+	"billaddress" jsonb NOT NULL,
+	"shipaddress" jsonb NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "estimate" (
@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS "estimate" (
 	"qdate" date NOT NULL,
 	"expdate" date NOT NULL,
 	"project" text NOT NULL,
-	"itemtable" json NOT NULL,
+	"itemtable" jsonb NOT NULL,
 	"subject" text,
 	"salesperson" text NOT NULL,
 	"taxtype" text NOT NULL,
@@ -108,6 +108,17 @@ CREATE TABLE IF NOT EXISTS "items" (
 	"openingStock" numeric NOT NULL
 );
 --> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "journal" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"date" date NOT NULL,
+	"journal_number" varchar(50) NOT NULL,
+	"description" text NOT NULL,
+	"reference_number" varchar(50),
+	"accounts" jsonb NOT NULL,
+	"total_debit" numeric NOT NULL,
+	"total_credit" numeric NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "project" (
 	"sno" serial PRIMARY KEY NOT NULL,
 	"name" text NOT NULL,
@@ -119,8 +130,8 @@ CREATE TABLE IF NOT EXISTS "project" (
 	"costbudget" text NOT NULL,
 	"revenuebudget" text NOT NULL,
 	"projecthours" text NOT NULL,
-	"users" json NOT NULL,
-	"tasks" json NOT NULL
+	"users" jsonb NOT NULL,
+	"tasks" jsonb NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "purchaseorder" (
@@ -133,7 +144,7 @@ CREATE TABLE IF NOT EXISTS "purchaseorder" (
 	"deliverydate" date NOT NULL,
 	"terms" text NOT NULL,
 	"modeofshipment" text,
-	"itemdetails" json NOT NULL,
+	"itemdetails" jsonb NOT NULL,
 	"gst" numeric NOT NULL,
 	"total" numeric NOT NULL
 );
@@ -152,7 +163,7 @@ CREATE TABLE IF NOT EXISTS "salesorder" (
 	"invoicedate" date NOT NULL,
 	"duedate" date NOT NULL,
 	"terms" text NOT NULL,
-	"itemdetails" json NOT NULL,
+	"itemdetails" jsonb NOT NULL,
 	"subject" text,
 	"salesperson" text NOT NULL,
 	"taxtype" text NOT NULL,
@@ -191,6 +202,6 @@ CREATE TABLE IF NOT EXISTS "vendor" (
 	"currency" text NOT NULL,
 	"openingbalance" numeric NOT NULL,
 	"paymentterms" text NOT NULL,
-	"billaddress" json NOT NULL,
-	"shipaddress" json NOT NULL
+	"billaddress" jsonb NOT NULL,
+	"shipaddress" jsonb NOT NULL
 );

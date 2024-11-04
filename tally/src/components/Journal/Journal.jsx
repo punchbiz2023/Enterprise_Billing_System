@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const Journal = () => {
   const [date, setDate] = useState('');
@@ -8,7 +9,7 @@ const Journal = () => {
   const [isCashBased, setIsCashBased] = useState(false);
   const [currency, setCurrency] = useState('INR - Indian Rupee');
   const [entries, setEntries] = useState([{ account: '', description: '', contact: '', debit: '', credit: '' }]);
-  const [attachment, setAttachment] = useState(null);
+  const [attachments, setAttachments] = useState([]);
   const [subtotal, setSubtotal] = useState({ debit: 0, credit: 0 });
   const [total, setTotal] = useState(0);
 
@@ -25,18 +26,10 @@ const Journal = () => {
     const newEntries = [...entries];
     newEntries[index][field] = value;
 
-    // Ensure that only one of debit or credit is entered
-    if (field === 'debit' && value) {
-      newEntries[index].credit = '';
-    } else if (field === 'credit' && value) {
-      newEntries[index].debit = '';
-    }
-
     setEntries(newEntries);
   };
 
   useEffect(() => {
-    // Calculate subtotal and total
     let debitTotal = 0;
     let creditTotal = 0;
 
@@ -49,22 +42,32 @@ const Journal = () => {
     setTotal(debitTotal - creditTotal);
   }, [entries]);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const formData = {
-      date,
-      journalNumber,
-      reference,
-      notes,
-      isCashBased,
-      currency,
-      entries,
-      attachment,
-    };
-    console.log('Journal Data:', formData);
-    // Here you can call your API to save the journal data
+  const handleFileChange = (e) => {
+    const files = Array.from(e.target.files);
+    setAttachments(files);
   };
 
+  const handleSubmit = async (e) => {
+    
+
+    e.preventDefault();
+    
+    const journalDetails = {
+      date,
+      journalNumber,
+      description: notes,
+      referenceNumber: reference,
+      accounts: entries, 
+      totalDebit: subtotal.debit,  
+      totalCredit: subtotal.credit, 
+    };
+    try {
+      const response = await axios.post('http://localhost:3001/api/journals', journalDetails);
+    } catch (error) {
+      console.error('Error creating Journal:', error);
+      console.error('Response:', error.response); 
+    }
+}; 
   return (
     <div className="p-4 bg-white rounded-lg shadow-lg max-w-5xl mx-auto mt-16">
       <h1 className="text-2xl font-bold mb-4">New Journal</h1>
@@ -120,14 +123,14 @@ const Journal = () => {
             <tbody>
               {entries.map((entry, index) => (
                 <tr key={index}>
-                  <td className="border p-2 relative">
+                  <td className="border p-2">
                     <select
                       className="w-full"
                       value={entry.account}
                       onChange={(e) => handleInputChange(index, 'account', e.target.value)}
                     >
-                      <option value="">Select Account</option>
-                      {/* Add your account options here */}
+                       <option value="">Select Account</option>
+                       <option value="abc">ABC</option>
                     </select>
                   </td>
                   <td className="border p-2">
@@ -191,7 +194,7 @@ const Journal = () => {
 
         <div className="mb-4">
           <label>Attachments</label>
-          <input type="file" multiple onChange={(e) => setAttachment(e.target.files)} />
+          <input type="file" multiple onChange={handleFileChange} />
           <small className="block text-gray-500">You can upload a maximum of 5 files, 10MB each</small>
         </div>
 
