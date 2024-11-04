@@ -1,5 +1,7 @@
 import express from 'express';
 import { drizzle } from 'drizzle-orm/postgres-js';
+import { eq } from 'drizzle-orm';
+
 import { Estimate } from '../drizzle/schema.js';
 import postgres from 'postgres';
 import dotenv from 'dotenv';

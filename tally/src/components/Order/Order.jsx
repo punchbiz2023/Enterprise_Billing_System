@@ -335,7 +335,7 @@ const Order = () => {
       <div className="w-1/5">
         <SidePanel />
       </div>
-      <div className="p-6 mt-8 mr-12 ml-60 bg-gray-50 min-h-screen flex items-center justify-center">
+      <div className="p-6 mt-8 bg-gray-50 min-h-screen flex items-center justify-center">
         <div className="max-w-9xl w-full bg-white p-8 rounded-lg shadow-md">
           <h1 className="text-2xl font-bold mb-6">Sales Order</h1>
           <form className="space-y-8" onSubmit={handleReducedQuantitySubmit}>
