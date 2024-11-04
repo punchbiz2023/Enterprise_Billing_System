@@ -120,6 +120,8 @@ const PurchaseOrder = () => {
             deliveryDate,
             purchaseOrderNo,
             reference,
+            paymentTerms,
+            shipmentPreference,
             items,
             subtotal,
             gstAmount,
@@ -176,7 +178,7 @@ const PurchaseOrder = () => {
 
                     {/* Delivery Type */}
                     <div className="delivery-section">
-                        <label>Delivery Address*</label>
+                        <label>Choose any one*</label>
                         <div className="radio-group">
                             <input
                                 type="radio"

@@ -1,184 +1,188 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import Navbar from '../Navbar/Navbar';
-import './inventory.css';
+
 
 const Inventory = () => {
-  const [items, setItems] = useState([]);
-  const [dataLoaded, setDataLoaded] = useState(false);
-  const [selectedItems, setSelectedItems] = useState([]);
-  const [showCheckboxes, setShowCheckboxes] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchBy, setSearchBy] = useState('name');
+    const [inventory, setInventory] = useState([]);
+    const [dataLoaded, setDataLoaded] = useState(false);
+    const [selectedInventory, setSelectedInventory] = useState([]);
+    const [orderData, setOrderData] = useState([]);
+    const [showCheckboxes, setShowCheckboxes] = useState(false); // State to toggle checkboxes
+    const [searchTerm, setSearchTerm] = useState(''); // State for search term
+    const [searchBy, setSearchBy] = useState('itemName'); // State to track search category
 
-  useEffect(() => {
-    fetchItems();
-  }, []);
+    useEffect(() => {
+        fetchInventory();
+        fetchSalesOrder();
+        // quantityUpdate();
+    }, []);
 
-  const fetchItems = async () => {
-    try {
-      const response = await axios.get('http://localhost:3001/api/items');
-      if (response.data) {
-        setItems(response.data);
-        setDataLoaded(true);
-      }
-    } catch (error) {
-      console.error('Error fetching Item data:', error.response ? error.response.data : error.message);
-    }
-  };
+    const fetchInventory = async () => {
+        try {
+            const response = await axios.get('http://localhost:3001/api/inventory');
+            if (response.data) {
+                setInventory(response.data);
+                setDataLoaded(true);
+            }
+        } catch (error) {
+            console.error('Error fetching invent data:', error.response ? error.response.data : error.message);
+        }
+    };
+    const fetchSalesOrder = async () => {
+        try {
+            const response = await axios.get('http://localhost:3001/api/salesorder');
+            if (response.data) {
+                setOrderData(response.data);
+            }
+        } catch (error) {
+            console.error('Error fetching invent data:', error.response ? error.response.data : error.message);
+        }
 
-  const handleCheckboxChange = (itemId) => {
-    setSelectedItems((prevSelected) =>
-      prevSelected.includes(itemId)
-        ? prevSelected.filter((id) => id !== itemId)
-        : [...prevSelected, itemId]
-    );
-  };
+    };
 
-  const handleDelete = async () => {
-    if (selectedItems.length <= 0) return;
 
-    try {
-      await axios.delete('http://localhost:3001/api/items', { data: { ids: selectedItems } });
-      fetchItems(); // Refresh after delete
-      setSelectedItems([]);
-    } catch (error) {
-      console.error('Error deleting Items:', error.response ? error.response.data : error.message);
-    }
-  };
 
-  const handleCancelDelete = () => {
-    setSelectedItems([]);
-    setShowCheckboxes(false);
-  };
 
-  const filteredItems = items.filter((item) => {
-    return item[searchBy]?.toLowerCase().startsWith(searchQuery.toLowerCase());
-  });
+    const handleCheckboxChange = (inventId) => {
+        setSelectedInventory(prevSelected =>
+            prevSelected.includes(inventId)
+                ? prevSelected.filter(id => id !== inventId)
+                : [...prevSelected, inventId]
+        );
+    };
 
-  return (
-    <div className="flex">
-      <div className="w-1/5">
-        <Navbar />
-      </div>
-      <div className="w-4/5 p-6 mt-[4%] mr-[10%]">
-        <h1 className="text-xl font-bold mb-4">Items</h1>
+    const handleDelete = async () => {
+        if (selectedInventory.length <= 0) return;
 
-        <div className="flex justify-between items-center mb-4">
-          <div className="relative w-[400px]">
-            <div className="flex border border-gray-400">
-              <select
-                value={searchBy}
-                onChange={(e) => setSearchBy(e.target.value)}
-                className="bg-gray-100 px-2 py-2 border border-gray-600 rounded-l text-gray-800 cursor-pointer focus:outline-none"
-              >
-                <option value="name">Name</option>
-                <option value="itemcode">Item Code</option>
-                <option value="type">Type</option>
-              </select>
-              <input
-                type="text"
-                placeholder={`Search by ${searchBy}`}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="bg-gray-100 flex-grow px-3 py-2 focus:outline-none"
-              />
-            </div>
-          </div>
+        try {
+            await axios.delete('http://localhost:3001/api/inventory', { data: { ids: selectedInventory } });
+            fetchInventory();
+            setSelectedInventory([]);
+            setShowCheckboxes(false); // Hide checkboxes after deletion
+        } catch (error) {
+            console.error('Error deleting inventory:', error.response ? error.response.data : error.message);
+        }
+    };
 
-          <div className="flex space-x-4">
-            <Link
-              to="/dashboard/items/form"
-              className="inline-block px-5 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-            >
-              Add Item
-            </Link>
+    // Filter inventory based on search term and selected category (searchBy)
+    const filteredInventory = inventory.filter((invent) => {
+        if (!searchTerm) return true; // If search term is empty, show all inventory
+        const value = invent[searchBy]?.toLowerCase(); // Get value from the selected field
+        return value && value.startsWith(searchTerm.toLowerCase());
+    });
 
-            {selectedItems.length > 0 && (
-              <button
-                onClick={handleDelete}
-                className="inline-block px-5 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-              >
-                Delete Selected
-              </button>
-            )}
+    return (
+        <div className="flex">
 
-            <button
-              onClick={() => {
-                if (showCheckboxes) {
-                  handleCancelDelete();
-                } else {
-                  setShowCheckboxes(true);
-                }
-              }}
-              className={`inline-block px-5 py-2 rounded text-white ${
-                showCheckboxes ? 'bg-gray-500 hover:bg-gray-600' : 'bg-red-500 hover:bg-red-600'
-              }`}
-            >
-              {showCheckboxes ? 'Cancel Delete' : 'Delete Items'}
-            </button>
-          </div>
-        </div>
+            <div className="w-4/5 p-6 ml-[200px] mt-[4%] mr-[10%]">
+                <h1 className="text-xl font-bold mb-4">Inventory</h1>
 
-        <div className="overflow-x-auto">
-          <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
-            <thead>
-              <tr className="bg-gray-200">
-                <th className="py-2 px-4 border-b text-center"></th>
-                <th className="py-2 px-4 border-b text-center">Item Code</th>
-                <th className="py-2 px-4 border-b text-center">Name</th>
-                <th className="py-2 px-4 border-b text-center">Type</th>
-                <th className="py-2 px-4 border-b text-center">Selling Price</th>
-                <th className="py-2 px-4 border-b text-center">Quantity</th>
-                <th className="py-2 px-4 border-b text-center">Opening Stock</th>
-              </tr>
-            </thead>
-            <tbody>
-              {!dataLoaded ? (
-                <tr>
-                  <td colSpan="7" className="py-2 px-4 text-center text-gray-500">
-                    Loading Items...
-                  </td>
-                </tr>
-              ) : filteredItems.length === 0 ? (
-                <tr>
-                  <td colSpan="7" className="py-2 px-4 text-center text-gray-500">
-                    No Items found
-                  </td>
-                </tr>
-              ) : (
-                filteredItems.map((item) => (
-                  <tr key={item.sno} className="hover:bg-gray-100">
-                    <td className="py-2 px-2 border-b text-center">
-                      {showCheckboxes && (
+                <div className="flex justify-between mb-4">
+                    {/* Search bar on the left */}
+                    <div className="flex w-1/3">
+
+                        {/* Dropdown after the search input */}
+                        <select
+                            value={searchBy}
+                            onChange={(e) => setSearchBy(e.target.value)}
+                            className="bg-gray-100 px-2 py-2 border border-gray-600 rounded-l text-gray-800 cursor-pointer focus:outline-none"
+                        >
+                            <option value="itemName">Name</option>
+                            <option value="code">Item Code</option>
+                            <option value="hsn">HSN Code</option>
+                            <option value="workphone">Rate</option>
+                            <option value="gstno">GST Number</option>
+                        </select>
                         <input
-                          type="checkbox"
-                          className="form-checkbox"
-                          onChange={() => handleCheckboxChange(item.sno)}
-                          checked={selectedItems.includes(item.sno)}
+                            type="text"
+                            placeholder={`Search by ${searchBy}...`}
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="bg-gray-100 px-2 py-2 border border-gray-600 rounded-r w-full focus:outline-none"
                         />
-                      )}
-                    </td>
-                    <td className="py-2 px-4 border-b text-center">{item.itemcode}</td>
-                    <td className="py-2 px-4 border-b text-center">
-                      <Link to={`/items/${item.sno}`} className="text-blue-500 hover:underline">
-                        {item.name}
-                      </Link>
-                    </td>
-                    <td className="py-2 px-4 border-b text-center">{item.type}</td>
-                    <td className="py-2 px-4 border-b text-center">{item.salesprice}</td>
-                    <td className="py-2 px-4 border-b text-center">{item.quantity}</td>
-                    <td className="py-2 px-4 border-b text-center">{item.openingstock}</td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                    </div>
+
+                    {/* Buttons on the right */}
+                    <div className="flex space-x-4">
+                        
+                        <button
+                            onClick={() => {
+                                setShowCheckboxes(!showCheckboxes);
+                                if (showCheckboxes) {
+                                    setSelectedInventory([]); // Unselect all checkboxes when 'Cancel' is clicked
+                                }
+                            }}
+                            className={`inline-block px-5 py-2 rounded text-white ${showCheckboxes ? 'bg-gray-500 hover:bg-gray-600' : 'bg-red-500 hover:bg-red-600'}`}
+                        >
+                            {showCheckboxes ? 'Cancel' : 'Delete Inventory'}
+                        </button>
+                        {showCheckboxes && selectedInventory.length > 0 && (
+                            <button
+                                onClick={handleDelete}
+                                className="inline-block px-5 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                            >
+                                Delete
+                            </button>
+                        )}
+                    </div>
+                </div>
+
+                <div className="overflow-x-auto">
+                    <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
+                        <thead>
+                            <tr className="bg-gray-200">
+                                <th className="py-1 px-1 border-b"></th>
+                                <th className="py-2 px-4 border-b">Name</th>
+                                <th className="py-2 px-4 border-b">Item Code</th>
+                                <th className="py-2 px-4 border-b">HSN Code</th>
+                                <th className="py-2 px-4 border-b">Quantity</th>
+                                <th className="py-2 px-4 border-b">Rate</th>
+                                <th className="py-2 px-4 border-b">GST</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {!dataLoaded ? (
+                                <tr>
+                                    <td colSpan="7" className="py-2 px-4 text-center text-gray-500">
+                                        Loading inventory...
+                                    </td>
+                                </tr>
+                            ) : filteredInventory.length === 0 ? (
+                                <tr>
+                                    <td colSpan="7" className="py-2 px-4 text-center text-gray-500">
+                                        No items found in Inventory
+                                    </td>
+                                </tr>
+                            ) : (
+                                filteredInventory.map((invent, index) => (
+                                    <tr key={invent.sno || index} className="hover:bg-gray-100">
+                                        <td className="py-2 px-4 border-b">
+                                            {showCheckboxes && (
+                                                <input
+                                                    type="checkbox"
+                                                    className="form-checkbox"
+                                                    onChange={() => handleCheckboxChange(invent.sno)}
+                                                    checked={selectedInventory.includes(invent.sno)}
+                                                />
+                                            )}
+                                        </td>
+
+                                        <td className="py-2 px-4 text-center border-b">{invent.itemName}</td>
+                                        <td className="py-2 px-4 text-center border-b">{invent.itemCode}</td>
+                                        <td className="py-2 px-4 text-center border-b">{invent.hsnCode}</td>
+                                        <td className="py-2 px-4 text-center border-b">{invent.quantity}</td>
+                                        <td className="py-2 px-4 text-center border-b">{invent.rate}</td>
+                                        <td className="py-2 px-4 text-center border-b">{invent.gst}</td>
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default Inventory;

@@ -6,6 +6,7 @@ const ItemForm = () => {
     const [formState, setFormState] = useState({
         newItem: {
             sno: '',
+            name:'',
             itemCode: '',
             unit: 'BOX',
             hsnCode: '',
@@ -36,10 +37,22 @@ const ItemForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(formState.newItem);
+
+        const inventItem = {
+            itemName: formState.newItem.name,
+            itemCode: formState.newItem.itemCode,
+            hsnCode: formState.newItem.hsnCode,
+            quantity: formState.newItem.quantity,
+            rate: formState.newItem.sellingPrice,
+            gst: formState.newItem.gst
+        };
+
+        console.log(inventItem);
+        
 
         try {
             await axios.post('http://localhost:3001/api/items', formState.newItem);
+            await axios.post('http://localhost:3001/api/inventory', inventItem);
             navigate('/dashboard/items');
         } catch (error) {
             console.error('Error adding item:', error.response ? error.response.data : error.message);

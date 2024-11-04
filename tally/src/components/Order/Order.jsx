@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
-import SidePanel from '../Reports/sidepanel';
 import { Link, useNavigate } from 'react-router-dom';
-
+import SidePanel from '../Reports/sidepanel';
 
 const Order = () => {
-
   const [salespersons, setSalespersons] = useState([]);
-  const [salesperson, setSalesperson] = useState('')
-
+  const [salesperson, setSalesperson] = useState('');
   const [invoiceNumber, setInvoiceNumber] = useState('');
   const [invoiceDate, setInvoiceDate] = useState('');
   const [dueDate, setDueDate] = useState('');
@@ -19,7 +15,7 @@ const Order = () => {
   const [customerMail, setCustomerMail] = useState('');
   const [subject, setSubject] = useState('');
   const [terms, setTerms] = useState('Due On Receipt');
-  const [items, setItems] = useState([{ item: '', quantity: '', rate: '', discount: '', gst: '', sgst: '', amount: '' }]);
+  const [items, setItems] = useState([{ item: '', itemCode: '', HsnCode: '', quantity: '', rate: '', discount: '', gst: '', sgst: '', cgst: '', igst: '', amount: '' }]);
   const [availableItems, setAvailableItems] = useState([]);
   const [taxType, setTaxType] = useState('');
   const [tax, setTax] = useState(0);
@@ -27,25 +23,21 @@ const Order = () => {
   const [adjustment, setAdjustment] = useState(0);
   const [adjustmentType, setAdjustmentType] = useState('add');
   const [showCustomTax, setShowCustomTax] = useState(false);
-  const [paymentReceived, setPaymentReceived] = useState(false);
   const [customers, setCustomers] = useState([]);
   const [customer, setCustomer] = useState('');
   const [customerState, setCustomerState] = useState('');
-  const [isPaymentReceived, setIsPaymentReceived] = useState(false);
-  const [salesOrder, setsalesOrder] = useState('');
-  const [salesDate, setsalesDate] = useState('');
-  const [salesshipDate, setsalesshipDate] = useState('');
-
+  const [salesOrder, setSalesOrder] = useState('');
+  const [salesDate, setSalesDate] = useState('');
+  const [salesshipDate, setSalesShipDate] = useState('');
+  const [inventory, setInventory] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchCustomers();
     fetchSalespeople();
     fetchItems();
+    fetchInventory();
   }, []);
-
-  // console.log(salesperson);
-
 
   const fetchSalespeople = async () => {
     try {
@@ -56,6 +48,14 @@ const Order = () => {
     }
   };
 
+  const fetchInventory = async () => {
+    try {
+      const response = await axios.get('http://localhost:3001/api/inventory');
+      setInventory(response.data);
+    } catch (error) {
+      console.error('Error fetching Inventory data:', error);
+    }
+  };
 
   const fetchCustomers = async () => {
     try {
@@ -69,27 +69,22 @@ const Order = () => {
       console.error('Error fetching customer data:', error);
     }
   };
+
   const handleDropdownChange = (e) => {
     const selectedCustomerName = e.target.value;
     setCustomer(selectedCustomerName);
-
-
     const selectedCustomer = customers.find((cust) => cust.name === selectedCustomerName);
     if (selectedCustomer) {
       setCustomerState(selectedCustomer.state);
-      setCustomerName(selectedCustomer.name)
-      // setCustomerAddress(JSON.stringify(selectedCustomer.billaddress)) 
-      setCustomerPh(selectedCustomer.workphone)
-      setCustomerMail(selectedCustomer.mail)
-
+      setCustomerName(selectedCustomer.name);
+      setCustomerPh(selectedCustomer.workphone);
+      setCustomerMail(selectedCustomer.mail);
     } else {
       setCustomerState('');
       setCustomerPh('');
       setCustomerMail('');
-
     }
   };
-
 
   const fetchItems = async () => {
     try {
@@ -99,10 +94,56 @@ const Order = () => {
       console.error('Error fetching items:', error);
     }
   };
+  
+  const handleReducedQuantitySubmit = async (e) => {
+    e.preventDefault();
+    try {
+      // First, update inventory quantities
+      await updateInventory();
+      // Then, proceed with the original handleSubmit
+      await handleSubmit(e);
+    } catch (error) {
+      console.error("Error in submitting sales order with inventory update:", error.message);
+    }
+  };
+  const calculateReducedQuantities = () => {
+
+    return items.map(item => {
+      const inventoryItem = inventory.find(invItem => invItem.itemCode === item.itemCode); // Match by itemCode
+      if (inventoryItem) {
+        const reducedQuantity = Math.max(inventoryItem.quantity - item.quantity, 0); // Ensure it doesn't go negative
+        console.log("Calculated reduced quantities:", reducedQuantity); // Log final reduced quantities
+        console.log(`Item: ${item.itemCode}, Original Quantity: ${inventoryItem.quantity}, Order Quantity: ${item.quantity}, Reduced Quantity: ${reducedQuantity}`); // Log quantities
+
+        return {
+          id: inventoryItem.id, // Assuming you have the inventory item ID
+          quantity: reducedQuantity,
+        };
+      }
+      return null;
+    }).filter(Boolean); // Remove any null values
+   
+
+  };
+
+  const updateInventory = async () => {
+    const reducedItems = calculateReducedQuantities();
+    console.log("Reduced items for inventory update:", reducedItems); // Log reduced items
+
+    try {
+      // Here we assume the backend expects an array of items with reduced quantities
+      await axios.post('http://localhost:3001/api/inventory/update', { items: reducedItems });
+      console.log("Inventory quantities updated successfully.");
+    } catch (error) {
+      console.error("Error updating inventory quantities:", error.response ? error.response.data : error.message);
+      throw error;
+    }
+  };
 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
 
     const orderDetails = {
       name: customerName,
@@ -127,15 +168,7 @@ const Order = () => {
 
     try {
       const response = await axios.post('http://localhost:3001/api/salesorder', orderDetails);
-      await Promise.all(
-        items.map(async (item) => {
-            await axios.put(`http://localhost:3001/api/items/reduce-quantity`, {
-                hsn: item.hsn,  // Assuming each item has an hsn field
-                quantity: item.quantity
-            });
-        })
-    );
-    navigate('/dashboard/sales/order');
+      navigate('/dashboard/sales/order');
     } catch (error) {
       console.error('Error creating Sales Order:', error.response ? error.response.data : error.message);
     }
@@ -150,7 +183,10 @@ const Order = () => {
         (availableItem) => availableItem.name === value
       );
       if (selectedItem) {
+        // console.log(selectedItem.itemcode);
+
         newItems[index].gst = selectedItem.gst;
+        newItems[index].itemCode = selectedItem.itemcode;
       }
     }
     if (['rate', 'HsnCode', 'quantity', 'discount', 'gst', 'sgst', 'cgst', 'igst'].includes(field)) {
@@ -302,10 +338,7 @@ const Order = () => {
       <div className="p-6 mt-8 mr-12 ml-60 bg-gray-50 min-h-screen flex items-center justify-center">
         <div className="max-w-9xl w-full bg-white p-8 rounded-lg shadow-md">
           <h1 className="text-2xl font-bold mb-6">Sales Order</h1>
-          <form className="space-y-8" onSubmit={(e) => {
-            e.preventDefault();
-
-          }}>
+          <form className="space-y-8" onSubmit={handleReducedQuantitySubmit}>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium mb-1">Customer Name*</label>
@@ -384,7 +417,7 @@ const Order = () => {
                 <input
                   type="text"
                   value={salesOrder}
-                  onChange={(e) => setsalesOrder(e.target.value)}
+                  onChange={(e) => setSalesOrder(e.target.value)}
                   placeholder='Enter order number'
                   required
                   className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
@@ -395,7 +428,7 @@ const Order = () => {
                 <input
                   type="date"
                   value={salesDate}
-                  onChange={(e) => setsalesDate(e.target.value)}
+                  onChange={(e) => setSalesDate(e.target.value)}
                   className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
                 />
               </div>
@@ -404,7 +437,7 @@ const Order = () => {
                 <input
                   type="date"
                   value={salesshipDate}
-                  onChange={(e) => setsalesshipDate(e.target.value)}
+                  onChange={(e) => setSalesShipDate(e.target.value)}
                   className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
                 />
               </div>
@@ -684,7 +717,6 @@ const Order = () => {
             </div>
             <button
               type="submit"
-              onClick={handleSubmit}
               className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-500 hover:bg-blue-600"
             >
               Save

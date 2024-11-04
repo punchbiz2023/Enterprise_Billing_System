@@ -184,8 +184,9 @@ export const SalesOrder = pgTable('salesorder', {
 // Inventory Table Definition
 export const InventoryTable = pgTable('inventory', {
   id: serial('id').primaryKey(),
-  itemName: varchar('item_name').notNull(),
-  hsnCode: varchar('hsn_code').notNull(),
+  itemName: text('item_name').notNull(),
+  itemCode: text('item_code').notNull(),
+  hsnCode: text('hsn_code').notNull(),
   quantity: numeric('quantity').notNull(), // Use numeric or decimal here
   rate: numeric('rate').notNull(), // Use numeric or decimal here
   gst: numeric('gst').notNull(), // Use numeric or decimal here

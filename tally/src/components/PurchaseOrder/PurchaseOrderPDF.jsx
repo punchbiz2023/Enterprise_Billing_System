@@ -121,14 +121,16 @@ const PurchaseOrderPDF = ({ formData }) => (
         {/* Vendor and Purchase Order Details */}
         <View style={styles.details}>
           <View style={styles.flexColumn}>
-            <Text style={styles.boldText}>Vendor:</Text>
-            <Text>{formData.vendor}</Text>
-            <Text>{formData.vendorEmail}</Text>
+            <Text style={styles.boldText}>Vendor: {formData.vendor}</Text>
+            <Text style={styles.boldText}>Email: {formData.vendorEmail}</Text>
+            <Text style={styles.boldText}>Reference Number: {formData.reference}</Text>
+            <Text style={styles.boldText}>Shipment Preference: {formData.shipmentPreference}</Text>
           </View>
           <View style={styles.flexColumn}>
             <Text style={styles.boldText}>PO Number: {formData.purchaseOrderNo}</Text>
             <Text>Date: {formData.date}</Text>
             <Text>Delivery Date: {formData.deliveryDate}</Text>
+            <Text style={styles.boldText}>Payment terms: {formData.paymentTerms}</Text>
           </View>
         </View>
 
