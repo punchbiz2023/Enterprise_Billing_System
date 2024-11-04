@@ -1,170 +1,181 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
+import Navbar from '../Navbar/Navbar';
+import './inventory.css';
 
 const Inventory = () => {
-  // State for multiple rows (items)
-  const [items, setItems] = useState([
-    { itemName: '', hsnCode: '', quantity: '', rate: '', gst: '' }
-  ]);
+  const [items, setItems] = useState([]);
+  const [dataLoaded, setDataLoaded] = useState(false);
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [showCheckboxes, setShowCheckboxes] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchBy, setSearchBy] = useState('name');
 
-  // Handle input change for individual rows
-  const handleChange = (index, e) => {
-    const { name, value } = e.target;
-    const newItems = [...items];
-    newItems[index][name] = value;
-    setItems(newItems);
-  };
+  useEffect(() => {
+    fetchItems();
+  }, []);
 
-  // Handle form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-  
-    console.log(items); // Log the items to see if itemName and other fields are populated
-  
+  const fetchItems = async () => {
     try {
-      // Send data to the backend
-      const response = await axios.post('http://localhost:3001/api/inventory', { items });
-  
-      if (response.status === 201) {
-        console.log('Items stored successfully!', response.data);
-        alert('Items stored successfully!');
-      } else {
-        console.error('Error storing items:', response.data);
+      const response = await axios.get('http://localhost:3001/api/items');
+      if (response.data) {
+        setItems(response.data);
+        setDataLoaded(true);
       }
     } catch (error) {
-      console.error('Error storing items:', error);
-      alert('Error storing items!');
+      console.error('Error fetching Item data:', error.response ? error.response.data : error.message);
     }
-  
-    // Reset form after submission
-    setItems([{ itemName: '', hsnCode: '', quantity: '', rate: '', gst: '' }]);
-  };
-  
-
-  // Add a new row
-  const addRow = () => {
-    setItems([...items, { itemName: '', hsnCode: '', quantity: '', rate: '', gst: '' }]);
   };
 
-  // Remove a row
-  const deleteRow = (index) => {
-    const newItems = items.filter((_, i) => i !== index);
-    setItems(newItems);
+  const handleCheckboxChange = (itemId) => {
+    setSelectedItems((prevSelected) =>
+      prevSelected.includes(itemId)
+        ? prevSelected.filter((id) => id !== itemId)
+        : [...prevSelected, itemId]
+    );
   };
+
+  const handleDelete = async () => {
+    if (selectedItems.length <= 0) return;
+
+    try {
+      await axios.delete('http://localhost:3001/api/items', { data: { ids: selectedItems } });
+      fetchItems(); // Refresh after delete
+      setSelectedItems([]);
+    } catch (error) {
+      console.error('Error deleting Items:', error.response ? error.response.data : error.message);
+    }
+  };
+
+  const handleCancelDelete = () => {
+    setSelectedItems([]);
+    setShowCheckboxes(false);
+  };
+
+  const filteredItems = items.filter((item) => {
+    return item[searchBy]?.toLowerCase().startsWith(searchQuery.toLowerCase());
+  });
 
   return (
-    <div className="container mx-auto p-6">
-      <h2 className="text-3xl font-bold text-center mt-20">Inventory Management</h2>
+    <div className="flex">
+      <div className="w-1/5">
+        <Navbar />
+      </div>
+      <div className="w-4/5 p-6 mt-[4%] mr-[10%]">
+        <h1 className="text-xl font-bold mb-4">Items</h1>
 
-      <form onSubmit={handleSubmit} className="bg-white shadow-lg rounded-lg p-8">
-        <table className="min-w-full bg-white">
-          <thead>
-            <tr>
-              <th className="px-4 py-2 text-left text-gray-600 font-medium">Item Name</th>
-              <th className="px-4 py-2 text-left text-gray-600 font-medium">HSN Code</th>
-              <th className="px-4 py-2 text-left text-gray-600 font-medium">Quantity</th>
-              <th className="px-4 py-2 text-left text-gray-600 font-medium">Rate</th>
-              <th className="px-4 py-2 text-left text-gray-600 font-medium">GST%</th>
-              <th className="px-4 py-2"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {items.map((item, index) => (
-              <tr className="border-b" key={index}>
-                <td className="px-4 py-2">
-                  <input
-                    type="text"
-                    name="itemName"
-                    value={item.itemName}
-                    onChange={(e) => handleChange(index, e)}
-                    placeholder="Enter item name"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    required
-                  />
-                </td>
-                <td className="px-4 py-2">
-                  <input
-                    type="text"
-                    name="hsnCode"
-                    value={item.hsnCode}
-                    onChange={(e) => handleChange(index, e)}
-                    placeholder="Enter HSN code"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    required
-                  />
-                </td>
-                <td className="px-4 py-2">
-                  <input
-                    type="number"
-                    name="quantity"
-                    value={item.quantity}
-                    onChange={(e) => handleChange(index, e)}
-                    placeholder="Enter quantity"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    required
-                  />
-                </td>
-                <td className="px-4 py-2">
-                  <input
-                    type="number"
-                    name="rate"
-                    value={item.rate}
-                    onChange={(e) => handleChange(index, e)}
-                    placeholder="Enter rate"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    required
-                  />
-                </td>
-                <td className="px-4 py-2">
-                  <input
-                    type="number"
-                    name="gst"
-                    value={item.gst}
-                    onChange={(e) => handleChange(index, e)}
-                    placeholder="Enter GST%"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    required
-                  />
-                </td>
-                <td className="px-4 py-2">
-                  <button
-                    type="button"
-                    onClick={() => deleteRow(index)}
-                    className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-red-500"
-                  >
-                    Delete
-                  </button>
-                </td>
+        <div className="flex justify-between items-center mb-4">
+          <div className="relative w-[400px]">
+            <div className="flex border border-gray-400">
+              <select
+                value={searchBy}
+                onChange={(e) => setSearchBy(e.target.value)}
+                className="bg-gray-100 px-2 py-2 border border-gray-600 rounded-l text-gray-800 cursor-pointer focus:outline-none"
+              >
+                <option value="name">Name</option>
+                <option value="itemcode">Item Code</option>
+                <option value="type">Type</option>
+              </select>
+              <input
+                type="text"
+                placeholder={`Search by ${searchBy}`}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="bg-gray-100 flex-grow px-3 py-2 focus:outline-none"
+              />
+            </div>
+          </div>
+
+          <div className="flex space-x-4">
+            <Link
+              to="/dashboard/items/form"
+              className="inline-block px-5 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              Add Item
+            </Link>
+
+            {selectedItems.length > 0 && (
+              <button
+                onClick={handleDelete}
+                className="inline-block px-5 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+              >
+                Delete Selected
+              </button>
+            )}
+
+            <button
+              onClick={() => {
+                if (showCheckboxes) {
+                  handleCancelDelete();
+                } else {
+                  setShowCheckboxes(true);
+                }
+              }}
+              className={`inline-block px-5 py-2 rounded text-white ${
+                showCheckboxes ? 'bg-gray-500 hover:bg-gray-600' : 'bg-red-500 hover:bg-red-600'
+              }`}
+            >
+              {showCheckboxes ? 'Cancel Delete' : 'Delete Items'}
+            </button>
+          </div>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
+            <thead>
+              <tr className="bg-gray-200">
+                <th className="py-2 px-4 border-b text-center"></th>
+                <th className="py-2 px-4 border-b text-center">Item Code</th>
+                <th className="py-2 px-4 border-b text-center">Name</th>
+                <th className="py-2 px-4 border-b text-center">Type</th>
+                <th className="py-2 px-4 border-b text-center">Selling Price</th>
+                <th className="py-2 px-4 border-b text-center">Quantity</th>
+                <th className="py-2 px-4 border-b text-center">Opening Stock</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-
-        {/* Add Row Button */}
-        <div className="mt-6">
-          <button
-            type="button"
-            onClick={addRow}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            Add Row
-          </button>
+            </thead>
+            <tbody>
+              {!dataLoaded ? (
+                <tr>
+                  <td colSpan="7" className="py-2 px-4 text-center text-gray-500">
+                    Loading Items...
+                  </td>
+                </tr>
+              ) : filteredItems.length === 0 ? (
+                <tr>
+                  <td colSpan="7" className="py-2 px-4 text-center text-gray-500">
+                    No Items found
+                  </td>
+                </tr>
+              ) : (
+                filteredItems.map((item) => (
+                  <tr key={item.sno} className="hover:bg-gray-100">
+                    <td className="py-2 px-2 border-b text-center">
+                      {showCheckboxes && (
+                        <input
+                          type="checkbox"
+                          className="form-checkbox"
+                          onChange={() => handleCheckboxChange(item.sno)}
+                          checked={selectedItems.includes(item.sno)}
+                        />
+                      )}
+                    </td>
+                    <td className="py-2 px-4 border-b text-center">{item.itemcode}</td>
+                    <td className="py-2 px-4 border-b text-center">
+                      <Link to={`/items/${item.sno}`} className="text-blue-500 hover:underline">
+                        {item.name}
+                      </Link>
+                    </td>
+                    <td className="py-2 px-4 border-b text-center">{item.type}</td>
+                    <td className="py-2 px-4 border-b text-center">{item.salesprice}</td>
+                    <td className="py-2 px-4 border-b text-center">{item.quantity}</td>
+                    <td className="py-2 px-4 border-b text-center">{item.openingstock}</td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
-
-        {/* Submit Button */}
-        <div className="mt-6">
-          <button
-            type="submit"
-            className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-500"
-          >
-            Submit Items
-          </button>
-        </div>
-      </form>
-
-      {/* Additional styling for the container */}
-      <div className="mt-10 text-gray-500 text-sm text-center">
-        Add your inventory items manually. Ensure accurate data for better management.
       </div>
     </div>
   );

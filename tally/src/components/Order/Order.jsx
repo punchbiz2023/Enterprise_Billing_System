@@ -127,7 +127,15 @@ const Order = () => {
 
     try {
       const response = await axios.post('http://localhost:3001/api/salesorder', orderDetails);
-      navigate('/dashboard/sales/order')
+      await Promise.all(
+        items.map(async (item) => {
+            await axios.put(`http://localhost:3001/api/items/reduce-quantity`, {
+                hsn: item.hsn,  // Assuming each item has an hsn field
+                quantity: item.quantity
+            });
+        })
+    );
+    navigate('/dashboard/sales/order');
     } catch (error) {
       console.error('Error creating Sales Order:', error.response ? error.response.data : error.message);
     }
