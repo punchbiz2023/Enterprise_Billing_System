@@ -4,13 +4,12 @@ import {
   varchar,
   text,
   numeric,
-  jsonb,
+  json,
   date,
   boolean,
-  decimal
+  decimal,
 } from 'drizzle-orm/pg-core';
 
-// Customer Table
 export const CustTable = pgTable('customer', {
   sno: serial('sno').primaryKey(),
   type: text('type').notNull(),
@@ -25,11 +24,10 @@ export const CustTable = pgTable('customer', {
   currency: text('currency').notNull(),
   openingbalance: numeric('openingbalance').notNull(),
   paymentterms: text('paymentterms').notNull(),
-  billaddress: jsonb('billaddress').notNull(),
-  shipaddress: jsonb('shipaddress').notNull(),
+  billaddress: json('billaddress').notNull(),
+  shipaddress: json('shipaddress').notNull(),
 });
 
-// Vendor Table
 export const VendTable = pgTable('vendor', {
   sno: serial('sno').primaryKey(),
   name: text('name').notNull(),
@@ -43,11 +41,10 @@ export const VendTable = pgTable('vendor', {
   currency: text('currency').notNull(),
   openingbalance: numeric('openingbalance').notNull(),
   paymentterms: text('paymentterms').notNull(),
-  billaddress: jsonb('billaddress').notNull(),
-  shipaddress: jsonb('shipaddress').notNull(),
+  billaddress: json('billaddress').notNull(),
+  shipaddress: json('shipaddress').notNull(),
 });
 
-// Items Table
 export const Items = pgTable('items', {
   sno: serial('sno').primaryKey(),
   name: text('name').notNull(),
@@ -67,7 +64,6 @@ export const Items = pgTable('items', {
   openingstock: numeric('openingStock').notNull(),
 });
 
-// Users Table
 export const Users = pgTable('users', {
   sno: serial('sno').primaryKey(),
   name: text('name').notNull(),
@@ -80,7 +76,6 @@ export const Users = pgTable('users', {
   docs: text('docs'),
 });
 
-// Estimate Table
 export const Estimate = pgTable('estimate', {
   sno: serial('sno').primaryKey(),
   cname: text('cname').notNull(),
@@ -89,7 +84,7 @@ export const Estimate = pgTable('estimate', {
   qdate: date('qdate').notNull(),
   expdate: date('expdate').notNull(),
   project: text('project').notNull(),
-  itemtable: jsonb('itemtable').notNull(),
+  itemtable: json('itemtable').notNull(),
   subject: text('subject'),
   salesperson: text('salesperson').notNull(),
   taxtype: text('taxtype').notNull(),
@@ -97,7 +92,6 @@ export const Estimate = pgTable('estimate', {
   total: numeric('total').notNull(),
 });
 
-// Project Table
 export const Project = pgTable('project', {
   sno: serial('sno').primaryKey(),
   name: text('name').notNull(),
@@ -109,18 +103,16 @@ export const Project = pgTable('project', {
   costbudget: text('costbudget').notNull(),
   revenuebudget: text('revenuebudget').notNull(),
   projecthours: text('projecthours').notNull(),
-  users: jsonb('users').notNull(),
-  tasks: jsonb('tasks').notNull(),
+  users: json('users').notNull(),
+  tasks: json('tasks').notNull(),
 });
 
-// SalesPerson Table
 export const SalesPerson = pgTable('salesperson', {
   sno: serial('sno').primaryKey(),
   name: text('name').notNull(),
   mail: text('mail').notNull(),
 });
 
-// PurchaseOrder Table
 export const PurchaseOrder = pgTable('purchaseorder', {
   sno: serial('sno').primaryKey(),
   name: text('name').notNull(),
@@ -131,12 +123,11 @@ export const PurchaseOrder = pgTable('purchaseorder', {
   deliverydate: date('deliverydate').notNull(),
   terms: text('terms').notNull(),
   modeofshipment: text('modeofshipment'),
-  itemdetails: jsonb('itemdetails').notNull(),
+  itemdetails: json('itemdetails').notNull(),
   gst: numeric('gst').notNull(),
   total: numeric('total').notNull(),
 });
 
-// Invoice Table
 export const Invoice = pgTable('invoice', {
   sno: serial('sno').primaryKey(),
   name: text('name').notNull(),
@@ -154,7 +145,6 @@ export const Invoice = pgTable('invoice', {
   amount: numeric('amount'),
 });
 
-// BillForm Table
 export const BillForm = pgTable('bill', {
   sno: serial('sno').primaryKey(),
   name: text('name').notNull(),
@@ -164,12 +154,11 @@ export const BillForm = pgTable('bill', {
   duedate: date('duedate').notNull(),
   terms: text('terms').notNull(),
   modeofshipment: text('modeofshipment'),
-  itemdetails: jsonb('itemdetails').notNull(),
+  itemdetails: json('itemdetails').notNull(),
   gst: numeric('gst').notNull(),
   total: numeric('total').notNull(),
 });
 
-// SalesOrder Table
 export const SalesOrder = pgTable('salesorder', {
   sno: serial('sno').primaryKey(),
   name: text('name').notNull(),
@@ -184,7 +173,7 @@ export const SalesOrder = pgTable('salesorder', {
   invoicedate: date('invoicedate').notNull(),
   duedate: date('duedate').notNull(),
   terms: text('terms').notNull(),
-  itemdetails: jsonb('itemdetails').notNull(),
+  itemdetails: json('itemdetails').notNull(),
   subject: text('subject'),
   salesperson: text('salesperson').notNull(),
   taxtype: text('taxtype').notNull(),
@@ -192,25 +181,25 @@ export const SalesOrder = pgTable('salesorder', {
   total: numeric('total').notNull(),
 });
 
-// Inventory Table
+// Inventory Table Definition
 export const InventoryTable = pgTable('inventory', {
   id: serial('id').primaryKey(),
   itemName: text('item_name').notNull(),
   itemCode: text('item_code').notNull(),
   hsnCode: text('hsn_code').notNull(),
-  quantity: numeric('quantity').notNull(),
-  rate: numeric('rate').notNull(),
-  gst: numeric('gst').notNull(),
+  quantity: numeric('quantity').notNull(), // Use numeric or decimal here
+  rate: numeric('rate').notNull(), // Use numeric or decimal here
+  gst: numeric('gst').notNull(), // Use numeric or decimal here
 });
 
-// CreditNote Table
+
 export const CreditNote = pgTable('creditnote', {
   sno: serial('sno').primaryKey(),
   name: text('name').notNull(),
   creditno: text('creditno').notNull(),
   refno: text('refno').notNull(),
   creditdate: date('creditdate').notNull(),
-  itemdetails: jsonb('itemdetails'),
+  itemdetails: json('itemdetails'),
   subject: text('subject').notNull(),
   notes: text('notes').notNull(),
   terms: text('terms').notNull(),
@@ -220,14 +209,14 @@ export const CreditNote = pgTable('creditnote', {
   amount: numeric('amount'),
 });
 
-// Journal Table
-export const Journal = pgTable('journal', {
-  id: serial('id').primaryKey(),
-  date: date('date').notNull(),
-  journalNumber: varchar('journal_number', { length: 50 }).notNull(),
-  description: text('description').notNull(),
-  referenceNumber: varchar('reference_number', { length: 50 }),
-  accounts: jsonb('accounts').notNull(),
-  totalDebit: numeric('total_debit').notNull(),
-  totalCredit: numeric('total_credit').notNull(),
-});
+// // Journal Table
+// export const Journal = pgTable('journal', {
+//   id: serial('id').primaryKey(),
+//   date: date('date').notNull(),
+//   journalNumber: varchar('journal_number', { length: 50 }).notNull(),
+//   description: text('description').notNull(),
+//   referenceNumber: varchar('reference_number', { length: 50 }),
+//   accounts: jsonb('accounts').notNull(),
+//   totalDebit: numeric('total_debit').notNull(),
+//   totalCredit: numeric('total_credit').notNull(),
+// });
