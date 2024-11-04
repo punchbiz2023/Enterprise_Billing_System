@@ -376,7 +376,7 @@ const CreditNotes = () => {
                         className="border border-gray-300 rounded-md p-2 w-full"
                       />
                     </td>
-                    <td>
+                    <td>n
                       <input
                         type="number"
                         value={item.quantity}
@@ -405,7 +405,7 @@ const CreditNotes = () => {
                         type="text"
                         value={item.gst}
                         readOnly
-                        className="border border-gray-300 rounded-md p-2"
+                        className="border border-gray-300 rounded-md p-2 w-full"
                       />
                     </td>
 
