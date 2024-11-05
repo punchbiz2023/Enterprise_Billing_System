@@ -1,173 +1,188 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
+
 
 const Inventory = () => {
-  // State for multiple rows (items)
-  const [items, setItems] = useState([
-    { itemName: '', hsnCode: '', quantity: '', rate: '', gst: '' }
-  ]);
+    const [inventory, setInventory] = useState([]);
+    const [dataLoaded, setDataLoaded] = useState(false);
+    const [selectedInventory, setSelectedInventory] = useState([]);
+    const [orderData, setOrderData] = useState([]);
+    const [showCheckboxes, setShowCheckboxes] = useState(false); // State to toggle checkboxes
+    const [searchTerm, setSearchTerm] = useState(''); // State for search term
+    const [searchBy, setSearchBy] = useState('itemName'); // State to track search category
 
-  // Handle input change for individual rows
-  const handleChange = (index, e) => {
-    const { name, value } = e.target;
-    const newItems = [...items];
-    newItems[index][name] = value;
-    setItems(newItems);
-  };
+    useEffect(() => {
+        fetchInventory();
+        fetchSalesOrder();
+        // quantityUpdate();
+    }, []);
 
-  // Handle form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-  
-    console.log(items); // Log the items to see if itemName and other fields are populated
-  
-    try {
-      // Send data to the backend
-      const response = await axios.post('http://localhost:3001/api/inventory', { items });
-  
-      if (response.status === 201) {
-        console.log('Items stored successfully!', response.data);
-        alert('Items stored successfully!');
-      } else {
-        console.error('Error storing items:', response.data);
-      }
-    } catch (error) {
-      console.error('Error storing items:', error);
-      alert('Error storing items!');
-    }
-  
-    // Reset form after submission
-    setItems([{ itemName: '', hsnCode: '', quantity: '', rate: '', gst: '' }]);
-  };
-  
+    const fetchInventory = async () => {
+        try {
+            const response = await axios.get('http://localhost:3001/api/inventory');
+            if (response.data) {
+                setInventory(response.data);
+                setDataLoaded(true);
+            }
+        } catch (error) {
+            console.error('Error fetching invent data:', error.response ? error.response.data : error.message);
+        }
+    };
+    const fetchSalesOrder = async () => {
+        try {
+            const response = await axios.get('http://localhost:3001/api/salesorder');
+            if (response.data) {
+                setOrderData(response.data);
+            }
+        } catch (error) {
+            console.error('Error fetching invent data:', error.response ? error.response.data : error.message);
+        }
 
-  // Add a new row
-  const addRow = () => {
-    setItems([...items, { itemName: '', hsnCode: '', quantity: '', rate: '', gst: '' }]);
-  };
+    };
 
-  // Remove a row
-  const deleteRow = (index) => {
-    const newItems = items.filter((_, i) => i !== index);
-    setItems(newItems);
-  };
 
-  return (
-    <div className="container mx-auto p-6">
-      <h2 className="text-3xl font-bold text-center mt-20">Inventory Management</h2>
 
-      <form onSubmit={handleSubmit} className="bg-white shadow-lg rounded-lg p-8">
-        <table className="min-w-full bg-white">
-          <thead>
-            <tr>
-              <th className="px-4 py-2 text-left text-gray-600 font-medium">Item Name</th>
-              <th className="px-4 py-2 text-left text-gray-600 font-medium">HSN Code</th>
-              <th className="px-4 py-2 text-left text-gray-600 font-medium">Quantity</th>
-              <th className="px-4 py-2 text-left text-gray-600 font-medium">Rate</th>
-              <th className="px-4 py-2 text-left text-gray-600 font-medium">GST%</th>
-              <th className="px-4 py-2"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {items.map((item, index) => (
-              <tr className="border-b" key={index}>
-                <td className="px-4 py-2">
-                  <input
-                    type="text"
-                    name="itemName"
-                    value={item.itemName}
-                    onChange={(e) => handleChange(index, e)}
-                    placeholder="Enter item name"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    required
-                  />
-                </td>
-                <td className="px-4 py-2">
-                  <input
-                    type="text"
-                    name="hsnCode"
-                    value={item.hsnCode}
-                    onChange={(e) => handleChange(index, e)}
-                    placeholder="Enter HSN code"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    required
-                  />
-                </td>
-                <td className="px-4 py-2">
-                  <input
-                    type="number"
-                    name="quantity"
-                    value={item.quantity}
-                    onChange={(e) => handleChange(index, e)}
-                    placeholder="Enter quantity"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    required
-                  />
-                </td>
-                <td className="px-4 py-2">
-                  <input
-                    type="number"
-                    name="rate"
-                    value={item.rate}
-                    onChange={(e) => handleChange(index, e)}
-                    placeholder="Enter rate"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    required
-                  />
-                </td>
-                <td className="px-4 py-2">
-                  <input
-                    type="number"
-                    name="gst"
-                    value={item.gst}
-                    onChange={(e) => handleChange(index, e)}
-                    placeholder="Enter GST%"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    required
-                  />
-                </td>
-                <td className="px-4 py-2">
-                  <button
-                    type="button"
-                    onClick={() => deleteRow(index)}
-                    className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-red-500"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
 
-        {/* Add Row Button */}
-        <div className="mt-6">
-          <button
-            type="button"
-            onClick={addRow}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            Add Row
-          </button>
+    const handleCheckboxChange = (inventId) => {
+        setSelectedInventory(prevSelected =>
+            prevSelected.includes(inventId)
+                ? prevSelected.filter(id => id !== inventId)
+                : [...prevSelected, inventId]
+        );
+    };
+
+    const handleDelete = async () => {
+        if (selectedInventory.length <= 0) return;
+
+        try {
+            await axios.delete('http://localhost:3001/api/inventory', { data: { ids: selectedInventory } });
+            fetchInventory();
+            setSelectedInventory([]);
+            setShowCheckboxes(false); // Hide checkboxes after deletion
+        } catch (error) {
+            console.error('Error deleting inventory:', error.response ? error.response.data : error.message);
+        }
+    };
+
+    // Filter inventory based on search term and selected category (searchBy)
+    const filteredInventory = inventory.filter((invent) => {
+        if (!searchTerm) return true; // If search term is empty, show all inventory
+        const value = invent[searchBy]?.toLowerCase(); // Get value from the selected field
+        return value && value.startsWith(searchTerm.toLowerCase());
+    });
+
+    return (
+        <div className="flex">
+
+            <div className="w-4/5 p-6 ml-[200px] mt-[4%] mr-[10%]">
+                <h1 className="text-xl font-bold mb-4">Inventory</h1>
+
+                <div className="flex justify-between mb-4">
+                    {/* Search bar on the left */}
+                    <div className="flex w-1/3">
+
+                        {/* Dropdown after the search input */}
+                        <select
+                            value={searchBy}
+                            onChange={(e) => setSearchBy(e.target.value)}
+                            className="bg-gray-100 px-2 py-2 border border-gray-600 rounded-l text-gray-800 cursor-pointer focus:outline-none"
+                        >
+                            <option value="itemName">Name</option>
+                            <option value="code">Item Code</option>
+                            <option value="hsn">HSN Code</option>
+                            <option value="workphone">Rate</option>
+                            <option value="gstno">GST Number</option>
+                        </select>
+                        <input
+                            type="text"
+                            placeholder={`Search by ${searchBy}...`}
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="bg-gray-100 px-2 py-2 border border-gray-600 rounded-r w-full focus:outline-none"
+                        />
+                    </div>
+
+                    {/* Buttons on the right */}
+                    <div className="flex space-x-4">
+                        
+                        <button
+                            onClick={() => {
+                                setShowCheckboxes(!showCheckboxes);
+                                if (showCheckboxes) {
+                                    setSelectedInventory([]); // Unselect all checkboxes when 'Cancel' is clicked
+                                }
+                            }}
+                            className={`inline-block px-5 py-2 rounded text-white ${showCheckboxes ? 'bg-gray-500 hover:bg-gray-600' : 'bg-red-500 hover:bg-red-600'}`}
+                        >
+                            {showCheckboxes ? 'Cancel' : 'Delete Inventory'}
+                        </button>
+                        {showCheckboxes && selectedInventory.length > 0 && (
+                            <button
+                                onClick={handleDelete}
+                                className="inline-block px-5 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                            >
+                                Delete
+                            </button>
+                        )}
+                    </div>
+                </div>
+
+                <div className="overflow-x-auto">
+                    <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
+                        <thead>
+                            <tr className="bg-gray-200">
+                                <th className="py-1 px-1 border-b"></th>
+                                <th className="py-2 px-4 border-b">Name</th>
+                                <th className="py-2 px-4 border-b">Item Code</th>
+                                <th className="py-2 px-4 border-b">HSN Code</th>
+                                <th className="py-2 px-4 border-b">Quantity</th>
+                                <th className="py-2 px-4 border-b">Rate</th>
+                                <th className="py-2 px-4 border-b">GST</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {!dataLoaded ? (
+                                <tr>
+                                    <td colSpan="7" className="py-2 px-4 text-center text-gray-500">
+                                        Loading inventory...
+                                    </td>
+                                </tr>
+                            ) : filteredInventory.length === 0 ? (
+                                <tr>
+                                    <td colSpan="7" className="py-2 px-4 text-center text-gray-500">
+                                        No items found in Inventory
+                                    </td>
+                                </tr>
+                            ) : (
+                                filteredInventory.map((invent, index) => (
+                                    <tr key={invent.sno || index} className="hover:bg-gray-100">
+                                        <td className="py-2 px-4 border-b">
+                                            {showCheckboxes && (
+                                                <input
+                                                    type="checkbox"
+                                                    className="form-checkbox"
+                                                    onChange={() => handleCheckboxChange(invent.sno)}
+                                                    checked={selectedInventory.includes(invent.sno)}
+                                                />
+                                            )}
+                                        </td>
+
+                                        <td className="py-2 px-4 text-center border-b">{invent.itemName}</td>
+                                        <td className="py-2 px-4 text-center border-b">{invent.itemCode}</td>
+                                        <td className="py-2 px-4 text-center border-b">{invent.hsnCode}</td>
+                                        <td className="py-2 px-4 text-center border-b">{invent.quantity}</td>
+                                        <td className="py-2 px-4 text-center border-b">{invent.rate}</td>
+                                        <td className="py-2 px-4 text-center border-b">{invent.gst}</td>
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-
-        {/* Submit Button */}
-        <div className="mt-6">
-          <button
-            type="submit"
-            className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-500"
-          >
-            Submit Items
-          </button>
-        </div>
-      </form>
-
-      {/* Additional styling for the container */}
-      <div className="mt-10 text-gray-500 text-sm text-center">
-        Add your inventory items manually. Ensure accurate data for better management.
-      </div>
-    </div>
-  );
+    );
 };
 
 export default Inventory;

@@ -4,7 +4,7 @@ import { CiBoxList, CiShoppingCart,CiBag1 } from "react-icons/ci";
 import { IoBagOutline } from "react-icons/io5";
 import { BsGraphUp } from "react-icons/bs";
 import { MdInventory } from 'react-icons/md';
-
+import { FaUserTie, FaUserCheck } from 'react-icons/fa';
 import './Navbar.css';
 
 const Navbar = () => {
@@ -44,11 +44,19 @@ const Navbar = () => {
               </Link>
           </li>
           <li className="flex flex-col items-center mb-4">
+            <Link to="/dashboard/journal">
+            <FaUserTie className='text-white ml-1 h-7 w-7' />
+
+              <span className="text-white text-xs mt-1">Accountant</span>
+            </Link>
+          </li>
+          <li className="flex flex-col items-center mb-4">
             <Link to="/dashboard/report">
               <BsGraphUp className='text-white ml-1 h-7 w-7' />
               <span className="text-white text-xs mt-1">Reports</span>
             </Link>
           </li>
+          
           
 
         </ul>

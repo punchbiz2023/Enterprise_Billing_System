@@ -184,8 +184,9 @@ export const SalesOrder = pgTable('salesorder', {
 // Inventory Table Definition
 export const InventoryTable = pgTable('inventory', {
   id: serial('id').primaryKey(),
-  itemName: varchar('item_name').notNull(),
-  hsnCode: varchar('hsn_code').notNull(),
+  itemName: text('item_name').notNull(),
+  itemCode: text('item_code').notNull(),
+  hsnCode: text('hsn_code').notNull(),
   quantity: numeric('quantity').notNull(), // Use numeric or decimal here
   rate: numeric('rate').notNull(), // Use numeric or decimal here
   gst: numeric('gst').notNull(), // Use numeric or decimal here
@@ -207,3 +208,15 @@ export const CreditNote = pgTable('creditnote', {
   taxrate: text('taxrate').notNull(),
   amount: numeric('amount'),
 });
+
+// // Journal Table
+// export const Journal = pgTable('journal', {
+//   id: serial('id').primaryKey(),
+//   date: date('date').notNull(),
+//   journalNumber: varchar('journal_number', { length: 50 }).notNull(),
+//   description: text('description').notNull(),
+//   referenceNumber: varchar('reference_number', { length: 50 }),
+//   accounts: jsonb('accounts').notNull(),
+//   totalDebit: numeric('total_debit').notNull(),
+//   totalCredit: numeric('total_credit').notNull(),
+// });

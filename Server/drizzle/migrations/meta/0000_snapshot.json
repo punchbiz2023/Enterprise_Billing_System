@@ -1,5 +1,5 @@
 {
-  "id": "3386aca0-6b7c-4a92-b7b7-16b6005cf6d7",
+  "id": "801daf22-4466-4191-9ca7-85cd3a181c20",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -368,13 +368,19 @@
         },
         "item_name": {
           "name": "item_name",
-          "type": "varchar",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "item_code": {
+          "name": "item_code",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
         "hsn_code": {
           "name": "hsn_code",
-          "type": "varchar",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
