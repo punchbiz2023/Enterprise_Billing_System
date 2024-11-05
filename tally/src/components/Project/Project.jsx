@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import './Project.css';
 
 function Project() {
+  const navigate = useNavigate();
   const [projectName, setProjectName] = useState('');
   const [projectCode, setProjectCode] = useState('');
   const [customerName, setCustomerName] = useState('');
@@ -74,6 +76,7 @@ function Project() {
     try {
       await axios.post('http://localhost:3001/api/projects', projectData);
       alert('Project saved successfully!');
+      navigate('/dashboard/sales/estimate/form');
     } catch (error) {
       console.error('Error saving project:', error);
     }
@@ -91,6 +94,7 @@ function Project() {
             value={projectName}
             onChange={(e) => setProjectName(e.target.value)}
             placeholder="Enter project name"
+            required
           />
         </div>
 
@@ -101,12 +105,13 @@ function Project() {
             value={projectCode}
             onChange={(e) => setProjectCode(e.target.value)}
             placeholder="Enter project code"
+            required
           />
         </div>
 
         <div className="form-group">
           <label>Customer Name*</label>
-          <select value={customerName} onChange={(e) => setCustomerName(e.target.value)}>
+          <select value={customerName} onChange={(e) => setCustomerName(e.target.value)} required>
             <option value="">Select a customer</option>
             {availableCustomers.map((customer) => (
               <option key={customer.sno} value={customer.name}>{customer.name}</option>
@@ -116,7 +121,7 @@ function Project() {
 
         <div className="form-group">
           <label>Billing Method*</label>
-          <select value={billingMethod} onChange={(e) => setBillingMethod(e.target.value)}>
+          <select value={billingMethod} onChange={(e) => setBillingMethod(e.target.value)} required>
             <option value="Fixed Cost for Project">Fixed Cost for Project</option>
             <option value="Hourly Billing">Based on Project Hours</option>
             <option value="Task billing">Based on Task Hours</option>
@@ -131,6 +136,7 @@ function Project() {
             value={totalProjectCost}
             onChange={(e) => setTotalProjectCost(e.target.value)}
             placeholder="Enter project cost"
+            required
           />
         </div>
 
@@ -140,6 +146,7 @@ function Project() {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Max. 2000 characters"
+            required
           ></textarea>
         </div>
 
@@ -152,6 +159,7 @@ function Project() {
             value={costBudget}
             onChange={(e) => setCostBudget(e.target.value)}
             placeholder="INR"
+            required
           />
         </div>
 
@@ -162,12 +170,13 @@ function Project() {
             value={revenueBudget}
             onChange={(e) => setRevenueBudget(e.target.value)}
             placeholder="INR"
+            required
           />
         </div>
 
         <div className="form-group">
           <label>Hours Budget Type</label>
-          <select value={hoursBudgetType} onChange={(e) => setHoursBudgetType(e.target.value)}>
+          <select value={hoursBudgetType} onChange={(e) => setHoursBudgetType(e.target.value)} required>
             <option value="Total Project Hours (HH:MM)">Total Project Hours (HH:MM)</option>
             <option value="Hours per staff">Hours per staff</option>
             <option value="Hours per task">Hours per Task</option>
@@ -194,6 +203,7 @@ function Project() {
                     value={user.name}
                     onChange={(e) => handleUserChange(index, 'name', e.target.value)}
                     placeholder="Enter user name"
+                    required
                   />
                 </td>
                 <td>
@@ -202,6 +212,7 @@ function Project() {
                     value={user.email}
                     onChange={(e) => handleUserChange(index, 'email', e.target.value)}
                     placeholder="Enter email"
+                    required
                   />
                 </td>
                 <td>
@@ -237,6 +248,7 @@ function Project() {
                     value={task.name}
                     onChange={(e) => handleTaskChange(index, 'name', e.target.value)}
                     placeholder="Enter task name"
+                    required
                   />
                 </td>
                 <td>
@@ -245,6 +257,7 @@ function Project() {
                     value={task.description}
                     onChange={(e) => handleTaskChange(index, 'description', e.target.value)}
                     placeholder="Enter task description"
+                    required
                   />
                 </td>
                 <td>
@@ -260,8 +273,8 @@ function Project() {
           Add Project Task
         </button><br/><br/>
 
-        <div className="form-actions">
-          <button type="submit" className="save-project">
+        <div className="form-actions" >
+          <button type="submit" className="save">
             Save Project
           </button>
         </div>
