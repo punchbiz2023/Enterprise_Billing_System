@@ -58,7 +58,7 @@ const AddCustomer = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('http://localhost:3001/api/customers', newCustomer);
+            await axios.post('https://enterprise-billing-system-3.onrender.com/api/customers', newCustomer);
             navigate('/dashboard/sales/customers');
         } catch (error) {
             console.error('Error adding customer:', error.response ? error.response.data : error.message);

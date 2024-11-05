@@ -17,7 +17,7 @@ const EstimateTable = () => {
 
     const fetchEstimates = async () => {
         try {
-            const response = await axios.get('http://localhost:3001/api/estimates');
+            const response = await axios.get('https://enterprise-billing-system-3.onrender.com/api/estimates');
             if (response.data) {
                 setEstimates(response.data);
                 setDataLoaded(true);
@@ -39,7 +39,7 @@ const EstimateTable = () => {
         if (selectedEstimates.length <= 0) return;
 
         try {
-            await axios.delete('http://localhost:3001/api/estimates', { data: { ids: selectedEstimates } });
+            await axios.delete('https://enterprise-billing-system-3.onrender.com/api/estimates', { data: { ids: selectedEstimates } });
             fetchEstimates();
             setSelectedEstimates([]);
             setShowCheckboxes(false); // Hide checkboxes after deletion

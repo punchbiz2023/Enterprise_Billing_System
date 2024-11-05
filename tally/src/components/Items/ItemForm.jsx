@@ -51,8 +51,8 @@ const ItemForm = () => {
         
 
         try {
-            await axios.post('http://localhost:3001/api/items', formState.newItem);
-            await axios.post('http://localhost:3001/api/inventory', inventItem);
+            await axios.post('https://enterprise-billing-system-3.onrender.com/api/items', formState.newItem);
+            await axios.post('https://enterprise-billing-system-3.onrender.com/api/inventory', inventItem);
             navigate('/dashboard/items');
         } catch (error) {
             console.error('Error adding item:', error.response ? error.response.data : error.message);

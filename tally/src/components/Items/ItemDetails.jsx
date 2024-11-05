@@ -12,7 +12,7 @@ const ItemDetails = () => {
     const fetchItem = async () => {
       console.log(`Fetching item with id: ${id}`); // Check if id is being logged correctly
       try {
-        const response = await axios.get('http://localhost:3001/api/items');
+        const response = await axios.get('https://enterprise-billing-system-3.onrender.com/api/items');
         console.log(response.data); // Check if the data is fetched
         // Filter the item based on the id
         const fetchedItem = response.data.find(item => item.sno === parseInt(id));

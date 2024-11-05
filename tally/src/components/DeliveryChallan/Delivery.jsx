@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import SidePanel from '../sales/SidePanel';
+import SidePanel from '../Sales/SidePanel';
 
 const Delivery = () => {
   const [items, setItems] = useState([{ name: '', quantity: 1, rate: '', discount: '', amount: 0 }]);
@@ -31,7 +31,7 @@ const Delivery = () => {
   useEffect(() => {
     const fetchCustomers = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/api/customers');
+        const response = await axios.get('https://enterprise-billing-system-3.onrender.com/api/customers');
         setCustomers(response.data);
       } catch (error) {
         console.error('Error fetching customer data:', error);
