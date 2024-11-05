@@ -512,7 +512,7 @@ const Estimate = () => {
                         type="text"
                         value={item.gst}
                         readOnly
-                        className="border border-gray-300 rounded-md p-2"
+                        className="border border-gray-300 rounded-md p-2 w-full"
                       />
                     </td>
 
@@ -577,9 +577,9 @@ const Estimate = () => {
               Salesperson
             </label>
             {/* // Assuming you are using a <select> for salespersons */}
-            <select onChange={(e) => setSelectedSalesperson(e.target.value)} value={selectedSalesperson}>
+            <select className='border-gray-700 ' onChange={(e) => setSelectedSalesperson(e.target.value)} value={selectedSalesperson}>
               {salespersons.map((sp) => (
-                <option key={sp.id} value={sp.name}>
+                <option key={sp.id} value={sp.name} >
                   {sp.name}
                 </option>
               ))}

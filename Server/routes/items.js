@@ -1,7 +1,9 @@
+// items.js
+
 import express from 'express';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import { Items } from '../drizzle/schema.js';
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import postgres from 'postgres';
 import dotenv from 'dotenv';
 
@@ -28,8 +30,8 @@ router.post('/', async (req, res) => {
     taxPayable,
     gst,
     type,
-    quantity,          // Added quantity
-    openingStock,     // Added opening stock
+    quantity,
+    openingStock,
   } = req.body;
 
   try {
@@ -49,8 +51,8 @@ router.post('/', async (req, res) => {
         taxpayable: taxPayable,
         gst: Number(gst),
         type,
-        quantity: Number(quantity),           // Convert to Number
-        openingstock: Number(openingStock),   // Convert to Number
+        quantity: Number(quantity),
+        openingstock: Number(openingStock),
       })
       .returning();
 
@@ -78,8 +80,8 @@ router.get('/', async (req, res) => {
         purchasedescription: Items.purchasedescription,
         taxpayable: Items.taxpayable,
         gst: Items.gst,
-        quantity: Items.quantity,              // Include quantity in response
-        openingstock: Items.openingstock,      // Include opening stock in response
+        quantity: Items.quantity,
+        openingstock: Items.openingstock,
       })
       .from(Items);
 
@@ -100,6 +102,36 @@ router.delete('/', async (req, res) => {
     res.status(200).json({ message: 'Items deleted successfully' });
   } catch (error) {
     console.error('Error deleting items:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// Reduce item quantity based on HSN code
+router.post('/reduce-quantity', async (req, res) => {
+  const { hsnCode, orderQuantity } = req.body;
+
+  try {
+    // Fetch the item with the matching HSN code
+    const [item] = await db3.select().from(Items).where(eq(Items.hsncode, hsnCode));
+
+    if (!item) {
+      return res.status(404).json({ error: 'Item not found' });
+    }
+
+    // Check if there’s enough quantity
+    if (item.quantity < orderQuantity) {
+      return res.status(400).json({ error: 'Insufficient stock' });
+    }
+
+    // Update the quantity
+    await db3
+      .update(Items)
+      .set({ quantity: sql`${Items.quantity} - ${orderQuantity}` })
+      .where(eq(Items.hsncode, hsnCode));
+
+    res.status(200).json({ message: 'Quantity reduced successfully' });
+  } catch (error) {
+    console.error('Error reducing item quantity:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });

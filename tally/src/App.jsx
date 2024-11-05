@@ -40,6 +40,7 @@ import CreditNotes from './components/CreditNotes/creditForm.jsx';
 import Inventory from './components/Inventory/inventory.jsx';
 import CreditTable from './components/CreditNotes/CreditTable.jsx';
 import CreditDetails from './components/CreditNotes/CreditDetails.jsx';
+import Journal from './components/Journal/Journal.jsx';
 function MainLayout({ children }) {
   return (
     <>
@@ -100,6 +101,7 @@ function App() {
         <Route path='/dashboard/sales/credit/form' element={<MainLayout><CreditNotes/></MainLayout>}/>
         <Route path='/dashboard/sales/credit' element={<MainLayout><CreditTable/></MainLayout>}/>
         <Route path='/dashboard/inventory' element={<MainLayout><Inventory/></MainLayout>}/>
+        <Route path='/dashboard/journal' element={<MainLayout><Journal/></MainLayout>}/>
       </Routes>
     </Router>
   );

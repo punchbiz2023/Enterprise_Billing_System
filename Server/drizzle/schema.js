@@ -208,3 +208,15 @@ export const CreditNote = pgTable('creditnote', {
   taxrate: text('taxrate').notNull(),
   amount: numeric('amount'),
 });
+
+// // Journal Table
+// export const Journal = pgTable('journal', {
+//   id: serial('id').primaryKey(),
+//   date: date('date').notNull(),
+//   journalNumber: varchar('journal_number', { length: 50 }).notNull(),
+//   description: text('description').notNull(),
+//   referenceNumber: varchar('reference_number', { length: 50 }),
+//   accounts: jsonb('accounts').notNull(),
+//   totalDebit: numeric('total_debit').notNull(),
+//   totalCredit: numeric('total_credit').notNull(),
+// });
