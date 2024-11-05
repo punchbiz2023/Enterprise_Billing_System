@@ -1,7 +1,7 @@
 import React from 'react';
 import Navbar from '../Navbar/Navbar';
-import SidePanel from './SidePanel';
-import './sales.css';
+
+import './Sales.css';
 
 const Sales = () => {
   return (
