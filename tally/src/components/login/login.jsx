@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { auth, provider } from './firebase'; 
 import { signInWithPopup } from 'firebase/auth'; 
 import { FaGoogle, FaLock, FaUser } from 'react-icons/fa';  // Icons
-import Loginlogo from '../../assets/Loginlogo.jpeg';
+import Loginlogo from '../../assets/LoginLogo.jpeg';
 
 const Login = () => {
   const [email, setEmail] = useState('');
