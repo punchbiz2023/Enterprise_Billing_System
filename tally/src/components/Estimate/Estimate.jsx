@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import SidePanel from '../Sales/SidePanel';
+import SidePanel from '../Sales/Sidepanel.jsx';
 import SalesPerson from '../Salesperson/SalesPerson.jsx';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
-import SidePanel from '../Sales/SidePanel';
+import SidePanel from '../Sales/Sidepanel';
 
 const Order = () => {
   const [salespersons, setSalespersons] = useState([]);
