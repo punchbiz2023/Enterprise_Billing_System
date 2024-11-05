@@ -10,7 +10,7 @@ const PurchaseOrderDetails = () => {
   useEffect(() => {
     const fetchPurchaseOrder = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/api/purchaseorder`);
+        const response = await axios.get(`https://enterprise-billing-system-3.onrender.com/api/purchaseorder`);
         // Find the purchase order based on the ID from the params
         const fetchedPurchaseOrder = response.data.find(po => po.sno === parseInt(id));
 

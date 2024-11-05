@@ -102,6 +102,7 @@ function App() {
         <Route path='/dashboard/sales/credit' element={<MainLayout><CreditTable/></MainLayout>}/>
         <Route path='/dashboard/inventory' element={<MainLayout><Inventory/></MainLayout>}/>
         <Route path='/dashboard/journal' element={<MainLayout><Journal/></MainLayout>}/>
+        <Route path='/dashboard/report' element={<MainLayout><Reports/></MainLayout>}></Route>
       </Routes>
     </Router>
   );
