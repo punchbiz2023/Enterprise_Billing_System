@@ -42,7 +42,7 @@ const PurchaseOrder = () => {
     useEffect(() => {
         const fetchVendors = async () => {
             try {
-                const response = await fetch('http://localhost:3001/api/vendor');
+                const response = await fetch('https://enterprise-billing-system-3.onrender.com/api/vendor');
                 const data = await response.json();
                 setVendors(data);
             } catch (error) {
@@ -111,7 +111,7 @@ const PurchaseOrder = () => {
         };
 
         try {
-            const response = await fetch('http://localhost:3001/api/purchaseorder', {
+            const response = await fetch('https://enterprise-billing-system-3.onrender.com/api/purchaseorder', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
