@@ -22,6 +22,9 @@ const PurchaseOrder = () => {
     const [subtotal, setSubtotal] = useState(0);
     const [grandTotal, setGrandTotal] = useState(0);
     const [vendorEmail, setVendorEmail] = useState('');
+    const [errors, setErrors] = useState({}); 
+    const today = new Date().toISOString().split('T')[0];
+
 
     useEffect(() => {
         const currentDate = new Date().toLocaleDateString('en-GB');
@@ -49,6 +52,26 @@ const PurchaseOrder = () => {
         fetchVendors();
     }, []);
 
+    const validateForm = () => { // Validation function
+        const newErrors = {};
+    
+        if (!vendor) newErrors.vendor = "Vendor is required.";
+        if (!reference) newErrors.reference = "Reference is required.";
+        if (!deliveryDate) newErrors.deliveryDate = "Delivery date is required.";
+        if (!shipmentPreference) newErrors.shipmentPreference = "Shipment preference is required.";
+        if (!vendorEmail) newErrors.vendorEmail = "Vendor email is required.";
+        else if (!/\S+@\S+\.\S+/.test(vendorEmail)) newErrors.vendorEmail = "Email is invalid.";
+        items.forEach((item, index) => {
+            if (!item.account) newErrors[`itemAccount${index}`] = "Item name is required.";
+            if (item.quantity <= 0) newErrors[`itemQuantity${index}`] = "Quantity must be greater than 0.";
+            if (item.rate <= 0) newErrors[`itemRate${index}`] = "Rate must be greater than 0";
+        });
+    
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+    
+
     const calculateSubtotal = () => {
         const total = items.reduce((acc, item) => acc + (parseFloat(item.rate) * parseFloat(item.quantity)), 0);
         setSubtotal(total);
@@ -66,6 +89,8 @@ const PurchaseOrder = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        if (!validateForm()) return; 
+
 
         const formattedDate = new Date(date.split('/').reverse().join('-')).toISOString().split('T')[0];
         const formattedDeliveryDate = new Date(deliveryDate.split('/').reverse().join('-')).toISOString().split('T')[0];
@@ -172,7 +197,9 @@ const PurchaseOrder = () => {
                                 </option>
                             ))}
                         </select>
+                        {errors.vendor && <span className="error">{errors.vendor}</span>}
                     </div>
+
 
                     {/* Delivery Type */}
                     <div className="delivery-section">
@@ -212,17 +239,21 @@ const PurchaseOrder = () => {
                             required 
                             onChange={(e) => setReference(e.target.value)} 
                         />
-                        
+                        {errors.reference && <span className="error">{errors.reference}</span>}
+
                         <label>Date</label>
                         <input type="text" value={date} readOnly required/>
                         
                         <label>Expected Delivery Date</label>
                         <input
                             type="date"
-                            placeholder="dd/mm/yyyy"
-                            value={deliveryDate}
-                            onChange={(e) => setDeliveryDate(e.target.value)}
+                            min={today} // Set the minimum date to today
+                            value={deliveryDate} // Ensure to use the correct variable
+                            onChange={(e) => setDeliveryDate(e.target.value)} // Update the function to set the delivery date
+                            required
                         />
+                        {errors.deliveryDate && <span className="error">{errors.deliveryDate}</span>}
+
                         
                         <label>Payment Terms</label>
                         <select 
@@ -247,6 +278,8 @@ const PurchaseOrder = () => {
                             value={shipmentPreference} 
                             onChange={(e) => setShipmentPreference(e.target.value)} 
                         />
+                        {errors.shipmentPreference && <span className="error">{errors.shipmentPreference}</span>}
+
                     </div>
 
                     {/* Items Table */}
@@ -277,6 +310,7 @@ const PurchaseOrder = () => {
                                                 })} 
                                                 required
                                             />
+                                            {errors[`itemAccount${index}`] && <span className="error">{errors[`itemAccount${index}`]}</span>}
                                         </td>
                                         <td>
                                             <input
@@ -290,6 +324,7 @@ const PurchaseOrder = () => {
                                                 })}
                                                 required
                                             />
+                                            {errors[`itemQuantity${index}`] && <span className="error">{errors[`itemQuantity${index}`]}</span>}
                                         </td>
                                         <td>
                                             <input
@@ -304,6 +339,7 @@ const PurchaseOrder = () => {
                                                 })}
                                                 required
                                             />
+                                            {errors[`itemRate${index}`] && <span className="error">{errors[`itemRate${index}`]}</span>}
                                         </td>
                                         <td>
                                             ₹ {(parseFloat(item.rate) * parseFloat(item.quantity)).toFixed(2)}
@@ -360,6 +396,8 @@ const PurchaseOrder = () => {
         required
         className="email-input"
     />
+    {errors.vendorEmail && <span className="error">{errors.vendorEmail}</span>}
+
 </div>
 
 {/* Action Buttons */}

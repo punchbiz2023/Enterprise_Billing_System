@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import './BillForm.css';
 import SidePanel from '../Purchase/Sidepanel';
-import axios from 'axios'; // Import axios
+import axios from 'axios';
 
 const BillForm = () => {
     const [vendor, setVendor] = useState('');
     const [vendors, setVendors] = useState([]);
-    const [billNo, setbillNo] = useState('');
+    const [billNo, setBillNo] = useState('');
     const [reference, setReference] = useState('');
     const [date, setDate] = useState('');
-    const [dueDate, setdueDate] = useState('');
+    const [dueDate, setDueDate] = useState('');
     const [paymentTerms, setPaymentTerms] = useState('');
     const [shipmentPreference, setShipmentPreference] = useState('');
-    const [items, setItems] = useState([{ id: 1,iname:'', quantity: 1, rate: 0, amount: 0 }]);
+    const [items, setItems] = useState([{ id: 1, iname: '', quantity: 1, rate: 0, amount: 0 }]);
     const [gstPercentage, setGstPercentage] = useState(0);
     const [gstAmount, setGstAmount] = useState(0);
     const [subtotal, setSubtotal] = useState(0);
@@ -31,7 +31,6 @@ const BillForm = () => {
         calculateGstAndGrandTotal();
     }, [subtotal, gstPercentage]);
 
-    // Fetch vendor data from API
     useEffect(() => {
         const fetchVendors = async () => {
             try {
@@ -62,6 +61,40 @@ const BillForm = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+
+        if (!vendor) {
+            alert('Please select a vendor.');
+            return;
+        }
+
+        if (!billNo) {
+            alert('Please enter a bill number.');
+            return;
+        }
+
+        if (!reference) {
+            alert('Please enter an order number.');
+            return;
+        }
+
+        if (!dueDate) {
+            alert('Please select a due date.');
+            return;
+        }
+
+        const today = new Date();
+        const selectedDueDate = new Date(dueDate);
+        if (selectedDueDate <= today) {
+            alert('Due date must be a future date.');
+            return;
+        }
+
+        const hasInvalidItems = items.some(item => !item.iname || item.quantity <= 0 || item.rate <= 0);
+        if (hasInvalidItems) {
+            alert('Please ensure all items names are provided, quantity greater than 0, and rate greater than 0.');
+            return;
+        }
+
         alert("Your order has been successfully sent");
 
         const formattedDate = new Date(date.split('/').reverse().join('-')).toISOString().split('T')[0];
@@ -114,16 +147,17 @@ const BillForm = () => {
 
                 <div className="purchase-order-details">
                     <label>Bill Number</label>
-                    <input type="text" value={billNo} placeholder='Enter Bill Number'required onChange={(e) => setbillNo(e.target.value)} />
+                    <input type="text" value={billNo} placeholder='Enter Bill Number' required onChange={(e) => setBillNo(e.target.value)} />
                     <label>Order Number</label>
-                    <input type="text" value={reference} placeholder='Enter Order Number'required onChange={(e) => setReference(e.target.value)} />
+                    <input type="text" value={reference} placeholder='Enter Order Number' required onChange={(e) => setReference(e.target.value)} />
                     <label>Bill Date</label>
                     <input type="text" value={date} readOnly />
                     <label>Due Date</label>
                     <input
                         type="date"
                         value={dueDate}
-                        onChange={(e) => setdueDate(e.target.value)}
+                        onChange={(e) => setDueDate(e.target.value)}
+                        min={new Date().toISOString().split('T')[0]} // Set minimum date to today
                     />
                     <label>Payment Terms</label>
                     <select className="payment-terms-dropdown" value={paymentTerms} onChange={(e) => setPaymentTerms(e.target.value)}>
