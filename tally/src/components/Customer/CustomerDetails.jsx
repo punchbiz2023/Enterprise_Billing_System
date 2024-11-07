@@ -10,7 +10,7 @@ const CustomerDetails = () => {
   useEffect(() => {
     const fetchCustomer = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/api/customers');
+        const response = await axios.get('https://enterprise-billing-system-3.onrender.com/api/customers');
         // Find the customer based on the ID from the params
         const fetchedCustomer = response.data.find(customer => customer.sno === parseInt(id));
         

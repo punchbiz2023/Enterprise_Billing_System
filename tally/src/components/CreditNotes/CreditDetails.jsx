@@ -10,7 +10,7 @@ const CreditDetails = () => {
   useEffect(() => {
     const fetchNote = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/api/creditnote`);
+        const response = await axios.get(`https://enterprise-billing-system-3.onrender.com/api/creditnote`);
 
         // Find the note based on the ID from the params
         const fetchedNote = response.data.find(note => note.sno === parseInt(id));

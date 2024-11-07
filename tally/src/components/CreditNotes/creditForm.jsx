@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import SidePanel from '../Sales/SidePanel';
+import SidePanel from '../Sales/Sidepanel';
 import { Link, useNavigate } from 'react-router-dom';
 const CreditNotes = () => {
 
@@ -36,7 +36,7 @@ const CreditNotes = () => {
   }, []);
   const fetchSalespeople = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/api/salespersons');
+      const response = await axios.get('https://enterprise-billing-system-3.onrender.com/api/salespersons');
       setSalespersons(response.data);
     } catch (error) {
       console.error('Error fetching salesperson data:', error);
@@ -46,7 +46,7 @@ const CreditNotes = () => {
 
   const fetchCustomers = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/api/customers');
+      const response = await axios.get('https://enterprise-billing-system-3.onrender.com/api/customers');
       const customersWithState = response.data.map((cust) => ({
         ...cust,
         state: cust.billaddress.state,
@@ -72,7 +72,7 @@ const CreditNotes = () => {
 
   const fetchItems = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/api/items');
+      const response = await axios.get('https://enterprise-billing-system-3.onrender.com/api/items');
       setAvailableItems(response.data);
     } catch (error) {
       console.error('Error fetching items:', error);
@@ -103,7 +103,7 @@ const CreditNotes = () => {
 
 
     try {
-      const response = await axios.post('http://localhost:3001/api/creditnote', creditDetails);
+      const response = await axios.post('https://enterprise-billing-system-3.onrender.com/api/creditnote', creditDetails);
       // console.log("Post success");
       
       navigate('/dashboard/sales/credit')

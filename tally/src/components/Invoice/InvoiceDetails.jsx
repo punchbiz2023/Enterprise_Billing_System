@@ -10,7 +10,7 @@ const InvoiceDetails = () => {
   useEffect(() => {
     const fetchInvoice = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/api/invoice');
+        const response = await axios.get('https://enterprise-billing-system-3.onrender.com/api/invoice');
         const fetchedInvoice = response.data.find(invoice => invoice.sno === parseInt(id));
         
         setInvoice(fetchedInvoice);

@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Login from './components/login/Login.jsx';
+import Login from './components/login/login.jsx';
 import SignUp from './components/login/Signup.jsx';
 import Dashboard from './components/dashboard/dashboard.jsx';
 import Items from './components/Items/Items.jsx'; 
@@ -102,6 +102,7 @@ function App() {
         <Route path='/dashboard/sales/credit' element={<MainLayout><CreditTable/></MainLayout>}/>
         <Route path='/dashboard/inventory' element={<MainLayout><Inventory/></MainLayout>}/>
         <Route path='/dashboard/journal' element={<MainLayout><Journal/></MainLayout>}/>
+        <Route path='/dashboard/report' element={<MainLayout><Reports/></MainLayout>}></Route>
       </Routes>
     </Router>
   );

@@ -52,8 +52,7 @@ const Journal = () => {
     };
     
     try {
-      const response = await axios.post('http://localhost:3001/api/journals', journalDetails);
-      console.log('Journal created:', response.data);
+      const response = await axios.post('https://enterprise-billing-system-3.onrender.com/api/journals', journalDetails);
     } catch (error) {
       console.error('Error creating Journal:', error);
       console.error('Response:', error.response);

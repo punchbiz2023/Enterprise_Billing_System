@@ -10,7 +10,7 @@ const BillDetails = () => {
   useEffect(() => {
     const fetchBill = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/api/bill`);
+        const response = await axios.get(`https://enterprise-billing-system-3.onrender.com/api/bill`);
 
         // Find the bill based on the ID from the params
         const fetchedBill = response.data.find(bill => bill.sno === parseInt(id));

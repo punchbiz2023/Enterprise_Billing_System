@@ -10,7 +10,7 @@ const OrderDetails = () => {
     useEffect(() => {
         const fetchSalesOrder = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/api/salesorder');
+                const response = await axios.get('https://enterprise-billing-system-3.onrender.com/api/salesorder');
                 // Find the sales order based on the ID from the params
                 const fetchedSalesOrder = response.data.find(order => order.sno === parseInt(id));
 

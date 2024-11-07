@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import SidePanel from '../Sales/SidePanel';
-import SalesPerson from '../Salesperson/SalesPerson'
+import SidePanel from '../Sales/Sidepanel.jsx';
+import SalesPerson from '../Salesperson/SalesPerson.jsx';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
@@ -45,7 +45,7 @@ const Estimate = () => {
 
   const fetchSalespeople = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/api/salespersons');
+      const response = await axios.get('https://enterprise-billing-system-3.onrender.com/api/salespersons');
       setSalespersons(response.data);
     } catch (error) {
       console.error('Error fetching salesperson data:', error);
@@ -53,7 +53,7 @@ const Estimate = () => {
   };
   const fetchProjects = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/api/projects');
+      const response = await axios.get('https://enterprise-billing-system-3.onrender.com/api/projects');
       setProjects(response.data);
     } catch (error) {
       console.error('Error fetching project data:', error);
@@ -63,7 +63,7 @@ const Estimate = () => {
 
   const fetchCustomers = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/api/customers');
+      const response = await axios.get('https://enterprise-billing-system-3.onrender.com/api/customers');
       const customersWithState = response.data.map((cust) => ({
         ...cust,
         state: cust.billaddress.state,
@@ -83,7 +83,7 @@ const Estimate = () => {
     const taxrate = "18%"; // Example, retrieve this from form inputs
   
     try {
-      const response = await axios.post('http://localhost:3001/api/estimates', {
+      const response = await axios.post('https://enterprise-billing-system-3.onrender.com/api/estimates', {
         customer,
         quoteNumber,
         reference,
@@ -133,7 +133,7 @@ const Estimate = () => {
 
   const fetchItems = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/api/items');
+      const response = await axios.get('https://enterprise-billing-system-3.onrender.com/api/items');
       setAvailableItems(response.data);
     } catch (error) {
       console.error('Error fetching items:', error);

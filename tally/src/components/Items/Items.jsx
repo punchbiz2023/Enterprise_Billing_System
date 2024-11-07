@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import Navbar from '../Navbar/Navbar';
-import './items.css';
+import './Items.css';
 
 const Items = () => {
   const [items, setItems] = useState([]);
@@ -19,7 +19,7 @@ const Items = () => {
 
   const fetchItems = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/api/items');
+      const response = await axios.get('https://enterprise-billing-system-3.onrender.com/api/items');
       if (response.data) {
         setItems(response.data);
         setDataLoaded(true);
@@ -41,7 +41,7 @@ const Items = () => {
     if (selectedItems.length <= 0) return;
 
     try {
-      await axios.delete('http://localhost:3001/api/items', { data: { ids: selectedItems } });
+      await axios.delete('https://enterprise-billing-system-3.onrender.com/api/items', { data: { ids: selectedItems } });
       fetchItems();
       setSelectedItems([]);
     } catch (error) {

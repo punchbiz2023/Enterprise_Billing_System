@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { auth, provider } from './firebase'; 
 import { signInWithPopup } from 'firebase/auth'; 
 import { FaGoogle, FaLock, FaUser } from 'react-icons/fa';  // Icons
-import Loginlogo from '../../assets/Loginlogo.jpeg';
+import LoginLogo from '../../assets/loginLogo.jpeg';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -39,7 +39,7 @@ const Login = () => {
     <div className="login-wrapper"> {/* New wrapper */}
       <div className="login-container">
         <div className="image-container">
-          <img src={Loginlogo} alt="Graduation" className="background-image" />
+          <img src={LoginLogo} alt="Graduation" className="background-image" />
         </div>
         <div className="login-box">
           <h2 className="login-title">Login</h2>

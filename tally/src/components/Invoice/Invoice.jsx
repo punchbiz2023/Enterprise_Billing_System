@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import SidePanel from '../Sales/SidePanel';
+import SidePanel from '../Sales/Sidepanel';
 
 
 const Invoice = () => {
@@ -17,7 +17,7 @@ const Invoice = () => {
 
   const fetchInvoice = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/api/invoice');
+      const response = await axios.get('https://enterprise-billing-system-3.onrender.com/api/invoice');
       if (response.data) {
         setInvoice(response.data);
         setDataLoaded(true);
@@ -39,7 +39,7 @@ const Invoice = () => {
     if (selectedInvoice.length <= 0) return;
 
     try {
-      await axios.delete('http://localhost:3001/api/invoice', { data: { ids: selectedInvoice } });
+      await axios.delete('https://enterprise-billing-system-3.onrender.com/api/invoice', { data: { ids: selectedInvoice } });
       fetchInvoice();
       setSelectedInvoice([]);
       setShowCheckboxes(false); // Hide checkboxes after deletion

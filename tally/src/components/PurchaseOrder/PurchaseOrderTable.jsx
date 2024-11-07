@@ -17,7 +17,7 @@ const PurchaseOrderTable = () => {
 
     const fetchOrders = async () => {
         try {
-            const response = await axios.get('http://localhost:3001/api/purchaseorder');
+            const response = await axios.get('https://enterprise-billing-system-3.onrender.com/api/purchaseorder');
             if (response.data) {
                 setOrder(response.data);
                 setDataLoaded(true);
@@ -39,7 +39,7 @@ const PurchaseOrderTable = () => {
         if (selectedOrder.length <= 0) return;
 
         try {
-            await axios.delete('http://localhost:3001/api/purchaseorder', { data: { ids: selectedOrder } });
+            await axios.delete('https://enterprise-billing-system-3.onrender.com/api/purchaseorder', { data: { ids: selectedOrder } });
             fetchOrders();
             setSelectedOrder([]);
             setShowCheckboxes(false); 
@@ -101,7 +101,7 @@ const PurchaseOrderTable = () => {
                             }}
                             className={`inline-block px-5 py-2 rounded text-white ${showCheckboxes ? 'bg-gray-500 hover:bg-gray-600' : 'bg-red-500 hover:bg-red-600'}`}
                         >
-                            {showCheckboxes ? 'Cancel' : 'Delete Customers'}
+                            {showCheckboxes ? 'Cancel' : 'Delete Orders'}
                         </button>
                         {showCheckboxes && selectedOrder.length > 0 && (
                             <button
