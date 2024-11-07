@@ -21,6 +21,17 @@
 //   }
 // });
 
+// Helper function to detect cyclic references in JSON
+const hasCyclicReference = (obj, seen = new Set()) => {
+  if (obj && typeof obj === 'object') {
+    if (seen.has(obj)) return true;
+    seen.add(obj);
+    return Object.values(obj).some(value => hasCyclicReference(value, seen));
+  }
+  return false;
+};
+
+// Create a new journal entry
 
 // router.post('/', async (req, res) => {
 //     const {
