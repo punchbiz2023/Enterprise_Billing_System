@@ -114,7 +114,7 @@ CREATE TABLE IF NOT EXISTS "journal" (
 	"journal_number" varchar(50) NOT NULL,
 	"description" text NOT NULL,
 	"reference_number" varchar(50),
-	"accounts" jsonb NOT NULL,
+	"accounts" json NOT NULL,
 	"total_debit" numeric NOT NULL,
 	"total_credit" numeric NOT NULL
 );

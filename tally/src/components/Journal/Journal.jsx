@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 
 const Journal = () => {
@@ -14,33 +14,20 @@ const Journal = () => {
   const [total, setTotal] = useState(0);
 
   const handleAddRow = () => {
-    setEntries([...entries, { account: '', description: '', contact: '', debit: '', credit: '' }]);
+    setEntries((prevEntries) => [...prevEntries, { account: '', description: '', contact: '', debit: '', credit: '' }]);
   };
 
   const handleRemoveRow = (index) => {
-    const newEntries = entries.filter((_, i) => i !== index);
-    setEntries(newEntries);
+    setEntries((prevEntries) => prevEntries.filter((_, i) => i !== index));
   };
 
   const handleInputChange = (index, field, value) => {
-    const newEntries = [...entries];
-    newEntries[index][field] = value;
-
-    setEntries(newEntries);
-  };
-
-  useEffect(() => {
-    let debitTotal = 0;
-    let creditTotal = 0;
-
-    entries.forEach(entry => {
-      debitTotal += Number(entry.debit) || 0;
-      creditTotal += Number(entry.credit) || 0;
+    setEntries((prevEntries) => {
+      const newEntries = [...prevEntries];
+      newEntries[index][field] = value;
+      return newEntries;
     });
-
-    setSubtotal({ debit: debitTotal, credit: creditTotal });
-    setTotal(debitTotal - creditTotal);
-  }, [entries]);
+  };
 
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
@@ -48,26 +35,35 @@ const Journal = () => {
   };
 
   const handleSubmit = async (e) => {
-    
-
     e.preventDefault();
-    
+
+    // Calculate totals before submitting
+    const debitTotal = entries.reduce((sum, entry) => sum + Number(entry.debit || 0), 0);
+    const creditTotal = entries.reduce((sum, entry) => sum + Number(entry.credit || 0), 0);
+
     const journalDetails = {
       date,
       journalNumber,
       description: notes,
       referenceNumber: reference,
-      accounts: entries, 
-      totalDebit: subtotal.debit,  
-      totalCredit: subtotal.credit, 
+      accounts: entries,
+      totalDebit: debitTotal,
+      totalCredit: creditTotal,
     };
+    
     try {
       const response = await axios.post('http://localhost:3001/api/journals', journalDetails);
+      console.log('Journal created:', response.data);
     } catch (error) {
       console.error('Error creating Journal:', error);
-      console.error('Response:', error.response); 
+      console.error('Response:', error.response);
     }
-}; 
+
+    // Update subtotal and total state
+    setSubtotal({ debit: debitTotal, credit: creditTotal });
+    setTotal(debitTotal - creditTotal);
+  };
+
   return (
     <div className="p-4 bg-white rounded-lg shadow-lg max-w-5xl mx-auto mt-16">
       <h1 className="text-2xl font-bold mb-4">New Journal</h1>
@@ -129,8 +125,8 @@ const Journal = () => {
                       value={entry.account}
                       onChange={(e) => handleInputChange(index, 'account', e.target.value)}
                     >
-                       <option value="">Select Account</option>
-                       <option value="abc">ABC</option>
+                      <option value="">Select Account</option>
+                      <option value="abc">ABC</option>
                     </select>
                   </td>
                   <td className="border p-2">
