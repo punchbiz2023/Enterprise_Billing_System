@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode'
 import SidePanel from '../Sales/Sidepanel';
 import { Link, useNavigate } from 'react-router-dom';
 const CreditNotes = () => {
@@ -9,7 +10,7 @@ const CreditNotes = () => {
   const [creditNumber, setcreditNumber] = useState('');
   const [customerNotes, setcustomerNotes] = useState('');
   const [terms, setTerms] = useState('');
-  const [items, setItems] = useState([{ item: '', HsnCode: '', quantity: '', rate: '', discount: '', gst: '', sgst: '',cgst:'', amount: '' }]);
+  const [items, setItems] = useState([{ item: '', HsnCode: '', quantity: '', rate: '', discount: '', gst: '', sgst: '', cgst: '', amount: '' }]);
   const [availableItems, setAvailableItems] = useState([]);
   const [taxType, setTaxType] = useState('');
   const [tax, setTax] = useState(0);
@@ -25,18 +26,27 @@ const CreditNotes = () => {
   const [referenceNumber, setreferenceNumber] = useState('');
   const [creditDate, setcreditDate] = useState('');
   const [subject, setSubject] = useState('');
-
-
+  const [loggedUser, setLoggedUser] = useState(null);
+  
   const navigate = useNavigate();
-
   useEffect(() => {
-    fetchCustomers();
-    fetchSalespeople();
-    fetchItems();
+    if (loggedUser) {
+      fetchCustomers(loggedUser);
+      fetchSalespeople(loggedUser);
+      fetchItems(loggedUser);
+    }
+}, [loggedUser]);
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken")
+    const decoded = jwtDecode(token)
+    
+    setLoggedUser(decoded.email); 
   }, []);
-  const fetchSalespeople = async () => {
+  const fetchSalespeople = async (loggedUser) => {
     try {
-      const response = await axios.get('https://enterprise-billing-system-3.onrender.com/api/salespersons');
+      const response = await axios.get('http://localhost:3001/api/salespersons',{
+        params:{loggedUser}
+      });
       setSalespersons(response.data);
     } catch (error) {
       console.error('Error fetching salesperson data:', error);
@@ -44,9 +54,11 @@ const CreditNotes = () => {
   };
 
 
-  const fetchCustomers = async () => {
+  const fetchCustomers = async (loggedUser) => {
     try {
-      const response = await axios.get('https://enterprise-billing-system-3.onrender.com/api/customers');
+      const response = await axios.get('http://localhost:3001/api/customers',{
+        params:{loggedUser}
+      });
       const customersWithState = response.data.map((cust) => ({
         ...cust,
         state: cust.billaddress.state,
@@ -70,9 +82,11 @@ const CreditNotes = () => {
   };
 
 
-  const fetchItems = async () => {
+  const fetchItems = async (loggedUser) => {
     try {
-      const response = await axios.get('https://enterprise-billing-system-3.onrender.com/api/items');
+      const response = await axios.get('http://localhost:3001/api/items',{
+        params:{loggedUser}
+      });
       setAvailableItems(response.data);
     } catch (error) {
       console.error('Error fetching items:', error);
@@ -81,14 +95,14 @@ const CreditNotes = () => {
 
 
   const handleSubmit = async (e) => {
-    
+
     e.preventDefault();
-      // console.log("Items before POST:", items);  // Log the items state
+    // console.log("Items before POST:", items);  // Log the items state
 
     const creditDetails = {
       name: customer,
       creditno: creditNumber,
-      refno:referenceNumber,
+      refno: referenceNumber,
       creditdate: creditDate,
       itemdetails: items,
       subject: subject,
@@ -100,12 +114,12 @@ const CreditNotes = () => {
       amount: calculateTotal()
     };
     // console.log("Credit Details before POST:", creditDetails);
-
+    const data = {...creditDetails,loggedUser}
 
     try {
-      const response = await axios.post('https://enterprise-billing-system-3.onrender.com/api/creditnote', creditDetails);
+      const response = await axios.post('http://localhost:3001/api/creditnote', data);
       // console.log("Post success");
-      
+
       navigate('/dashboard/sales/credit')
     } catch (error) {
       console.error('Error creating Credit Notes:', error.response ? error.response.data : error.message);

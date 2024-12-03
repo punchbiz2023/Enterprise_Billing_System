@@ -9,7 +9,8 @@ CREATE TABLE IF NOT EXISTS "bill" (
 	"modeofshipment" text,
 	"itemdetails" json NOT NULL,
 	"gst" numeric NOT NULL,
-	"total" numeric NOT NULL
+	"total" numeric NOT NULL,
+	"loggedUser" text NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "creditnote" (
@@ -25,7 +26,8 @@ CREATE TABLE IF NOT EXISTS "creditnote" (
 	"salesperson" text NOT NULL,
 	"taxtype" text NOT NULL,
 	"taxrate" text NOT NULL,
-	"amount" numeric
+	"amount" numeric,
+	"loggedUser" text NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "customer" (
@@ -43,7 +45,8 @@ CREATE TABLE IF NOT EXISTS "customer" (
 	"openingbalance" numeric NOT NULL,
 	"paymentterms" text NOT NULL,
 	"billaddress" json NOT NULL,
-	"shipaddress" json NOT NULL
+	"shipaddress" json NOT NULL,
+	"loggedUser" text NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "estimate" (
@@ -59,7 +62,8 @@ CREATE TABLE IF NOT EXISTS "estimate" (
 	"salesperson" text NOT NULL,
 	"taxtype" text NOT NULL,
 	"taxrate" text NOT NULL,
-	"total" numeric NOT NULL
+	"total" numeric NOT NULL,
+	"loggedUser" text NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "inventory" (
@@ -69,7 +73,8 @@ CREATE TABLE IF NOT EXISTS "inventory" (
 	"hsn_code" text NOT NULL,
 	"quantity" numeric NOT NULL,
 	"rate" numeric NOT NULL,
-	"gst" numeric NOT NULL
+	"gst" numeric NOT NULL,
+	"loggedUser" text NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "invoice" (
@@ -86,7 +91,8 @@ CREATE TABLE IF NOT EXISTS "invoice" (
 	"salesperson" text NOT NULL,
 	"taxtype" text NOT NULL,
 	"taxrate" text NOT NULL,
-	"amount" numeric
+	"amount" numeric,
+	"loggedUser" text NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "items" (
@@ -105,7 +111,8 @@ CREATE TABLE IF NOT EXISTS "items" (
 	"taxPayable" boolean,
 	"gst" numeric(5, 2),
 	"quantity" numeric NOT NULL,
-	"openingStock" numeric NOT NULL
+	"openingStock" numeric NOT NULL,
+	"loggedUser" text NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "project" (
@@ -120,7 +127,8 @@ CREATE TABLE IF NOT EXISTS "project" (
 	"revenuebudget" text NOT NULL,
 	"projecthours" text NOT NULL,
 	"users" json NOT NULL,
-	"tasks" json NOT NULL
+	"tasks" json NOT NULL,
+	"loggedUser" text NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "purchaseorder" (
@@ -135,7 +143,8 @@ CREATE TABLE IF NOT EXISTS "purchaseorder" (
 	"modeofshipment" text,
 	"itemdetails" json NOT NULL,
 	"gst" numeric NOT NULL,
-	"total" numeric NOT NULL
+	"total" numeric NOT NULL,
+	"loggedUser" text NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "salesorder" (
@@ -157,13 +166,15 @@ CREATE TABLE IF NOT EXISTS "salesorder" (
 	"salesperson" text NOT NULL,
 	"taxtype" text NOT NULL,
 	"taxrate" text NOT NULL,
-	"total" numeric NOT NULL
+	"total" numeric NOT NULL,
+	"loggedUser" text NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "salesperson" (
 	"sno" serial PRIMARY KEY NOT NULL,
 	"name" text NOT NULL,
-	"mail" text NOT NULL
+	"mail" text NOT NULL,
+	"loggedUser" text NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "users" (
@@ -175,7 +186,9 @@ CREATE TABLE IF NOT EXISTS "users" (
 	"phone" numeric NOT NULL,
 	"gst" text NOT NULL,
 	"pan" text NOT NULL,
-	"docs" text
+	"docs" text,
+	CONSTRAINT "users_name_unique" UNIQUE("name"),
+	CONSTRAINT "users_mail_unique" UNIQUE("mail")
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "vendor" (
@@ -192,5 +205,6 @@ CREATE TABLE IF NOT EXISTS "vendor" (
 	"openingbalance" numeric NOT NULL,
 	"paymentterms" text NOT NULL,
 	"billaddress" json NOT NULL,
-	"shipaddress" json NOT NULL
+	"shipaddress" json NOT NULL,
+	"loggedUser" text NOT NULL
 );

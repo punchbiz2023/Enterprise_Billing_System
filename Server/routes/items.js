@@ -32,6 +32,7 @@ router.post('/', async (req, res) => {
     type,
     quantity,
     openingStock,
+    loggedUser
   } = req.body;
 
   try {
@@ -53,6 +54,8 @@ router.post('/', async (req, res) => {
         type,
         quantity: Number(quantity),
         openingstock: Number(openingStock),
+        loggedUser
+
       })
       .returning();
 
@@ -65,6 +68,7 @@ router.post('/', async (req, res) => {
 
 // Get all items
 router.get('/', async (req, res) => {
+  const {loggedUser} = req.query
   try {
     const items = await db3
       .select({
@@ -82,8 +86,9 @@ router.get('/', async (req, res) => {
         gst: Items.gst,
         quantity: Items.quantity,
         openingstock: Items.openingstock,
+        loggedUser:Items.loggedUser
       })
-      .from(Items);
+      .from(Items).where(eq(Items.loggedUser,loggedUser));
 
     res.json(items);
   } catch (error) {

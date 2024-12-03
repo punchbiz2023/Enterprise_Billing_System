@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 import { Link } from 'react-router-dom';
 import SidePanel from '../Purchase/Sidepanel';
 
@@ -11,13 +12,26 @@ const Vendor = () => {
     const [searchTerm, setSearchTerm] = useState(''); // State for search term
     const [searchBy, setSearchBy] = useState('name'); // State to track search category
 
+    const [loggedUser, setLoggedUser] = useState(null);
+
     useEffect(() => {
-        fetchVendors();
+        if (loggedUser) {
+            fetchVendors(loggedUser);
+        }
+      }, [loggedUser]);
+
+    useEffect(() => {
+        const token = localStorage.getItem("accessToken")
+        const decoded = jwtDecode(token)
+        
+        setLoggedUser(decoded.email); 
     }, []);
 
-    const fetchVendors = async () => {
+    const fetchVendors = async (loggedUser) => {
         try {
-            const response = await axios.get('http://localhost:3001/api/vendor');
+            const response = await axios.get('http://localhost:3001/api/vendor',{
+                params:{loggedUser}
+            });
             if (response.data) {
                 setVendors(response.data);
                 setDataLoaded(true);
@@ -40,7 +54,7 @@ const Vendor = () => {
 
         try {
             await axios.delete('http://localhost:3001/api/vendor', { data: { ids: selectedVendors } });
-            fetchVendors();  // Refresh vendor list after deletion
+            fetchVendors(loggedUser);  // Refresh vendor list after deletion
             setSelectedVendors([]);  // Clear selected vendors
             setShowCheckboxes(false); // Hide checkboxes after deletion
         } catch (error) {

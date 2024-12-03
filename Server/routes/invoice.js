@@ -13,8 +13,9 @@ const db = drizzle(client, { schema: { Invoice }, logger: true });
 
 
 router.get('/', async (req, res) => {
+  const {loggedUser} = req.query
   try {
-    const invoice = await db.select().from(Invoice);
+    const invoice = await db.select().from(Invoice).where(eq(Invoice.loggedUser,loggedUser));
     res.json(invoice);
   } catch (error) {
     console.error('Error fetching invoice:', error);
@@ -37,7 +38,8 @@ router.post('/', async (req, res) => {
     salesperson,
     taxtype,
     taxrate,
-    amount
+    amount,
+    loggedUser
   } = req.body;
 
 
@@ -56,7 +58,8 @@ router.post('/', async (req, res) => {
       salesperson,
       taxtype,
       taxrate,
-      amount
+      amount,
+      loggedUser
     });
 
 

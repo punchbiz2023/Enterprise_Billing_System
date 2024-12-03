@@ -1,6 +1,7 @@
 import express from 'express';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import { Project } from '../drizzle/schema.js';
+import { eq } from 'drizzle-orm';
 import postgres from 'postgres';
 import dotenv from 'dotenv';
 
@@ -12,8 +13,9 @@ const db = drizzle(client, { schema: { Project }, logger: true });
 
 
 router.get('/', async (req, res) => {
+  const {loggedUser} = req.query
     try {
-      const projects = await db.select().from(Project);
+      const projects = await db.select().from(Project).where(eq(Project.loggedUser,loggedUser));
       res.json(projects);
     } catch (error) {
       console.error('Error fetching projects:', error);
@@ -35,6 +37,7 @@ router.post('/', async (req, res) => {
       hoursBudgetType,  // corresponds to 'projecthours'
       users,
       tasks,
+      loggedUser
     } = req.body;
 
     const [project] = await db
@@ -51,6 +54,7 @@ router.post('/', async (req, res) => {
         projecthours: hoursBudgetType,
         users: JSON.stringify(users),
         tasks: JSON.stringify(tasks),
+        loggedUser
       })
       .returning();
 

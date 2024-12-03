@@ -1,29 +1,42 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 
 const OrderDetails = () => {
     const { id } = useParams(); // Captures the id from the URL
     const [salesOrder, setSalesOrder] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [loggedUser, setLoggedUser] = useState(null);
 
     useEffect(() => {
-        const fetchSalesOrder = async () => {
-            try {
-                const response = await axios.get('https://enterprise-billing-system-3.onrender.com/api/salesorder');
-                // Find the sales order based on the ID from the params
-                const fetchedSalesOrder = response.data.find(order => order.sno === parseInt(id));
+        if (loggedUser) {
+            fetchSalesOrder(loggedUser);
+        }
+      }, [loggedUser]);
+    
+    useEffect(() => {
+        const token = localStorage.getItem("accessToken")
+        const decoded = jwtDecode(token)
+        
+        setLoggedUser(decoded.email); 
 
-                setSalesOrder(fetchedSalesOrder);
-                setLoading(false);
-            } catch (error) {
-                console.error('Error fetching sales order details:', error.response ? error.response.data : error.message);
-                setLoading(false);
-            }
-        };
-
-        fetchSalesOrder();
     }, [id]);
+    const fetchSalesOrder = async (loggedUser) => {
+        try {
+            const response = await axios.get('http://localhost:3001/api/salesorder',{
+                params:{loggedUser}
+            });
+            // Find the sales order based on the ID from the params
+            const fetchedSalesOrder = response.data.find(order => order.sno === parseInt(id));
+
+            setSalesOrder(fetchedSalesOrder);
+            setLoading(false);
+        } catch (error) {
+            console.error('Error fetching sales order details:', error.response ? error.response.data : error.message);
+            setLoading(false);
+        }
+    };
 
     if (loading) {
         return <p className="text-center text-gray-500 text-lg">Loading...</p>;

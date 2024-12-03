@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 import SidePanel from '../Purchase/Sidepanel';
 import * as XLSX from 'xlsx';
 
@@ -13,14 +14,26 @@ const ExpenseForm = () => {
 
   const navigate = useNavigate();
 
+  const [loggedUser, setLoggedUser] = useState(null);
+
   useEffect(() => {
-    fetchVendors();
-    fetchCustomers();
+    if (loggedUser) {
+      fetchVendors(loggedUser);
+      fetchCustomers(loggedUser);
+    }
+}, [loggedUser]);
+
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken")
+    const decoded = jwtDecode(token)
+    setLoggedUser(decoded.email)
   }, []);
 
-  const fetchVendors = async () => {
+  const fetchVendors = async (loggedUser) => {
     try {
-      const response = await axios.get('http://localhost:3001/api/vendor');
+      const response = await axios.get('http://localhost:3001/api/vendor',{
+        params:{loggedUser}
+      });
       if (response.data) {
         setVendors(response.data);
         setDataLoaded(true);
@@ -30,9 +43,11 @@ const ExpenseForm = () => {
     }
   };
 
-  const fetchCustomers = async () => {
+  const fetchCustomers = async (loggedUser) => {
     try {
-      const response = await axios.get('http://localhost:3001/api/customers');
+      const response = await axios.get('http://localhost:3001/api/customers',{
+        params:{loggedUser}
+      });
       if (response.data) {
         setCustomer(response.data);
         setDataLoaded(true);
@@ -185,7 +200,7 @@ const ExpenseForm = () => {
               <textarea
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 rows="3"
-                placeholder="Max. 500 characters" 
+                placeholder="Max. 500 characters"
               ></textarea>
             </div>
             {/* Upload Receipt */}
@@ -215,14 +230,14 @@ const ExpenseForm = () => {
                 </div>
               </div>
             </div>
-             {/* Buttons */}
-             <div className="mt-6 flex space-x-4">
+            {/* Buttons */}
+            <div className="mt-6 flex space-x-4">
               <button
                 className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-md shadow hover:bg-blue-700 focus:outline-none"
               >
                 Save
               </button>
-             
+
               <button
                 className="px-4 py-2 bg-red-600 text-white font-semibold rounded-md shadow hover:bg-red-700 focus:outline-none"
               >

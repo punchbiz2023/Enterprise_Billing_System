@@ -1,7 +1,6 @@
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
+import { jwtDecode } from 'jwt-decode';
 import { pdf } from '@react-pdf/renderer';
 import SidePanel from '../Sales/Sidepanel.jsx';
 import { Link, useNavigate } from 'react-router-dom';
@@ -34,12 +33,18 @@ const InvoiceForm = () => {
   const [customerState, setCustomerState] = useState('');
   const [isPaymentReceived, setIsPaymentReceived] = useState(false);
   const [formData, setFormData] = useState({}); // Initialize formData state
-
-
-
-
+  const [loggedUser, setLoggedUser] = useState(null);
 
   const navigate = useNavigate();
+
+
+  useEffect(() => {
+    if (loggedUser) {
+      fetchCustomers(loggedUser);
+      fetchSalespeople(loggedUser);
+      fetchItems(loggedUser);
+    }
+  }, [loggedUser]);
   useEffect(() => {
     // Update formData whenever any of the fields change
     const updatedFormData = {
@@ -64,24 +69,27 @@ const InvoiceForm = () => {
 
 
   useEffect(() => {
-    fetchCustomers();
-    fetchSalespeople();
-    fetchItems();
+    const token = localStorage.getItem("accessToken")
+    const decoded = jwtDecode(token)
+    setLoggedUser(decoded.email);
   }, []);
 
-  const fetchSalespeople = async () => {
+  const fetchSalespeople = async (loggedUser) => {
     try {
-      const response = await axios.get('https://enterprise-billing-system-3.onrender.com/api/salespersons');
+      const response = await axios.get('http://localhost:3001/api/salespersons', {
+        params: { loggedUser }
+      });
       setSalespersons(response.data);
     } catch (error) {
       console.error('Error fetching salesperson data:', error);
     }
   };
 
-
-  const fetchCustomers = async () => {
+  const fetchCustomers = async (loggedUser) => {
     try {
-      const response = await axios.get('https://enterprise-billing-system-3.onrender.com/api/customers');
+      const response = await axios.get('http://localhost:3001/api/customers', {
+        params: { loggedUser }
+      });
       const customersWithState = response.data.map((cust) => ({
         ...cust,
         state: cust.billaddress.state,
@@ -143,19 +151,23 @@ const InvoiceForm = () => {
     };
 
     // console.log('Invoice data being sent:', invoiceData);
+    const invData = { ...invoiceData, loggedUser }
 
     try {
-      const response = await axios.post('https://enterprise-billing-system-3.onrender.com/api/invoice', invoiceData);
+      const response = await axios.post('http://localhost:3001/api/invoice', invData);
       // console.log('Invoice submitted successfully', response.data);
+      navigate('/dashboard/sales/invoice')
     } catch (error) {
       console.error('Error submitting invoice', error);
     }
   };
 
 
-  const fetchItems = async () => {
+  const fetchItems = async (loggedUser) => {
     try {
-      const response = await axios.get('https://enterprise-billing-system-3.onrender.com/api/items');
+      const response = await axios.get('http://localhost:3001/api/items', {
+        params: { loggedUser }
+      });
       setAvailableItems(response.data);
     } catch (error) {
       console.error('Error fetching items:', error);
@@ -305,13 +317,13 @@ const InvoiceForm = () => {
     const singleDigits = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
     const doubleDigits = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
     const teens = ['Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
-  
+
     const higherUnits = ['', 'Thousand', 'Lakh', 'Crore'];
-  
+
     if (num === 0) return 'Zero Rupees Only';
-  
+
     let words = '';
-  
+
     const convertBelowThousand = (n) => {
       let str = '';
       if (n > 99) {
@@ -331,26 +343,26 @@ const InvoiceForm = () => {
       }
       return str.trim();
     };
-  
+
     const getChunks = (num) => {
       let chunks = [];
-      
+
       // Extract last three digits (hundreds, tens, and ones)
       chunks.push(num % 1000);
       num = Math.floor(num / 1000);
-      
+
       // Extract thousands (next two digits)
       while (num > 0) {
         chunks.push(num % 100); // Lakh and Crore are in pairs of two digits
         num = Math.floor(num / 100);
       }
-  
+
       return chunks.reverse();
     };
-  
+
     const chunks = getChunks(num);
     let unitIndex = chunks.length - 1;
-  
+
     // Process the chunks in the order needed for the Indian numbering system
     for (let i = 0; i < chunks.length; i++) {
       if (chunks[i] !== 0) {
@@ -358,12 +370,12 @@ const InvoiceForm = () => {
       }
       unitIndex--;
     }
-  
+
     return words.trim() + ' Rupees Only';
   };
-  
-  
-  
+
+
+
 
   const handleTaxChange = (e) => {
     const value = e.target.value;
@@ -674,7 +686,7 @@ const InvoiceForm = () => {
               Add Salesperson
             </button>
 
-            
+
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700">Tax Type</label>
@@ -713,7 +725,7 @@ const InvoiceForm = () => {
                     <option value="3.75">Commission or Brokerage (Reduced) [3.75%]</option>
                     <option value="10">Dividend [10%]</option>
                     <option value="7.5">Dividend (Reduced) [7.5%]</option>
-                 
+
                   </select>
                 </div>
               )}

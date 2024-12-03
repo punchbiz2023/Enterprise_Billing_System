@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 import { Link } from 'react-router-dom';
 import SidePanel from '../Sales/Sidepanel';
 
@@ -10,14 +11,24 @@ const EstimateTable = () => {
     const [showCheckboxes, setShowCheckboxes] = useState(false); // State to toggle checkboxes
     const [searchTerm, setSearchTerm] = useState(''); // State for search term
     const [searchBy, setSearchBy] = useState('cname'); // State to track search category
-
+    const [loggedUser, setLoggedUser] = useState(null);
     useEffect(() => {
-        fetchEstimates();
+        const token = localStorage.getItem("accessToken")
+        const decoded = jwtDecode(token)
+        
+        setLoggedUser(decoded.email); 
     }, []);
+    useEffect(() => {
+        if (loggedUser) {
+            fetchEstimates(loggedUser);
+        }
+    }, [loggedUser]);
 
-    const fetchEstimates = async () => {
+    const fetchEstimates = async (loggedUser) => {
         try {
-            const response = await axios.get('https://enterprise-billing-system-3.onrender.com/api/estimates');
+            const response = await axios.get('http://localhost:3001/api/estimates',{
+                params:{loggedUser}
+            });
             if (response.data) {
                 setEstimates(response.data);
                 setDataLoaded(true);
@@ -39,8 +50,8 @@ const EstimateTable = () => {
         if (selectedEstimates.length <= 0) return;
 
         try {
-            await axios.delete('https://enterprise-billing-system-3.onrender.com/api/estimates', { data: { ids: selectedEstimates } });
-            fetchEstimates();
+            await axios.delete('http://localhost:3001/api/estimates', { data: { ids: selectedEstimates } });
+            fetchEstimates(loggedUser);
             setSelectedEstimates([]);
             setShowCheckboxes(false); // Hide checkboxes after deletion
         } catch (error) {

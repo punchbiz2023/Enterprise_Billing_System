@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 import { Link } from 'react-router-dom';
 
 
@@ -11,16 +12,27 @@ const Inventory = () => {
     const [showCheckboxes, setShowCheckboxes] = useState(false); // State to toggle checkboxes
     const [searchTerm, setSearchTerm] = useState(''); // State for search term
     const [searchBy, setSearchBy] = useState('itemName'); // State to track search category
+    const [loggedUser, setLoggedUser] = useState(null);
 
     useEffect(() => {
-        fetchInventory();
-        fetchSalesOrder();
+        if (loggedUser) {
+            fetchInventory(loggedUser);
+            fetchSalesOrder(loggedUser);
+        }
+    }, [loggedUser]);
+    useEffect(() => {
+        const token = localStorage.getItem("accessToken")
+        const decoded = jwtDecode(token)
+        
+        setLoggedUser(decoded.email); 
         // quantityUpdate();
     }, []);
 
-    const fetchInventory = async () => {
+    const fetchInventory = async (loggedUser) => {
         try {
-            const response = await axios.get('https://enterprise-billing-system-3.onrender.com/api/inventory');
+            const response = await axios.get('http://localhost:3001/api/inventory',{
+                params:{loggedUser}
+            });
             if (response.data) {
                 setInventory(response.data);
                 setDataLoaded(true);
@@ -29,9 +41,11 @@ const Inventory = () => {
             console.error('Error fetching invent data:', error.response ? error.response.data : error.message);
         }
     };
-    const fetchSalesOrder = async () => {
+    const fetchSalesOrder = async (loggedUser) => {
         try {
-            const response = await axios.get('https://enterprise-billing-system-3.onrender.com/api/salesorder');
+            const response = await axios.get('http://localhost:3001/api/salesorder',{
+                params:{loggedUser}
+            });
             if (response.data) {
                 setOrderData(response.data);
             }
@@ -40,9 +54,6 @@ const Inventory = () => {
         }
 
     };
-
-
-
 
     const handleCheckboxChange = (inventId) => {
         setSelectedInventory(prevSelected =>
@@ -56,8 +67,8 @@ const Inventory = () => {
         if (selectedInventory.length <= 0) return;
 
         try {
-            await axios.delete('https://enterprise-billing-system-3.onrender.com/api/inventory', { data: { ids: selectedInventory } });
-            fetchInventory();
+            await axios.delete('http://localhost:3001/api/inventory', { data: { ids: selectedInventory } });
+            fetchInventory(loggedUser);
             setSelectedInventory([]);
             setShowCheckboxes(false); // Hide checkboxes after deletion
         } catch (error) {

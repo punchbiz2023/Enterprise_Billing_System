@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import SidePanel from '../Sales/Sidepanel';
+import { jwtDecode } from 'jwt-decode';
 
 const Delivery = () => {
   const [items, setItems] = useState([{ name: '', quantity: 1, rate: '', discount: '', amount: 0 }]);
@@ -10,36 +11,48 @@ const Delivery = () => {
   const navigate = useNavigate();
   const [total, setTotal] = useState(0);
 
+  
   const handleItemChange = (index, field, value) => {
     const newItems = [...items];
     newItems[index][field] = value;
-
+    
     // Calculate amount based on the current state of item
     const item = newItems[index];
     const calculatedAmount = (item.quantity * item.rate) - ((item.quantity * item.rate) * item.discount / 100);
     newItems[index].amount = calculatedAmount >= 0 ? calculatedAmount : 0;  // Ensure amount never goes negative
-
+    
     setItems(newItems);
     updateTotal(newItems); // Update total when any item changes
   };
-
+  
   const updateTotal = (items) => {
     const newTotal = items.reduce((acc, curr) => acc + curr.amount, 0);
     setTotal(newTotal);
   };
-
+  const [loggedUser, setLoggedUser] = useState(null);
+  
   useEffect(() => {
-    const fetchCustomers = async () => {
-      try {
-        const response = await axios.get('https://enterprise-billing-system-3.onrender.com/api/customers');
-        setCustomers(response.data);
-      } catch (error) {
-        console.error('Error fetching customer data:', error);
-      }
-    };
-
-    fetchCustomers();
+    if (loggedUser) {
+      fetchCustomers(loggedUser);
+    }
+}, [loggedUser]);
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken")
+    const decoded = jwtDecode(token)
+    
+    setLoggedUser(decoded.email);  
+    
   }, []);
+  const fetchCustomers = async (loggedUser) => {
+    try {
+      const response = await axios.get('http://localhost:3001/api/customers',{
+        params:{loggedUser}
+      });
+      setCustomers(response.data);
+    } catch (error) {
+      console.error('Error fetching customer data:', error);
+    }
+  };
 
   const addRow = () => {
     setItems([...items, { name: '', quantity: 1, rate: '', discount: '', amount: 0 }]);

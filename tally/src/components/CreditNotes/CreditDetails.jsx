@@ -1,32 +1,44 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 
 const CreditDetails = () => {
   const { id } = useParams(); // Captures the id from the URL
   const [note, setNote] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [loggedUser, setLoggedUser] = useState(null);
 
   useEffect(() => {
-    const fetchNote = async () => {
-      try {
-        const response = await axios.get(`https://enterprise-billing-system-3.onrender.com/api/creditnote`);
+    const token = localStorage.getItem("accessToken")
+    const decoded = jwtDecode(token)
 
-        // Find the note based on the ID from the params
-        const fetchedNote = response.data.find(note => note.sno === parseInt(id));
-        
-        setNote(fetchedNote);
-        setLoading(false);
-        
-      } catch (error) {
-        console.error('Error fetching note details:', error.response ? error.response.data : error.message);
-        setLoading(false);
-      }
-    };
-    
-    fetchNote();
+    setLoggedUser(decoded.email);
+
   }, [id]);
-  
+  useEffect(() => {
+    if (loggedUser) {
+      fetchNote(loggedUser);
+    }
+  }, [loggedUser]);
+  const fetchNote = async () => {
+    try {
+      const response = await axios.get(`http://localhost:3001/api/creditnote`, {
+        params: { loggedUser }
+      });
+
+      // Find the note based on the ID from the params
+      const fetchedNote = response.data.find(note => note.sno === parseInt(id));
+
+      setNote(fetchedNote);
+      setLoading(false);
+
+    } catch (error) {
+      console.error('Error fetching note details:', error.response ? error.response.data : error.message);
+      setLoading(false);
+    }
+  };
+
 
   if (loading) {
     return <p className="text-center text-gray-500 text-lg">Loading...</p>;
@@ -62,12 +74,12 @@ const CreditDetails = () => {
               <td className="py-3 px-4 border-b border-gray-300">Reference Number</td>
               <td className="py-3 px-4 border-b border-gray-300">{note.refno || 'None'}</td>
             </tr>
-           
+
             <tr>
               <td className="py-3 px-4 border-b border-gray-300">Note Date</td>
               <td className="py-3 px-4 border-b border-gray-300">{note.creditdate || 'None'}</td>
             </tr>
-            
+
             <tr>
               <td className="py-3 px-4 border-b border-gray-300">Subject</td>
               <td className="py-3 px-4 border-b border-gray-300">{note.subject || 'None'}</td>

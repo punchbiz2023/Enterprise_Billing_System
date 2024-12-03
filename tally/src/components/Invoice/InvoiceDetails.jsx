@@ -6,23 +6,35 @@ const InvoiceDetails = () => {
   const { id } = useParams(); // Capture the id from the URL
   const [invoice, setInvoice] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [loggedUser, setLoggedUser] = useState(null);
 
   useEffect(() => {
-    const fetchInvoice = async () => {
-      try {
-        const response = await axios.get('https://enterprise-billing-system-3.onrender.com/api/invoice');
-        const fetchedInvoice = response.data.find(invoice => invoice.sno === parseInt(id));
-        
-        setInvoice(fetchedInvoice);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching invoice details:', error.response ? error.response.data : error.message);
-        setLoading(false);
-      }
-    };
+    if (loggedUser) {
+      fetchInvoice(loggedUser);
+    }
+  }, [loggedUser]);
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken")
+    const decoded = jwtDecode(token)
 
-    fetchInvoice();
+    setLoggedUser(decoded.email);
+
+
   }, [id]);
+  const fetchInvoice = async (loggedUser) => {
+    try {
+      const response = await axios.get('http://localhost:3001/api/invoice', {
+        params: { loggedUser }
+      });
+      const fetchedInvoice = response.data.find(invoice => invoice.sno === parseInt(id));
+
+      setInvoice(fetchedInvoice);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching invoice details:', error.response ? error.response.data : error.message);
+      setLoading(false);
+    }
+  };
 
   if (loading) {
     return <p className="text-center text-gray-500 text-lg">Loading...</p>;

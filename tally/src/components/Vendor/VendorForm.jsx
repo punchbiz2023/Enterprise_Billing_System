@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
 
 const AddVendor = () => {
@@ -33,6 +34,15 @@ const AddVendor = () => {
         }
     });
     const navigate = useNavigate();
+    const [loggedUser, setLoggedUser] = useState(null);
+    
+    
+    
+    useEffect(() => {
+        const token = localStorage.getItem("accessToken")
+        const decoded = jwtDecode(token)
+        setLoggedUser(decoded.email);  // Set loggedUser state
+    }, [])
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -52,8 +62,9 @@ const AddVendor = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const data = {...newVendor,loggedUser}
         try {
-            await axios.post('http://localhost:3001/api/vendor', newVendor);
+            await axios.post('http://localhost:3001/api/vendor', data);
             navigate('/dashboard/purchase/vendors');
         } catch (error) {
             console.error('Error adding vendor:', error.response ? error.response.data : error.message);
@@ -64,7 +75,7 @@ const AddVendor = () => {
         <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md mt-28">
             <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">Add New Vendor</h1>
             <form onSubmit={handleSubmit} className="space-y-4">
-               
+
                 <div className="flex space-x-4">
                     <div>
                         <label className="block text-sm font-medium text-gray-700">Name</label>

@@ -14,8 +14,9 @@ const db = drizzle(client, { schema: { CustTable }, logger: true });
 
 // GET customers
 router.get('/', async (req, res) => {
+  const {loggedUser} = req.query
   try {
-    const customers = await db.select().from(CustTable);
+    const customers = await db.select().from(CustTable).where(eq(CustTable.loggedUser,loggedUser));
     res.json(customers);
   } catch (error) {
     console.error('Error fetching customers:', error);
@@ -25,6 +26,8 @@ router.get('/', async (req, res) => {
 
 // POST new customer
 router.post('/', async (req, res) => {
+  
+  // console.log(req);
   const {
     customerType,
     name,
@@ -40,8 +43,11 @@ router.post('/', async (req, res) => {
     paymentterms,
     billaddress,
     shipaddress,
+    loggedUser,
   } = req.body;
-
+  
+  // console.log(req.body);
+  
   try {
     const openingBalanceNumber = parseFloat(openingbalance);
 
@@ -62,6 +68,7 @@ router.post('/', async (req, res) => {
         paymentterms,
         billaddress,
         shipaddress,
+        loggedUser,
       })
       .returning();
 

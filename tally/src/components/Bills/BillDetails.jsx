@@ -1,32 +1,43 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode'
 import axios from 'axios';
 
 const BillDetails = () => {
   const { id } = useParams(); // Captures the id from the URL
   const [bill, setBill] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  const [loggedUser, setLoggedUser] = useState(null);
   useEffect(() => {
-    const fetchBill = async () => {
-      try {
-        const response = await axios.get(`https://enterprise-billing-system-3.onrender.com/api/bill`);
+    const token = localStorage.getItem("accessToken")
+    const decoded = jwtDecode(token)
 
-        // Find the bill based on the ID from the params
-        const fetchedBill = response.data.find(bill => bill.sno === parseInt(id));
-        
-        setBill(fetchedBill);
-        setLoading(false);
-        
-      } catch (error) {
-        console.error('Error fetching bill details:', error.response ? error.response.data : error.message);
-        setLoading(false);
-      }
-    };
+    setLoggedUser(decoded.email);
     
-    fetchBill();
   }, [id]);
-  
+  useEffect(() => {
+    if (loggedUser) {
+      fetchBill(loggedUser);
+    }
+  }, [loggedUser]);
+  const fetchBill = async (loggedUser) => {
+    try {
+      const response = await axios.get(`http://localhost:3001/api/bill`, {
+        params: { loggedUser }
+      });
+
+      // Find the bill based on the ID from the params
+      const fetchedBill = response.data.find(bill => bill.sno === parseInt(id));
+
+      setBill(fetchedBill);
+      setLoading(false);
+
+    } catch (error) {
+      console.error('Error fetching bill details:', error.response ? error.response.data : error.message);
+      setLoading(false);
+    }
+  };
+
 
   if (loading) {
     return <p className="text-center text-gray-500 text-lg">Loading...</p>;

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 import { Link } from 'react-router-dom';
 import SidePanel from '../Sales/Sidepanel';
 
@@ -10,14 +11,26 @@ const Invoice = () => {
   const [selectedInvoice, setSelectedInvoice] = useState([]);
   const [showCheckboxes, setShowCheckboxes] = useState(false); // State to toggle checkboxes
   const [searchTerm, setSearchTerm] = useState('');
+  const [loggedUser, setLoggedUser] = useState(null);
+
 
   useEffect(() => {
-    fetchInvoice();
+    if (loggedUser) {
+      fetchInvoice(loggedUser);
+    }
+}, [loggedUser]);
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken")
+    const decoded = jwtDecode(token)
+    
+    setLoggedUser(decoded.email); 
   }, []);
 
-  const fetchInvoice = async () => {
+  const fetchInvoice = async (loggedUser) => {
     try {
-      const response = await axios.get('https://enterprise-billing-system-3.onrender.com/api/invoice');
+      const response = await axios.get('http://localhost:3001/api/invoice',{
+        params:{loggedUser}
+      });
       if (response.data) {
         setInvoice(response.data);
         setDataLoaded(true);
@@ -39,8 +52,8 @@ const Invoice = () => {
     if (selectedInvoice.length <= 0) return;
 
     try {
-      await axios.delete('https://enterprise-billing-system-3.onrender.com/api/invoice', { data: { ids: selectedInvoice } });
-      fetchInvoice();
+      await axios.delete('http://localhost:3001/api/invoice', { data: { ids: selectedInvoice } });
+      fetchInvoice(loggedUser);
       setSelectedInvoice([]);
       setShowCheckboxes(false); // Hide checkboxes after deletion
     } catch (error) {

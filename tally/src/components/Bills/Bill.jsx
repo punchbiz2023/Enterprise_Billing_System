@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import {jwtDecode} from 'jwt-decode'
 import { Link } from 'react-router-dom';
 import SidePanel from '../Purchase/Sidepanel';
 
@@ -10,14 +11,24 @@ const Bill = () => {
     const [showCheckboxes, setShowCheckboxes] = useState(false); // State to toggle checkboxes
     const [searchTerm, setSearchTerm] = useState(''); // State for search term
     const [searchBy, setSearchBy] = useState('name'); // State to track search category
-
+    const [loggedUser, setLoggedUser] = useState(null);
     useEffect(() => {
-        fetchBills();
+        const token = localStorage.getItem("accessToken")
+        const decoded = jwtDecode(token)
+        
+        setLoggedUser(decoded.email); 
     }, []);
+    useEffect(() => {
+        if (loggedUser) {
+            fetchBills(loggedUser);
+        }
+    }, [loggedUser]);
 
-    const fetchBills = async () => {
+    const fetchBills = async (loggedUser) => {
         try {
-            const response = await axios.get('http://localhost:3001/api/bill');
+            const response = await axios.get('http://localhost:3001/api/bill',{
+                params:{loggedUser}
+            });
             if (response.data) {
                 setBill(response.data);
                 setDataLoaded(true);
@@ -40,7 +51,7 @@ const Bill = () => {
 
         try {
             await axios.delete('http://localhost:3001/api/bill', { data: { ids: selectedBill } });
-            fetchBills();
+            fetchBills(loggedUser);
             setSelectedBill([]);
             setShowCheckboxes(false); // Hide checkboxes after deletion
         } catch (error) {

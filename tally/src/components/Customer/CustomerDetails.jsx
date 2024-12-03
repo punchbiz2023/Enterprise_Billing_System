@@ -1,19 +1,34 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
 
 const CustomerDetails = () => {
   const { id } = useParams(); // Captures the id from the URL
   const [customer, setCustomer] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [loggedUser, setLoggedUser] = useState(null);
 
   useEffect(() => {
-    const fetchCustomer = async () => {
+    if (loggedUser) {
+      fetchCustomer(loggedUser);
+    }
+}, [loggedUser]);
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken")
+    const decoded = jwtDecode(token)
+    
+    setLoggedUser(decoded.email); 
+
+  }, [id]);
+    const fetchCustomer = async (loggedUser) => {
       try {
-        const response = await axios.get('https://enterprise-billing-system-3.onrender.com/api/customers');
+        const response = await axios.get('http://localhost:3001/api/customers',{
+          params:{loggedUser}
+        });
         // Find the customer based on the ID from the params
         const fetchedCustomer = response.data.find(customer => customer.sno === parseInt(id));
-        
+
         setCustomer(fetchedCustomer);
         setLoading(false);
       } catch (error) {
@@ -21,9 +36,6 @@ const CustomerDetails = () => {
         setLoading(false);
       }
     };
-
-    fetchCustomer();
-  }, [id]);
 
   if (loading) {
     return <p className="text-center text-gray-500 text-lg">Loading...</p>;

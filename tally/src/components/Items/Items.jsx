@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import Navbar from '../Navbar/Navbar';
+import { jwtDecode } from 'jwt-decode';
 import './Items.css';
 
 const Items = () => {
@@ -12,14 +13,26 @@ const Items = () => {
   const [selectedType, setSelectedType] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchBy, setSearchBy] = useState('name'); // Default search by name
+  const [loggedUser, setLoggedUser] = useState(null);
+
 
   useEffect(() => {
-    fetchItems();
+    if (loggedUser) {
+      fetchItems(loggedUser);
+    }
+  }, [loggedUser]);
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken")
+    const decoded = jwtDecode(token)
+    
+    setLoggedUser(decoded.email); 
   }, []);
 
-  const fetchItems = async () => {
+  const fetchItems = async (loggedUser) => {
     try {
-      const response = await axios.get('https://enterprise-billing-system-3.onrender.com/api/items');
+      const response = await axios.get('http://localhost:3001/api/items',{
+        params:{loggedUser}
+      });
       if (response.data) {
         setItems(response.data);
         setDataLoaded(true);
@@ -41,8 +54,8 @@ const Items = () => {
     if (selectedItems.length <= 0) return;
 
     try {
-      await axios.delete('https://enterprise-billing-system-3.onrender.com/api/items', { data: { ids: selectedItems } });
-      fetchItems();
+      await axios.delete('http://localhost:3001/api/items', { data: { ids: selectedItems } });
+      fetchItems(loggedUser);
       setSelectedItems([]);
     } catch (error) {
       console.error('Error deleting Items:', error.response ? error.response.data : error.message);
@@ -117,9 +130,8 @@ const Items = () => {
                   setShowCheckboxes(true);
                 }
               }}
-              className={`inline-block px-5 py-2 rounded text-white ${
-                showCheckboxes ? 'bg-gray-500 hover:bg-gray-600' : 'bg-red-500 hover:bg-red-600'
-              }`}
+              className={`inline-block px-5 py-2 rounded text-white ${showCheckboxes ? 'bg-gray-500 hover:bg-gray-600' : 'bg-red-500 hover:bg-red-600'
+                }`}
             >
               {showCheckboxes ? 'Cancel Delete' : 'Delete Items'}
             </button>

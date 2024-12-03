@@ -1,29 +1,41 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
 
 const EstimateDetails = () => {
   const { id } = useParams(); // Captures the id from the URL
   const [estimate, setEstimate] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [loggedUser, setLoggedUser] = useState(null);
 
   useEffect(() => {
-    const fetchEstimate = async () => {
-      try {
-        const response = await axios.get('https://enterprise-billing-system-3.onrender.com/api/estimates');
-        // Find the estimate based on the ID from the params
-        const fetchedEstimate = response.data.find(estimate => estimate.sno === parseInt(id));
-        
-        setEstimate(fetchedEstimate);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching estimate details:', error.response ? error.response.data : error.message);
-        setLoading(false);
-      }
-    };
-
-    fetchEstimate();
+    if (loggedUser) {
+      fetchEstimate(loggedUser);
+    }
+}, [loggedUser]);
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken")
+    const decoded = jwtDecode(token)
+    
+    setLoggedUser(decoded.email); 
+    
   }, [id]);
+  const fetchEstimate = async (loggedUser) => {
+    try {
+      const response = await axios.get('http://localhost:3001/api/estimates',{
+        params:{loggedUser}
+      });
+      // Find the estimate based on the ID from the params
+      const fetchedEstimate = response.data.find(estimate => estimate.sno === parseInt(id));
+
+      setEstimate(fetchedEstimate);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching estimate details:', error.response ? error.response.data : error.message);
+      setLoading(false);
+    }
+  };
 
   if (loading) {
     return <p className="text-center text-gray-500 text-lg">Loading...</p>;

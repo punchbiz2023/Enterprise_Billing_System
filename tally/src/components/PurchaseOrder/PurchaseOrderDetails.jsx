@@ -1,29 +1,42 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
 
 const PurchaseOrderDetails = () => {
   const { id } = useParams(); // Captures the id from the URL
   const [purchaseOrder, setPurchaseOrder] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [loggedUser, setLoggedUser] = useState(null);
+
 
   useEffect(() => {
-    const fetchPurchaseOrder = async () => {
-      try {
-        const response = await axios.get(`https://enterprise-billing-system-3.onrender.com/api/purchaseorder`);
-        // Find the purchase order based on the ID from the params
-        const fetchedPurchaseOrder = response.data.find(po => po.sno === parseInt(id));
+    if (loggedUser) {
+      fetchPurchaseOrder(loggedUser);
+    }
+  }, [loggedUser]);
 
-        setPurchaseOrder(fetchedPurchaseOrder);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching purchase order details:', error.response ? error.response.data : error.message);
-        setLoading(false);
-      }
-    };
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken")
+    const decoded = jwtDecode(token)
+    setLoggedUser(decoded.email); 
 
-    fetchPurchaseOrder();
   }, [id]);
+  const fetchPurchaseOrder = async (loggedUser) => {
+    try {
+      const response = await axios.get(`http://localhost:3001/api/purchaseorder`,{
+        params:{loggedUser}
+      });
+      // Find the purchase order based on the ID from the params
+      const fetchedPurchaseOrder = response.data.find(po => po.sno === parseInt(id));
+
+      setPurchaseOrder(fetchedPurchaseOrder);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching purchase order details:', error.response ? error.response.data : error.message);
+      setLoading(false);
+    }
+  };
 
   if (loading) {
     return <p className="text-center text-gray-500 text-lg">Loading...</p>;

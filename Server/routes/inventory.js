@@ -13,8 +13,9 @@ const db = drizzle(client, { schema: { InventoryTable }, logger: true });
 
 // GET inventory items
 router.get('/', async (req, res) => {
+  const {loggedUser} = req.query
   try {
-    const items = await db.select().from(InventoryTable);
+    const items = await db.select().from(InventoryTable).where(eq(InventoryTable.loggedUser,loggedUser));
     res.json(items);
   } catch (error) {
     console.error('Error fetching inventory items:', error);
@@ -31,7 +32,8 @@ router.post('/', async (req, res) => {
     hsnCode,
     quantity,
     rate,
-    gst
+    gst,
+    loggedUser
   } = req.body;
 
   try {
@@ -46,6 +48,7 @@ router.post('/', async (req, res) => {
         quantity: parseInt(quantity),
         rate: parseFloat(rate),
         gst: parsedGst,
+        loggedUser
       })
       .returning();
       

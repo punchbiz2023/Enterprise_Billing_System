@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
 
 const VendorDetails = () => {
@@ -7,25 +8,37 @@ const VendorDetails = () => {
   const [vendor, setVendor] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const [loggedUser, setLoggedUser] = useState(null);
+
+
   useEffect(() => {
-    const fetchVendor = async () => {
+    if (loggedUser) {
+      fetchVendor(loggedUser);
+    }
+  }, [loggedUser]);
 
-      try {
-        const response = await axios.get('http://localhost:3001/api/vendor');
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken")
+    const decoded = jwtDecode(token)
 
+    setLoggedUser(decoded.email);
 
-        const fetchedVendor = response.data.find(Vendor => Vendor.sno === parseInt(id));
-        setVendor(fetchedVendor);
-        setLoading(false);
-
-      } catch (error) {
-        console.error('Error fetching Vendor details:', error.response ? error.response.data : error.message);
-        setLoading(false);
-      }
-    };
-
-    fetchVendor();
   }, [id]);
+  const fetchVendor = async (loggedUser) => {
+
+    try {
+      const response = await axios.get('http://localhost:3001/api/vendor', {
+        params: { loggedUser }
+      });
+      const fetchedVendor = response.data.find(Vendor => Vendor.sno === parseInt(id));
+      setVendor(fetchedVendor);
+      setLoading(false);
+
+    } catch (error) {
+      console.error('Error fetching Vendor details:', error.response ? error.response.data : error.message);
+      setLoading(false);
+    }
+  };
 
   if (loading) {
     return <p>Loading...</p>;

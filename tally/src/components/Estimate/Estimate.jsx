@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import SidePanel from '../Sales/Sidepanel.jsx';
 import SalesPerson from '../Salesperson/SalesPerson.jsx';
+import { jwtDecode } from 'jwt-decode';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
@@ -30,30 +31,46 @@ const Estimate = () => {
   const [customer, setCustomer] = useState('');
   const [customerState, setCustomerState] = useState('');
   const [selectedSalesperson, setSelectedSalesperson] = useState(''); // Initialize with an empty string
-
+  const [loggedUser, setLoggedUser] = useState(null);
 
   const navigate = useNavigate();
 
   // console.log(projects);
+  useEffect(() => {
+    if (loggedUser) {
+      fetchCustomers(loggedUser);
+      fetchSalespeople(loggedUser);
+      fetchItems(loggedUser);
+      fetchProjects(loggedUser);
+    }
+  }, [loggedUser]);
 
   useEffect(() => {
-    fetchCustomers();
-    fetchSalespeople();
-    fetchItems();
-    fetchProjects();
+    const token = localStorage.getItem("accessToken")
+    const decoded = jwtDecode(token)
+
+    setLoggedUser(decoded.email);
   }, []);
 
-  const fetchSalespeople = async () => {
+  const fetchSalespeople = async (loggedUser) => {
     try {
-      const response = await axios.get('https://enterprise-billing-system-3.onrender.com/api/salespersons');
+      const response = await axios.get('http://localhost:3001/api/salespersons',
+        {
+          params: { loggedUser }
+        }
+      );
       setSalespersons(response.data);
     } catch (error) {
       console.error('Error fetching salesperson data:', error);
     }
   };
-  const fetchProjects = async () => {
+  const fetchProjects = async (loggedUser) => {
     try {
-      const response = await axios.get('https://enterprise-billing-system-3.onrender.com/api/projects');
+      const response = await axios.get('http://localhost:3001/api/projects',
+        {
+          params: { loggedUser }
+        }
+      );
       setProjects(response.data);
     } catch (error) {
       console.error('Error fetching project data:', error);
@@ -61,9 +78,13 @@ const Estimate = () => {
   };
 
 
-  const fetchCustomers = async () => {
+  const fetchCustomers = async (loggedUser) => {
     try {
-      const response = await axios.get('https://enterprise-billing-system-3.onrender.com/api/customers');
+      const response = await axios.get('http://localhost:3001/api/customers',
+        {
+          params: { loggedUser }
+        }
+      );
       const customersWithState = response.data.map((cust) => ({
         ...cust,
         state: cust.billaddress.state,
@@ -77,13 +98,13 @@ const Estimate = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     const total = calculateTotal(); // Ensure `total` is numeric
     const taxtype = "GST"; // Example, you can retrieve this from form inputs
     const taxrate = "18%"; // Example, retrieve this from form inputs
-  
+
     try {
-      const response = await axios.post('https://enterprise-billing-system-3.onrender.com/api/estimates', {
+      const response = await axios.post('http://localhost:3001/api/estimates', {
         customer,
         quoteNumber,
         reference,
@@ -95,16 +116,17 @@ const Estimate = () => {
         items, // Ensure `items` is a valid array/object
         taxtype,
         taxrate,
-        total // Ensure this is a numeric value
+        total,
+        loggedUser
       });
-  
+
       toast.success(response.data.message);
     } catch (error) {
       console.error('Error:', error);
       toast.error(error.response?.data?.error || 'An error occurred while adding the estimate');
     }
   };
-  
+
 
 
 
@@ -131,9 +153,13 @@ const Estimate = () => {
   };
 
 
-  const fetchItems = async () => {
+  const fetchItems = async (loggedUser) => {
     try {
-      const response = await axios.get('https://enterprise-billing-system-3.onrender.com/api/items');
+      const response = await axios.get('http://localhost:3001/api/items',
+        {
+          params: { loggedUser }
+        }
+      );
       setAvailableItems(response.data);
     } catch (error) {
       console.error('Error fetching items:', error);
@@ -154,7 +180,7 @@ const Estimate = () => {
       }
     }
 
-    if (['rate','HsnCode', 'quantity', 'discount', 'gst', 'sgst', 'cgst', 'igst'].includes(field)) {
+    if (['rate', 'HsnCode', 'quantity', 'discount', 'gst', 'sgst', 'cgst', 'igst'].includes(field)) {
       const rate = parseFloat(newItems[index].rate) || 0;
       const HsnCode = parseFloat(newItems[index].HsnCode) || 0;
       const quantity = parseFloat(newItems[index].quantity) || 0;
@@ -206,7 +232,7 @@ const Estimate = () => {
   };
 
   const addNewItem = () => {
-    setItems([...items, { item: '',HsnCode: '', quantity: '', rate: '', discount: '', gst: '', sgst: '', cgst: '', igst: '', amount: '' }]);
+    setItems([...items, { item: '', HsnCode: '', quantity: '', rate: '', discount: '', gst: '', sgst: '', cgst: '', igst: '', amount: '' }]);
   };
 
   const removeItem = (index) => {
@@ -470,19 +496,19 @@ const Estimate = () => {
                       </select>
                     </td>
                     <td>
-        <input
-          type="text" // Use "text" instead of "number" to remove up/down arrows
-          value={item.HsnCode}
-          onChange={(e) => {
-            // Allow only numbers and ensure value doesn't go below 0
-            const value = e.target.value;
-            if (/^\d*$/.test(value)) { // Regex to allow only digits (no letters or special characters)
-              handleItemChange(index, 'HsnCode', value === '' ? '' : Math.max(0, Number(value)));
-            }
-          }}
-          className="border border-gray-300 rounded-md p-2 w-full"
-        />
-      </td>
+                      <input
+                        type="text" // Use "text" instead of "number" to remove up/down arrows
+                        value={item.HsnCode}
+                        onChange={(e) => {
+                          // Allow only numbers and ensure value doesn't go below 0
+                          const value = e.target.value;
+                          if (/^\d*$/.test(value)) { // Regex to allow only digits (no letters or special characters)
+                            handleItemChange(index, 'HsnCode', value === '' ? '' : Math.max(0, Number(value)));
+                          }
+                        }}
+                        className="border border-gray-300 rounded-md p-2 w-full"
+                      />
+                    </td>
                     <td>
                       <input
                         type="number"

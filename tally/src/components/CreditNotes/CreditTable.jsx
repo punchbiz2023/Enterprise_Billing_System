@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode'
 import SidePanel from '../Sales/Sidepanel';
 
 const CreditTable = () => {
@@ -10,14 +11,22 @@ const CreditTable = () => {
     const [showCheckboxes, setShowCheckboxes] = useState(false); // State to toggle checkboxes
     const [searchTerm, setSearchTerm] = useState(''); // State for search term
     const [searchBy, setSearchBy] = useState('dispname'); // State to track search category
-
+    const [loggedUser, setLoggedUser] = useState(null);
     useEffect(() => {
-        fetchNotes();
-    }, []);
+        const token = localStorage.getItem("accessToken")
+        const decoded = jwtDecode(token)
 
-    const fetchNotes = async () => {
+        setLoggedUser(decoded.email);
+    }, []);
+    useEffect(() => {
+        if (loggedUser) {
+            fetchNotes(loggedUser);
+        }
+    }, [loggedUser]);
+
+    const fetchNotes = async (loggedUser) => {
         try {
-            const response = await axios.get('https://enterprise-billing-system-3.onrender.com/api/creditnote');
+            const response = await axios.get('http://localhost:3001/api/creditnote', { params: { loggedUser } });
             if (response.data) {
                 setNotes(response.data);
                 setDataLoaded(true);
@@ -39,8 +48,8 @@ const CreditTable = () => {
         if (selectedNotes.length <= 0) return;
 
         try {
-            await axios.delete('https://enterprise-billing-system-3.onrender.com/api/creditnote', { data: { ids: selectedNotes } });
-            fetchNotes();
+            await axios.delete('http://localhost:3001/api/creditnote', { data: { ids: selectedNotes } });
+            fetchNotes(loggedUser);
             setSelectedNotes([]);
             setShowCheckboxes(false); // Hide checkboxes after deletion
         } catch (error) {
@@ -66,7 +75,7 @@ const CreditTable = () => {
                 <div className="flex justify-between mb-4">
                     {/* Search bar on the left */}
                     <div className="flex w-1/3">
-                        
+
                         {/* Dropdown after the search input */}
                         <select
                             value={searchBy}
@@ -165,7 +174,7 @@ const CreditTable = () => {
                                         <td className="py-2 px-4 text-center border-b">{note.creditno}</td>
                                         <td className="py-2 px-4 text-center border-b">{note.creditdate}</td>
                                         <td className="py-2 px-4 text-center border-b">{note.notes}</td>
-                                        
+
                                         <td className="py-2 px-4 text-center border-b">{note.amount}</td>
                                     </tr>
                                 ))

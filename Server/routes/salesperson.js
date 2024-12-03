@@ -13,8 +13,9 @@ const db = drizzle(client, { schema: { SalesPerson }, logger: true });
 
 // Get all salespersons
 router.get('/', async (req, res) => {
+  const {loggedUser} = req.query
   try {
-    const salespersons = await db.select().from(SalesPerson);
+    const salespersons = await db.select().from(SalesPerson).where(eq(SalesPerson.loggedUser,loggedUser));
     res.json(salespersons);
   } catch (error) {
     console.error('Error fetching salespersons:', error);
@@ -24,10 +25,10 @@ router.get('/', async (req, res) => {
 
 // Create a new salesperson
 router.post('/', async (req, res) => {
-  const { name, email } = req.body;
+  const { name, email,loggedUser } = req.body;
   console.log('Request body:', req.body); // Log request payload for debugging
   try {
-    const newSalesPerson = await db.insert(SalesPerson).values({ name, mail:email });
+    const newSalesPerson = await db.insert(SalesPerson).values({ name, mail:email }).where(eq(SalesPerson.loggedUser,loggedUser));
     res.status(201).json(newSalesPerson);
   } catch (error) {
     console.error('Error creating salesperson:', error);

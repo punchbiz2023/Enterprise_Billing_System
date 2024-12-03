@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
 import './Project.css';
 
@@ -19,18 +20,29 @@ function Project() {
   const [availableCustomers, setAvailableCustomers] = useState([]);
 
   // Fetch available customers when component mounts
-  useEffect(() => {
-    const fetchCustomers = async () => {
-      try {
-        const response = await axios.get('http://localhost:3001/api/customers');
-        setAvailableCustomers(response.data);
-      } catch (error) {
-        console.error('Error fetching customers:', error);
-      }
-    };
+  const [loggedUser, setLoggedUser] = useState(null);
 
-    fetchCustomers();
+  useEffect(() => {
+    if (loggedUser) {
+      fetchCustomers(loggedUser);
+    }
+  }, [loggedUser]);
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken")
+    const decoded = jwtDecode(token)
+    setLoggedUser(decoded.email); 
+    
   }, []);
+  const fetchCustomers = async (loggedUser) => {
+    try {
+      const response = await axios.get('http://localhost:3001/api/customers', {
+        params: { loggedUser }
+      });
+      setAvailableCustomers(response.data);
+    } catch (error) {
+      console.error('Error fetching customers:', error);
+    }
+  };
 
   const addNewTask = () => {
     setTasks([...tasks, { name: '', description: '' }]);
@@ -72,9 +84,10 @@ function Project() {
       users,
       tasks,
     };
+    const data = { ...projectData, loggedUser }
 
     try {
-      await axios.post('http://localhost:3001/api/projects', projectData);
+      await axios.post('http://localhost:3001/api/projects', data);
       alert('Project saved successfully!');
       navigate('/dashboard/sales/estimate/form');
     } catch (error) {
@@ -226,7 +239,7 @@ function Project() {
         </table>
         <button type="button" className="add-user" onClick={addNewUser}>
           Add User
-        </button><br/><br/>
+        </button><br /><br />
 
         <h3 className="text-l font-semibold mb-6 text-gray-700">Project Tasks</h3>
         <table>
@@ -271,7 +284,7 @@ function Project() {
         </table>
         <button type="button" className="add-task" onClick={addNewTask}>
           Add Project Task
-        </button><br/><br/>
+        </button><br /><br />
 
         <div className="form-actions" >
           <button type="submit" className="save">

@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import './PurchaseOrder.css';
 import SidePanel from '../Purchase/Sidepanel';
 import * as XLSX from 'xlsx';
+import { jwtDecode } from 'jwt-decode';
 import PurchaseOrderPDF from './PurchaseOrderPDF';
 import { pdf } from '@react-pdf/renderer';
 
 
 const PurchaseOrder = () => {
     const [vendor, setVendor] = useState('');
-    const [vendors, setVendors] = useState([]);  
+    const [vendors, setVendors] = useState([]);
     const [deliveryType, setDeliveryType] = useState('organization');
     const [purchaseOrderNo, setPurchaseOrderNo] = useState('PO-00001');
     const [reference, setReference] = useState('');
@@ -22,9 +23,16 @@ const PurchaseOrder = () => {
     const [subtotal, setSubtotal] = useState(0);
     const [grandTotal, setGrandTotal] = useState(0);
     const [vendorEmail, setVendorEmail] = useState('');
-    const [errors, setErrors] = useState({}); 
+    const [errors, setErrors] = useState({});
     const today = new Date().toISOString().split('T')[0];
+    const [loggedUser, setLoggedUser] = useState(null);
 
+
+    useEffect(() => {
+        if (loggedUser) {
+            fetchVendors(loggedUser);
+        }
+    }, [loggedUser]);
 
     useEffect(() => {
         const currentDate = new Date().toLocaleDateString('en-GB');
@@ -40,21 +48,25 @@ const PurchaseOrder = () => {
     }, [subtotal, gstPercentage]);
 
     useEffect(() => {
-        const fetchVendors = async () => {
-            try {
-                const response = await fetch('https://enterprise-billing-system-3.onrender.com/api/vendor');
-                const data = await response.json();
-                setVendors(data);
-            } catch (error) {
-                console.error('Error fetching vendor data:', error);
-            }
-        };
-        fetchVendors();
+        const token = localStorage.getItem("accessToken")
+        const decoded = jwtDecode(token)
+        setLoggedUser(decoded.email);
     }, []);
+    const fetchVendors = async (loggedUser) => {
+        try {
+            const response = await fetch('http://localhost:3001/api/vendor', {
+                params: { loggedUser }
+            });
+            const data = await response.json();
+            setVendors(data);
+        } catch (error) {
+            console.error('Error fetching vendor data:', error);
+        }
+    };
 
     const validateForm = () => { // Validation function
         const newErrors = {};
-    
+
         if (!vendor) newErrors.vendor = "Vendor is required.";
         if (!reference) newErrors.reference = "Reference is required.";
         if (!deliveryDate) newErrors.deliveryDate = "Delivery date is required.";
@@ -66,11 +78,11 @@ const PurchaseOrder = () => {
             if (item.quantity <= 0) newErrors[`itemQuantity${index}`] = "Quantity must be greater than 0.";
             if (item.rate <= 0) newErrors[`itemRate${index}`] = "Rate must be greater than 0";
         });
-    
+
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
-    
+
 
     const calculateSubtotal = () => {
         const total = items.reduce((acc, item) => acc + (parseFloat(item.rate) * parseFloat(item.quantity)), 0);
@@ -89,7 +101,7 @@ const PurchaseOrder = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        if (!validateForm()) return; 
+        if (!validateForm()) return;
 
 
         const formattedDate = new Date(date.split('/').reverse().join('-')).toISOString().split('T')[0];
@@ -107,19 +119,20 @@ const PurchaseOrder = () => {
             itemdetails: items,
             gst: gstPercentage,
             total: grandTotal,
-            vendorEmail: vendorEmail // Include vendor email in the order data
+            vendorEmail: vendorEmail,
         };
+        const data = { ...orderData, loggedUser }
 
         try {
-            const response = await fetch('https://enterprise-billing-system-3.onrender.com/api/purchaseorder', {
+            const response = await fetch('http://localhost:3001/api/purchaseorder', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(orderData),
+                body: JSON.stringify(data),
             });
 
-            
+
         } catch (error) {
             console.error('Error posting order data:', error);
             alert("An error occurred while sending the order.");
@@ -128,7 +141,7 @@ const PurchaseOrder = () => {
 
     const exportToExcel = () => {
         const worksheet = XLSX.utils.json_to_sheet(items.map(item => ({
-            'Item Name': item.account,  
+            'Item Name': item.account,
             'Quantity': item.quantity,
             'Rate': item.rate,
             'Amount': (parseFloat(item.rate) * parseFloat(item.quantity)).toFixed(2)
@@ -153,36 +166,36 @@ const PurchaseOrder = () => {
             grandTotal,
             vendorEmail
         };
-    
+
         try {
             // Render the PDF as a Blob
             const blob = await pdf(<PurchaseOrderPDF formData={formData} />).toBlob();
-            
+
             // Create a temporary link element
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
             link.download = 'purchase_order.pdf';
-    
+
             // Append link to the body (required for Firefox)
             document.body.appendChild(link);
-    
+
             // Trigger the download
             link.click();
-    
+
             // Remove the link after the download is triggered
             document.body.removeChild(link);
         } catch (error) {
             console.error('Error generating PDF:', error);
         }
     };
-    
-    
-    
+
+
+
 
     return (
         <div>
             <div>
-                <SidePanel/>
+                <SidePanel />
             </div>
             <div className="purchase-order-container">
                 <h2 className="text-2xl font-semibold mb-10 mt-20 text-gray-700">New Purchase Order</h2>
@@ -232,20 +245,20 @@ const PurchaseOrder = () => {
                     <div className="purchase-order-details">
                         <label>Purchase Order#</label>
                         <input type="text" value={purchaseOrderNo} required readOnly />
-                        
+
                         <label>Reference#</label>
-                        <input 
-                            type="text" 
-                            value={reference} 
-                            placeholder='Enter the reference id' 
-                            required 
-                            onChange={(e) => setReference(e.target.value)} 
+                        <input
+                            type="text"
+                            value={reference}
+                            placeholder='Enter the reference id'
+                            required
+                            onChange={(e) => setReference(e.target.value)}
                         />
                         {errors.reference && <span className="error">{errors.reference}</span>}
 
                         <label>Date</label>
-                        <input type="text" value={date} readOnly required/>
-                        
+                        <input type="text" value={date} readOnly required />
+
                         <label>Expected Delivery Date</label>
                         <input
                             type="date"
@@ -256,11 +269,11 @@ const PurchaseOrder = () => {
                         />
                         {errors.deliveryDate && <span className="error">{errors.deliveryDate}</span>}
 
-                        
+
                         <label>Payment Terms</label>
-                        <select 
-                            className="payment-terms-dropdown" 
-                            value={paymentTerms} 
+                        <select
+                            className="payment-terms-dropdown"
+                            value={paymentTerms}
                             onChange={(e) => setPaymentTerms(e.target.value)}
                         >
                             <option value="net15">Net 15</option>
@@ -273,12 +286,12 @@ const PurchaseOrder = () => {
                         </select>
 
                         <label>Shipment Preference</label>
-                        <input 
-                            type="text" 
-                            placeholder="Choose the shipment preference" 
-                            required 
-                            value={shipmentPreference} 
-                            onChange={(e) => setShipmentPreference(e.target.value)} 
+                        <input
+                            type="text"
+                            placeholder="Choose the shipment preference"
+                            required
+                            value={shipmentPreference}
+                            onChange={(e) => setShipmentPreference(e.target.value)}
                         />
                         {errors.shipmentPreference && <span className="error">{errors.shipmentPreference}</span>}
 
@@ -301,15 +314,15 @@ const PurchaseOrder = () => {
                                 {items.map((item, index) => (
                                     <tr key={item.id}>
                                         <td>
-                                            <input 
-                                                type="text" 
-                                                placeholder="Type or click to select an item." 
-                                                value={item.account} 
+                                            <input
+                                                type="text"
+                                                placeholder="Type or click to select an item."
+                                                value={item.account}
                                                 onChange={(e) => setItems(prevItems => {
                                                     const updatedItems = [...prevItems];
                                                     updatedItems[index].account = e.target.value;
                                                     return updatedItems;
-                                                })} 
+                                                })}
                                                 required
                                             />
                                             {errors[`itemAccount${index}`] && <span className="error">{errors[`itemAccount${index}`]}</span>}
@@ -353,9 +366,9 @@ const PurchaseOrder = () => {
                                 ))}
                             </tbody>
                         </table>
-                        <button 
-                            className="font-semibold text-blue-700" 
-                            type="button" 
+                        <button
+                            className="font-semibold text-blue-700"
+                            type="button"
                             onClick={() => setItems([...items, { id: items.length + 1, account: '', quantity: 1, rate: 0, amount: 0 }])}
                         >
                             Add New Row
@@ -386,41 +399,41 @@ const PurchaseOrder = () => {
                             </div>
                         </div>
                     </div>
-{/* Vendor Email Input */}
-<div className="form-group vendor-email-section">
-    <label htmlFor="vendorEmail">Vendor Email</label>
-    <input
-        type="email"
-        id="vendorEmail"
-        value={vendorEmail}
-        onChange={(e) => setVendorEmail(e.target.value)}
-        placeholder="Enter vendor's email"
-        required
-        className="email-input"
-    />
-    {errors.vendorEmail && <span className="error">{errors.vendorEmail}</span>}
+                    {/* Vendor Email Input */}
+                    <div className="form-group vendor-email-section">
+                        <label htmlFor="vendorEmail">Vendor Email</label>
+                        <input
+                            type="email"
+                            id="vendorEmail"
+                            value={vendorEmail}
+                            onChange={(e) => setVendorEmail(e.target.value)}
+                            placeholder="Enter vendor's email"
+                            required
+                            className="email-input"
+                        />
+                        {errors.vendorEmail && <span className="error">{errors.vendorEmail}</span>}
 
-</div>
+                    </div>
 
-{/* Action Buttons */}
-<div className="action-buttons-section">
-    <button className="button submit-button" type="submit">
-        Submit
-    </button>
-    <button 
-        className="button export-button" 
-        type="button" 
-        onClick={exportToExcel}
-    >
-        Export to Excel
-    </button>
-    <button type="Genertae PDF"
-        className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-500 hover:bg-blue-600"
-        onClick={handleDownload}
-    >
-              Generate PDF
-    </button>
-</div>
+                    {/* Action Buttons */}
+                    <div className="action-buttons-section">
+                        <button className="button submit-button" type="submit">
+                            Submit
+                        </button>
+                        <button
+                            className="button export-button"
+                            type="button"
+                            onClick={exportToExcel}
+                        >
+                            Export to Excel
+                        </button>
+                        <button type="Genertae PDF"
+                            className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-500 hover:bg-blue-600"
+                            onClick={handleDownload}
+                        >
+                            Generate PDF
+                        </button>
+                    </div>
 
                 </form>
             </div>

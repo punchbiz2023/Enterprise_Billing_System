@@ -14,10 +14,10 @@ const router = express.Router();
 const client = postgres(process.env.DATABASE_URL);
 const db2 = drizzle(client, { schema: { VendTable }, logger: true });
 
-// Fetch all vendors
 router.get('/', async (req, res) => {
+  const {loggedUser} =  req.query
   try {
-    const vendors = await db2.select().from(VendTable);
+    const vendors = await db2.select().from(VendTable).where(eq(VendTable.loggedUser,loggedUser));
     res.json(vendors);
   } catch (error) {
     console.error('Error fetching vendors:', error);
@@ -40,7 +40,8 @@ router.post('/', async (req, res) => {
     openingbalance,
     paymentterms,
     billaddress,
-    shipaddress
+    shipaddress,
+    loggedUser
   } = req.body;
 
   try {
@@ -62,6 +63,7 @@ router.post('/', async (req, res) => {
         paymentterms,
         billaddress,
         shipaddress,
+        loggedUser
       })
       .returning();
 

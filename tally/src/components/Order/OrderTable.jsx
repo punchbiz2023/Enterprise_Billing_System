@@ -2,22 +2,36 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import SidePanel from '../Sales/Sidepanel';
+import { jwtDecode } from 'jwt-decode';
+
 const OrderTable = () => {
     const [order, setOrder] = useState([]);
     const [dataLoaded, setDataLoaded] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState([]);
     const [showCheckboxes, setShowCheckboxes] = useState(false);
+    const [loggedUser, setLoggedUser] = useState(null);
+
     useEffect(() => {
-        fetchOrders();
+        if (loggedUser) {
+            fetchOrders(loggedUser);
+        }
+      }, [loggedUser]);
+    useEffect(() => {
+        const token = localStorage.getItem("accessToken")
+        const decoded = jwtDecode(token)
+        
+        setLoggedUser(decoded.email); 
     }, [])
     
-    const fetchOrders = async () => {
+    const fetchOrders = async (loggedUser) => {
         try {
             // console.log(order.state);
-            const response = await axios.get('https://enterprise-billing-system-3.onrender.com/api/salesorder');
+            const response = await axios.get('http://localhost:3001/api/salesorder',{
+                params:{loggedUser}
+            });
             if (response.data) {
                 setOrder(response.data);
-                console.log(response.data);
+                
                 
                 setDataLoaded(true);
             }
@@ -39,8 +53,8 @@ const OrderTable = () => {
         if (selectedOrder.length <= 0) return;
 
         try {
-            await axios.delete('https://enterprise-billing-system-3.onrender.com/api/salesorder', { data: { ids: selectedOrder } });
-            fetchOrders();
+            await axios.delete('http://localhost:3001/api/salesorder', { data: { ids: selectedOrder } });
+            fetchOrders(loggedUser);
             setSelectedOrder([]);
             setShowCheckboxes(false); // Hide checkboxes after deletion
         } catch (error) {

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
 
 const ItemDetails = () => {
@@ -7,26 +8,37 @@ const ItemDetails = () => {
   const [item, setItem] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isGstPayable, setIsGstPayable] = useState(false); // State for GST payable
+  const [loggedUser, setLoggedUser] = useState(null);
 
   useEffect(() => {
-    const fetchItem = async () => {
-      console.log(`Fetching item with id: ${id}`); // Check if id is being logged correctly
-      try {
-        const response = await axios.get('https://enterprise-billing-system-3.onrender.com/api/items');
-        console.log(response.data); // Check if the data is fetched
-        // Filter the item based on the id
-        const fetchedItem = response.data.find(item => item.sno === parseInt(id));
-        setItem(fetchedItem);
-        setIsGstPayable(fetchedItem?.taxPayable || false); // Set initial state based on fetched item
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching item details:', error.response ? error.response.data : error.message);
-        setLoading(false);
-      }
-    };
+    if (loggedUser) {
+      fetchItem(loggedUser);
+    }
+  }, [loggedUser]);
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken")
+    const decoded = jwtDecode(token)
 
-    fetchItem();
+    setLoggedUser(decoded.email);
+
   }, [id]);
+  const fetchItem = async (loggedUser) => {
+    console.log(`Fetching item with id: ${id}`); // Check if id is being logged correctly
+    try {
+      const response = await axios.get('http://localhost:3001/api/items', {
+        params: { loggedUser }
+      });
+      console.log(response.data); // Check if the data is fetched
+      // Filter the item based on the id
+      const fetchedItem = response.data.find(item => item.sno === parseInt(id));
+      setItem(fetchedItem);
+      setIsGstPayable(fetchedItem?.taxPayable || false); // Set initial state based on fetched item
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching item details:', error.response ? error.response.data : error.message);
+      setLoading(false);
+    }
+  };
 
   const handleCheckboxChange = () => {
     setIsGstPayable(prev => !prev); // Toggle the GST payable state
@@ -49,14 +61,14 @@ const ItemDetails = () => {
         <p className="mb-3"><strong>Unit:</strong> {item.unit}</p>
         <p className="mb-3"><strong>Item Code:</strong> {item.itemcode}</p>
         <p className="mb-3"><strong>HSN Code:</strong> {item.hsncode}</p>
-        
+
         {/* Checkbox for GST Payable */}
-        
-        
+
+
         {/* Display GST percentage only if GST is payable */}
-       
-          <p className="mb-3"><strong>GST (%):</strong> {item.gst}</p>
-        
+
+        <p className="mb-3"><strong>GST (%):</strong> {item.gst}</p>
+
 
         <h1><strong>Sales Information</strong></h1>
         <p className="mb-3"><strong>Selling Price:</strong> {item.salesprice}</p>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './BillForm.css';
+import { jwtDecode } from 'jwt-decode'
 import SidePanel from '../Purchase/Sidepanel';
 import axios from 'axios';
 
@@ -30,19 +31,29 @@ const BillForm = () => {
     useEffect(() => {
         calculateGstAndGrandTotal();
     }, [subtotal, gstPercentage]);
-
+    const [loggedUser, setLoggedUser] = useState(null);
     useEffect(() => {
-        const fetchVendors = async () => {
-            try {
-                const response = await axios.get('http://localhost:3001/api/vendor');
-                setVendors(response.data);
-            } catch (error) {
-                console.error('Error fetching vendor data:', error);
-            }
-        };
+        const token = localStorage.getItem("accessToken")
+        const decoded = jwtDecode(token)
 
-        fetchVendors();
+        setLoggedUser(decoded.email);
+
     }, []);
+    useEffect(() => {
+        if (loggedUser) {
+            fetchVendors(loggedUser);
+        }
+    }, [loggedUser]);
+    const fetchVendors = async (loggedUser) => {
+        try {
+            const response = await axios.get('http://localhost:3001/api/vendor', {
+                params: { loggedUser }
+            });
+            setVendors(response.data);
+        } catch (error) {
+            console.error('Error fetching vendor data:', error);
+        }
+    };
 
     const calculateSubtotal = () => {
         const total = items.reduce((acc, item) => acc + (parseFloat(item.rate) * parseFloat(item.quantity)), 0);
@@ -113,8 +124,10 @@ const BillForm = () => {
             total: grandTotal
         };
 
+        const data = { ...billData, loggedUser }
+
         try {
-            const response = await axios.post('http://localhost:3001/api/bill', billData, {
+            const response = await axios.post('http://localhost:3001/api/bill', data, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -187,10 +200,10 @@ const BillForm = () => {
                             {items.map((item, index) => (
                                 <tr key={item.id}>
                                     <td>
-                                        <input type="text" placeholder="Type or click to select an item."onChange={(e)=>{
+                                        <input type="text" placeholder="Type or click to select an item." onChange={(e) => {
                                             item.iname = e.target.value;
                                             console.log(item.iname);
-                                            
+
                                         }} />
                                     </td>
                                     <td>

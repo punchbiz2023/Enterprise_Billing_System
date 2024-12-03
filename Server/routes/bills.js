@@ -14,8 +14,9 @@ const db3 = drizzle(client, { schema: { BillForm }, logger: true });
 
 
 router.get('/', async (req, res) => {
+    const {loggedUser} = req.query
     try {
-      const orders = await db3.select().from(BillForm);
+      const orders = await db3.select().from(BillForm).where(eq(BillForm.loggedUser,loggedUser));
       res.json(orders);
     } catch (error) {
       console.error('Error fetching orders:', error);
@@ -34,7 +35,8 @@ router.post('/', async (req, res) => {
         modeofshipment,
         itemdetails,
         gst,
-        total
+        total,
+        loggedUser
     } = req.body;
 
     try {
@@ -50,7 +52,8 @@ router.post('/', async (req, res) => {
                 modeofshipment,
                 itemdetails: JSON.stringify(itemdetails), // Convert to JSON if necessary
                 gst: Number(gst),
-                total: Number(total)
+                total: Number(total),
+                loggedUser
             })
             .returning();
 

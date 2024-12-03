@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 import SidePanel from '../Sales/Sidepanel';
 
 
@@ -11,14 +12,26 @@ const Customer = () => {
     const [showCheckboxes, setShowCheckboxes] = useState(false); // State to toggle checkboxes
     const [searchTerm, setSearchTerm] = useState(''); // State for search term
     const [searchBy, setSearchBy] = useState('dispname'); // State to track search category
+    const [loggedUser, setLoggedUser] = useState(null);
 
     useEffect(() => {
-        fetchCustomers();
+        if (loggedUser) {
+            fetchCustomers(loggedUser);
+        }
+    }, [loggedUser]);
+
+    useEffect(() => {
+        const token = localStorage.getItem("accessToken")
+        const decoded = jwtDecode(token)
+
+        setLoggedUser(decoded.email);
     }, []);
 
-    const fetchCustomers = async () => {
+    const fetchCustomers = async (loggedUser) => {
         try {
-            const response = await axios.get('https://enterprise-billing-system-3.onrender.com/api/customers');
+            const response = await axios.get('http://localhost:3001/api/customers', {
+                params: { loggedUser }
+            });
             if (response.data) {
                 setCustomers(response.data);
                 setDataLoaded(true);
@@ -40,8 +53,8 @@ const Customer = () => {
         if (selectedCustomers.length <= 0) return;
 
         try {
-            await axios.delete('https://enterprise-billing-system-3.onrender.com/api/customers', { data: { ids: selectedCustomers } });
-            fetchCustomers();
+            await axios.delete('http://localhost:3001/api/customers', { data: { ids: selectedCustomers } });
+            fetchCustomers(loggedUser);
             setSelectedCustomers([]);
             setShowCheckboxes(false); // Hide checkboxes after deletion
         } catch (error) {
@@ -67,7 +80,7 @@ const Customer = () => {
                 <div className="flex justify-between mb-4">
                     {/* Search bar on the left */}
                     <div className="flex w-1/3">
-                        
+
                         {/* Dropdown after the search input */}
                         <select
                             value={searchBy}

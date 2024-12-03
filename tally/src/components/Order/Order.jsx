@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 import { Link, useNavigate } from 'react-router-dom';
 import SidePanel from '../Sales/Sidepanel.jsx';
 
@@ -31,35 +32,52 @@ const Order = () => {
   const [salesshipDate, setSalesShipDate] = useState('');
   const [inventory, setInventory] = useState([]);
   const navigate = useNavigate();
+  const [loggedUser, setLoggedUser] = useState(null);
+
 
   useEffect(() => {
-    fetchCustomers();
-    fetchSalespeople();
-    fetchItems();
-    fetchInventory();
+    if (loggedUser) {
+      fetchCustomers(loggedUser);
+      fetchSalespeople(loggedUser);
+      fetchItems(loggedUser);
+      fetchInventory(loggedUser);
+    }
+  }, [loggedUser]);
+
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken")
+    const decoded = jwtDecode(token)
+
+    setLoggedUser(decoded.email);
   }, []);
 
-  const fetchSalespeople = async () => {
+  const fetchSalespeople = async (loggedUser) => {
     try {
-      const response = await axios.get('https://enterprise-billing-system-3.onrender.com/api/salespersons');
+      const response = await axios.get('http://localhost:3001/api/salespersons', {
+        params: { loggedUser }
+      });
       setSalespersons(response.data);
     } catch (error) {
       console.error('Error fetching salesperson data:', error);
     }
   };
 
-  const fetchInventory = async () => {
+  const fetchInventory = async (loggedUser) => {
     try {
-      const response = await axios.get('https://enterprise-billing-system-3.onrender.com/api/inventory');
+      const response = await axios.get('http://localhost:3001/api/inventory', {
+        params: { loggedUser }
+      });
       setInventory(response.data);
     } catch (error) {
       console.error('Error fetching Inventory data:', error);
     }
   };
 
-  const fetchCustomers = async () => {
+  const fetchCustomers = async (loggedUser) => {
     try {
-      const response = await axios.get('https://enterprise-billing-system-3.onrender.com/api/customers');
+      const response = await axios.get('http://localhost:3001/api/customers', {
+        params: { loggedUser }
+      });
       const customersWithState = response.data.map((cust) => ({
         ...cust,
         state: cust.billaddress.state,
@@ -86,15 +104,17 @@ const Order = () => {
     }
   };
 
-  const fetchItems = async () => {
+  const fetchItems = async (loggedUser) => {
     try {
-      const response = await axios.get('https://enterprise-billing-system-3.onrender.com/api/items');
+      const response = await axios.get('http://localhost:3001/api/items', {
+        params: { loggedUser }
+      });
       setAvailableItems(response.data);
     } catch (error) {
       console.error('Error fetching items:', error);
     }
   };
-  
+
   const handleReducedQuantitySubmit = async (e) => {
     e.preventDefault();
     try {
@@ -122,7 +142,7 @@ const Order = () => {
       }
       return null;
     }).filter(Boolean); // Remove any null values
-   
+
 
   };
 
@@ -132,7 +152,7 @@ const Order = () => {
 
     try {
       // Here we assume the backend expects an array of items with reduced quantities
-      await axios.post('https://enterprise-billing-system-3.onrender.com/api/inventory/update', { items: reducedItems });
+      await axios.post('http://localhost:3001/api/inventory/update', { items: reducedItems });
       console.log("Inventory quantities updated successfully.");
     } catch (error) {
       console.error("Error updating inventory quantities:", error.response ? error.response.data : error.message);
@@ -163,11 +183,12 @@ const Order = () => {
       salesperson: salesperson,
       taxtype: taxType,
       taxrate: tax,
-      total: calculateTotal()
+      total: calculateTotal(),
+      loggedUser: loggedUser
     };
 
     try {
-      const response = await axios.post('https://enterprise-billing-system-3.onrender.com/api/salesorder', orderDetails);
+      const response = await axios.post('http://localhost:3001/api/salesorder', orderDetails);
       navigate('/dashboard/sales/order');
     } catch (error) {
       console.error('Error creating Sales Order:', error.response ? error.response.data : error.message);

@@ -26,6 +26,7 @@ export const CustTable = pgTable('customer', {
   paymentterms: text('paymentterms').notNull(),
   billaddress: json('billaddress').notNull(),
   shipaddress: json('shipaddress').notNull(),
+  loggedUser: text('loggedUser').notNull()
 });
 
 export const VendTable = pgTable('vendor', {
@@ -43,6 +44,7 @@ export const VendTable = pgTable('vendor', {
   paymentterms: text('paymentterms').notNull(),
   billaddress: json('billaddress').notNull(),
   shipaddress: json('shipaddress').notNull(),
+  loggedUser: text('loggedUser').notNull()
 });
 
 export const Items = pgTable('items', {
@@ -62,12 +64,13 @@ export const Items = pgTable('items', {
   gst: decimal('gst', { precision: 5, scale: 2 }),
   quantity: numeric('quantity').notNull(),
   openingstock: numeric('openingStock').notNull(),
+  loggedUser: text('loggedUser').notNull()
 });
 
 export const Users = pgTable('users', {
   sno: serial('sno').primaryKey(),
-  name: text('name').notNull(),
-  mail: text('mail').notNull(),
+  name: text('name').notNull().unique(),
+  mail: text('mail').notNull().unique(),
   password: text('password').notNull(),
   address: text('address').notNull(),
   phone: numeric('phone').notNull(),
@@ -90,6 +93,7 @@ export const Estimate = pgTable('estimate', {
   taxtype: text('taxtype').notNull(),
   taxrate: text('taxrate').notNull(),
   total: numeric('total').notNull(),
+  loggedUser: text('loggedUser').notNull()
 });
 
 export const Project = pgTable('project', {
@@ -105,12 +109,14 @@ export const Project = pgTable('project', {
   projecthours: text('projecthours').notNull(),
   users: json('users').notNull(),
   tasks: json('tasks').notNull(),
+  loggedUser: text('loggedUser').notNull()
 });
 
 export const SalesPerson = pgTable('salesperson', {
   sno: serial('sno').primaryKey(),
   name: text('name').notNull(),
   mail: text('mail').notNull(),
+  loggedUser: text('loggedUser').notNull()
 });
 
 export const PurchaseOrder = pgTable('purchaseorder', {
@@ -126,6 +132,8 @@ export const PurchaseOrder = pgTable('purchaseorder', {
   itemdetails: json('itemdetails').notNull(),
   gst: numeric('gst').notNull(),
   total: numeric('total').notNull(),
+  loggedUser: text('loggedUser').notNull()
+
 });
 
 export const Invoice = pgTable('invoice', {
@@ -143,6 +151,7 @@ export const Invoice = pgTable('invoice', {
   taxtype: text('taxtype').notNull(),
   taxrate: text('taxrate').notNull(),
   amount: numeric('amount'),
+  loggedUser: text('loggedUser').notNull()
 });
 
 export const BillForm = pgTable('bill', {
@@ -157,6 +166,7 @@ export const BillForm = pgTable('bill', {
   itemdetails: json('itemdetails').notNull(),
   gst: numeric('gst').notNull(),
   total: numeric('total').notNull(),
+  loggedUser: text('loggedUser').notNull()
 });
 
 export const SalesOrder = pgTable('salesorder', {
@@ -179,6 +189,7 @@ export const SalesOrder = pgTable('salesorder', {
   taxtype: text('taxtype').notNull(),
   taxrate: text('taxrate').notNull(),
   total: numeric('total').notNull(),
+  loggedUser: text('loggedUser').notNull()
 });
 
 // Inventory Table Definition
@@ -190,6 +201,7 @@ export const InventoryTable = pgTable('inventory', {
   quantity: numeric('quantity').notNull(), // Use numeric or decimal here
   rate: numeric('rate').notNull(), // Use numeric or decimal here
   gst: numeric('gst').notNull(), // Use numeric or decimal here
+  loggedUser: text('loggedUser').notNull()
 });
 
 
@@ -207,6 +219,7 @@ export const CreditNote = pgTable('creditnote', {
   taxtype: text('taxtype').notNull(),
   taxrate: text('taxrate').notNull(),
   amount: numeric('amount'),
+  loggedUser: text('loggedUser').notNull()
 });
 
 // // Journal Table
@@ -220,3 +233,5 @@ export const CreditNote = pgTable('creditnote', {
 //   totalDebit: numeric('total_debit').notNull(),
 //   totalCredit: numeric('total_credit').notNull(),
 // });
+  
+  

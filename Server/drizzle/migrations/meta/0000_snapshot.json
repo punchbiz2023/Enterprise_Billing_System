@@ -1,5 +1,5 @@
 {
-  "id": "949bff3d-5770-4c3f-a2f6-e95b38743cf1",
+  "id": "7b876a19-071f-4c9f-8e67-ec3b9d131378",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -71,6 +71,12 @@
         "total": {
           "name": "total",
           "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "loggedUser": {
+          "name": "loggedUser",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         }
@@ -161,6 +167,12 @@
           "type": "numeric",
           "primaryKey": false,
           "notNull": false
+        },
+        "loggedUser": {
+          "name": "loggedUser",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
         }
       },
       "indexes": {},
@@ -261,6 +273,12 @@
           "type": "json",
           "primaryKey": false,
           "notNull": true
+        },
+        "loggedUser": {
+          "name": "loggedUser",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
         }
       },
       "indexes": {},
@@ -349,6 +367,12 @@
           "type": "numeric",
           "primaryKey": false,
           "notNull": true
+        },
+        "loggedUser": {
+          "name": "loggedUser",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
         }
       },
       "indexes": {},
@@ -399,6 +423,12 @@
         "gst": {
           "name": "gst",
           "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "loggedUser": {
+          "name": "loggedUser",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         }
@@ -495,6 +525,12 @@
           "type": "numeric",
           "primaryKey": false,
           "notNull": false
+        },
+        "loggedUser": {
+          "name": "loggedUser",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
         }
       },
       "indexes": {},
@@ -601,62 +637,10 @@
           "type": "numeric",
           "primaryKey": false,
           "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
-    "public.journal": {
-      "name": "journal",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
         },
-        "date": {
-          "name": "date",
-          "type": "date",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "journal_number": {
-          "name": "journal_number",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "description": {
-          "name": "description",
+        "loggedUser": {
+          "name": "loggedUser",
           "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "reference_number": {
-          "name": "reference_number",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "accounts": {
-          "name": "accounts",
-          "type": "json",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "total_debit": {
-          "name": "total_debit",
-          "type": "numeric",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "total_credit": {
-          "name": "total_credit",
-          "type": "numeric",
           "primaryKey": false,
           "notNull": true
         }
@@ -741,6 +725,12 @@
           "type": "json",
           "primaryKey": false,
           "notNull": true
+        },
+        "loggedUser": {
+          "name": "loggedUser",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
         }
       },
       "indexes": {},
@@ -821,6 +811,12 @@
         "total": {
           "name": "total",
           "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "loggedUser": {
+          "name": "loggedUser",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         }
@@ -947,6 +943,12 @@
           "type": "numeric",
           "primaryKey": false,
           "notNull": true
+        },
+        "loggedUser": {
+          "name": "loggedUser",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
         }
       },
       "indexes": {},
@@ -972,6 +974,12 @@
         },
         "mail": {
           "name": "mail",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "loggedUser": {
+          "name": "loggedUser",
           "type": "text",
           "primaryKey": false,
           "notNull": true
@@ -1044,7 +1052,22 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {
+        "users_name_unique": {
+          "name": "users_name_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "name"
+          ]
+        },
+        "users_mail_unique": {
+          "name": "users_mail_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "mail"
+          ]
+        }
+      }
     },
     "public.vendor": {
       "name": "vendor",
@@ -1131,6 +1154,12 @@
         "shipaddress": {
           "name": "shipaddress",
           "type": "json",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "loggedUser": {
+          "name": "loggedUser",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         }

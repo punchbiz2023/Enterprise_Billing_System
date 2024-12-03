@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
 
 const AddCustomer = () => {
@@ -55,16 +56,29 @@ const AddCustomer = () => {
     };
 
 
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('https://enterprise-billing-system-3.onrender.com/api/customers', newCustomer);
+            // Decode the JWT to get the logged user
+            const token = localStorage.getItem('accessToken'); // Ensure this matches where you store the token
+            const decoded = jwtDecode(token);
+            const loggedUser = decoded.email; // Adjust this based on your JWT structure
+
+            // Add logged user to the customer payload
+            const customerData = { ...newCustomer, loggedUser };
+
+            // console.log(customerData);
+
+            // Post the customer data to the backend
+            const response = await axios.post('http://localhost:3001/api/customers', customerData);
+            console.log(response.data);
+
             navigate('/dashboard/sales/customers');
         } catch (error) {
             console.error('Error adding customer:', error.response ? error.response.data : error.message);
         }
     };
-
     return (
         <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md mt-28">
             <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">Add New Customer</h1>
@@ -233,25 +247,24 @@ const AddCustomer = () => {
                 </div>
 
                 <div>
-    <h2 className="text-xl font-semibold text-gray-800 mt-8 mb-4">Billing Address</h2>
-    <div className="space-y-4">
-        {['doorNo', 'street', 'city', 'state', 'country', 'pinCode'].map((field) => (
-            <div key={field}>
-                <label className="block text-sm font-medium text-gray-700">{field}</label>
-                <input
-                    type="text"
-                    name={field}
-                    value={newCustomer.billaddress[field] || ''}
-                    placeholder={`Enter ${field.charAt(0).toUpperCase() + field.slice(1)}`}
-                    onChange={(e) => handleAddressChange(e, 'billaddress')}
-                    className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                    required
-                />
-            </div>
-        ))}
-    </div>
-</div>
-
+                    <h2 className="text-xl font-semibold text-gray-800 mt-8 mb-4">Billing Address</h2>
+                    <div className="space-y-4">
+                        {['doorNo', 'street', 'city', 'state', 'country', 'pinCode'].map((field) => (
+                            <div key={field}>
+                                <label className="block text-sm font-medium text-gray-700">{field}</label>
+                                <input
+                                    type="text"
+                                    name={field}
+                                    value={newCustomer.billaddress[field] || ''}
+                                    placeholder={`Enter ${field.charAt(0).toUpperCase() + field.slice(1)}`}
+                                    onChange={(e) => handleAddressChange(e, 'billaddress')}
+                                    className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                                    required
+                                />
+                            </div>
+                        ))}
+                    </div>
+                </div>
 
                 <div>
                     <h2 className="text-xl font-semibold text-gray-800 mt-8 mb-4">Shipping Address</h2>

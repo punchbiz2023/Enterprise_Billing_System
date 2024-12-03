@@ -12,7 +12,25 @@ const client = postgres(process.env.DATABASE_URL);
 const db3 = drizzle(client, { schema: { PurchaseOrder }, logger: true });
 
 router.post('/', async (req, res) => {
-    const {
+  const {
+    name,
+    delivery,
+    orderno,
+    ref,
+    date,
+    deliverydate,
+    terms,
+    modeofshipment,
+    itemdetails,
+    gst,
+    total,
+    loggedUser
+  } = req.body;
+
+  try {
+    const [newOrder] = await db3
+      .insert(PurchaseOrder) // Replace with your actual PurchaseOrders model
+      .values({
         name,
         delivery,
         orderno,
@@ -21,48 +39,33 @@ router.post('/', async (req, res) => {
         deliverydate,
         terms,
         modeofshipment,
-        itemdetails,
-        gst,
-        total
-    } = req.body;
+        itemdetails: JSON.stringify(itemdetails), // Convert to JSON if necessary
+        gst: Number(gst),
+        total: Number(total),
+        loggedUser
+      })
+      .returning();
 
-    try {
-        const [newOrder] = await db3
-            .insert(PurchaseOrder) // Replace with your actual PurchaseOrders model
-            .values({
-                name,
-                delivery,
-                orderno,
-                ref,
-                date,
-                deliverydate,
-                terms,
-                modeofshipment,
-                itemdetails: JSON.stringify(itemdetails), // Convert to JSON if necessary
-                gst: Number(gst),
-                total: Number(total)
-            })
-            .returning();
-
-        res.status(201).json(newOrder);
-    } catch (error) {
-        console.error('Error adding purchase order:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
+    res.status(201).json(newOrder);
+  } catch (error) {
+    console.error('Error adding purchase order:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 });
 
 router.get('/', async (req, res) => {
-    try {
-      const orders = await db3.select().from(PurchaseOrder);
-      res.json(orders);
-    } catch (error) {
-      console.error('Error fetching orders:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
-    }
-  });
-  
-router.delete('/',async(req,res)=>{
-    const { ids } = req.body;
+  const { loggedUser } = req.query
+  try {
+    const orders = await db3.select().from(PurchaseOrder).where(eq(PurchaseOrder.loggedUser,loggedUser));
+    res.json(orders);
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+router.delete('/', async (req, res) => {
+  const { ids } = req.body;
   try {
     for (const id of ids) {
       await db3.delete(PurchaseOrder).where(eq(PurchaseOrder.sno, id));

@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
 
 const ItemForm = () => {
@@ -25,8 +26,18 @@ const ItemForm = () => {
             closingStockAlert: '',
         }
     });
-
+    
+    const [loggedUser, setLoggedUser] = useState(null);
     const navigate = useNavigate();
+
+
+    
+    useEffect(()=>{
+        const token = localStorage.getItem("accessToken")
+        const decoded = jwtDecode(token)
+        
+        setLoggedUser(decoded.email); 
+    },[])
 
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -44,15 +55,16 @@ const ItemForm = () => {
             hsnCode: formState.newItem.hsnCode,
             quantity: formState.newItem.quantity,
             rate: formState.newItem.sellingPrice,
-            gst: formState.newItem.gst
+            gst: formState.newItem.gst,
         };
 
-        console.log(inventItem);
+        const invData = {...inventItem,loggedUser}
+        const data = {...formState.newItem,loggedUser}
         
 
         try {
-            await axios.post('https://enterprise-billing-system-3.onrender.com/api/items', formState.newItem);
-            await axios.post('https://enterprise-billing-system-3.onrender.com/api/inventory', inventItem);
+            await axios.post('http://localhost:3001/api/items', data);
+            await axios.post('http://localhost:3001/api/inventory', invData);
             navigate('/dashboard/items');
         } catch (error) {
             console.error('Error adding item:', error.response ? error.response.data : error.message);

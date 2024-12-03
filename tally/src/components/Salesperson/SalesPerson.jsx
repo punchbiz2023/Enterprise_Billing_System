@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 const SalesPerson = () => {
@@ -8,6 +9,19 @@ const SalesPerson = () => {
   const [editId, setEditId] = useState(null);
   const navigate = useNavigate(); // Initialize useNavigate
 
+
+
+  const [loggedUser, setLoggedUser] = useState(null);
+
+
+
+
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken")
+    const decoded = jwtDecode(token)
+    setLoggedUser(decoded.email); 
+  }, [])
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log({ name, email });
@@ -15,10 +29,10 @@ const SalesPerson = () => {
     try {
       if (editId) {
         // Update existing salesperson
-        await axios.put(`http://localhost:3001/api/salespersons/${editId}`, { name, email });
+        await axios.put(`http://localhost:3001/api/salespersons/${editId}`, { name, email, loggedUser });
       } else {
         // Create new salesperson
-        await axios.post('http://localhost:3001/api/salespersons', { name, email });
+        await axios.post('http://localhost:3001/api/salespersons', { name, email, loggedUser });
       }
       setName('');
       setEmail('');
@@ -28,7 +42,7 @@ const SalesPerson = () => {
       console.error('Error submitting salesperson:', error);
     }
   };
-  
+
 
   const handleDelete = async () => {
     if (editId) {
@@ -43,7 +57,7 @@ const SalesPerson = () => {
       }
     }
   };
-  
+
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
