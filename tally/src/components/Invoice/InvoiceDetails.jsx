@@ -23,7 +23,7 @@ const InvoiceDetails = () => {
   }, [id]);
   const fetchInvoice = async (loggedUser) => {
     try {
-      const response = await axios.get('http://localhost:3001/api/invoice', {
+      const response = await axios.get('https://enterprisebillingsystem.onrender.com/api/invoice', {
         params: { loggedUser }
       });
       const fetchedInvoice = response.data.find(invoice => invoice.sno === parseInt(id));

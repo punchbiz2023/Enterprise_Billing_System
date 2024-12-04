@@ -64,7 +64,7 @@ const AddVendor = () => {
         e.preventDefault();
         const data = {...newVendor,loggedUser}
         try {
-            await axios.post('http://localhost:3001/api/vendor', data);
+            await axios.post('https://enterprisebillingsystem.onrender.com/api/vendor', data);
             navigate('/dashboard/purchase/vendors');
         } catch (error) {
             console.error('Error adding vendor:', error.response ? error.response.data : error.message);

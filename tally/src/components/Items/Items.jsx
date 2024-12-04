@@ -30,7 +30,7 @@ const Items = () => {
 
   const fetchItems = async (loggedUser) => {
     try {
-      const response = await axios.get('http://localhost:3001/api/items',{
+      const response = await axios.get('https://enterprisebillingsystem.onrender.com/api/items',{
         params:{loggedUser}
       });
       if (response.data) {
@@ -54,7 +54,7 @@ const Items = () => {
     if (selectedItems.length <= 0) return;
 
     try {
-      await axios.delete('http://localhost:3001/api/items', { data: { ids: selectedItems } });
+      await axios.delete('https://enterprisebillingsystem.onrender.com/api/items', { data: { ids: selectedItems } });
       fetchItems(loggedUser);
       setSelectedItems([]);
     } catch (error) {

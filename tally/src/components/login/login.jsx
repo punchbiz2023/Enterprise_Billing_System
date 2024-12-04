@@ -22,7 +22,7 @@ const Login = () => {
 
     try {
       // Send login request to your backend (replace URL with your backend login endpoint)
-      const response = await axios.post('http://localhost:3001/api/login', { email, password });
+      const response = await axios.post('https://enterprisebillingsystem.onrender.com/api/login', { email, password });
       const { accessToken, refreshToken } = response.data;
 
       // Store the access and refresh tokens in localStorage
@@ -48,7 +48,7 @@ const Login = () => {
         return;
       }
 
-      const response = await axios.post('http://localhost:3001/api/login/refresh-token', { refreshToken });
+      const response = await axios.post('https://enterprisebillingsystem.onrender.com/api/login/refresh-token', { refreshToken });
       const { accessToken } = response.data;
 
       // Store the new access token in localStorage
@@ -67,7 +67,7 @@ const Login = () => {
   // Handling the case where access token is expired and retrying the API request with refresh token
   const makeApiRequest = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/api/login/protected-resource', {
+      const response = await axios.get('https://enterprisebillingsystem.onrender.com/api/login/protected-resource', {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`, // Add access token
         },

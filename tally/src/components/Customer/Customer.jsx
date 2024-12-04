@@ -29,7 +29,7 @@ const Customer = () => {
 
     const fetchCustomers = async (loggedUser) => {
         try {
-            const response = await axios.get('http://localhost:3001/api/customers', {
+            const response = await axios.get('https://enterprisebillingsystem.onrender.com/api/customers', {
                 params: { loggedUser }
             });
             if (response.data) {
@@ -53,7 +53,7 @@ const Customer = () => {
         if (selectedCustomers.length <= 0) return;
 
         try {
-            await axios.delete('http://localhost:3001/api/customers', { data: { ids: selectedCustomers } });
+            await axios.delete('https://enterprisebillingsystem.onrender.com/api/customers', { data: { ids: selectedCustomers } });
             fetchCustomers(loggedUser);
             setSelectedCustomers([]);
             setShowCheckboxes(false); // Hide checkboxes after deletion

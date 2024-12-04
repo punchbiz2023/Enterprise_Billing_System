@@ -26,7 +26,7 @@ const CreditTable = () => {
 
     const fetchNotes = async (loggedUser) => {
         try {
-            const response = await axios.get('http://localhost:3001/api/creditnote', { params: { loggedUser } });
+            const response = await axios.get('https://enterprisebillingsystem.onrender.com/api/creditnote', { params: { loggedUser } });
             if (response.data) {
                 setNotes(response.data);
                 setDataLoaded(true);
@@ -48,7 +48,7 @@ const CreditTable = () => {
         if (selectedNotes.length <= 0) return;
 
         try {
-            await axios.delete('http://localhost:3001/api/creditnote', { data: { ids: selectedNotes } });
+            await axios.delete('https://enterprisebillingsystem.onrender.com/api/creditnote', { data: { ids: selectedNotes } });
             fetchNotes(loggedUser);
             setSelectedNotes([]);
             setShowCheckboxes(false); // Hide checkboxes after deletion

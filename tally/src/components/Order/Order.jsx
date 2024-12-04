@@ -53,7 +53,7 @@ const Order = () => {
 
   const fetchSalespeople = async (loggedUser) => {
     try {
-      const response = await axios.get('http://localhost:3001/api/salespersons', {
+      const response = await axios.get('https://enterprisebillingsystem.onrender.com/api/salespersons', {
         params: { loggedUser }
       });
       setSalespersons(response.data);
@@ -64,7 +64,7 @@ const Order = () => {
 
   const fetchInventory = async (loggedUser) => {
     try {
-      const response = await axios.get('http://localhost:3001/api/inventory', {
+      const response = await axios.get('https://enterprisebillingsystem.onrender.com/api/inventory', {
         params: { loggedUser }
       });
       setInventory(response.data);
@@ -75,7 +75,7 @@ const Order = () => {
 
   const fetchCustomers = async (loggedUser) => {
     try {
-      const response = await axios.get('http://localhost:3001/api/customers', {
+      const response = await axios.get('https://enterprisebillingsystem.onrender.com/api/customers', {
         params: { loggedUser }
       });
       const customersWithState = response.data.map((cust) => ({
@@ -106,7 +106,7 @@ const Order = () => {
 
   const fetchItems = async (loggedUser) => {
     try {
-      const response = await axios.get('http://localhost:3001/api/items', {
+      const response = await axios.get('https://enterprisebillingsystem.onrender.com/api/items', {
         params: { loggedUser }
       });
       setAvailableItems(response.data);
@@ -152,7 +152,7 @@ const Order = () => {
 
     try {
       // Here we assume the backend expects an array of items with reduced quantities
-      await axios.post('http://localhost:3001/api/inventory/update', { items: reducedItems });
+      await axios.post('https://enterprisebillingsystem.onrender.com/api/inventory/update', { items: reducedItems });
       console.log("Inventory quantities updated successfully.");
     } catch (error) {
       console.error("Error updating inventory quantities:", error.response ? error.response.data : error.message);
@@ -188,7 +188,7 @@ const Order = () => {
     };
 
     try {
-      const response = await axios.post('http://localhost:3001/api/salesorder', orderDetails);
+      const response = await axios.post('https://enterprisebillingsystem.onrender.com/api/salesorder', orderDetails);
       navigate('/dashboard/sales/order');
     } catch (error) {
       console.error('Error creating Sales Order:', error.response ? error.response.data : error.message);

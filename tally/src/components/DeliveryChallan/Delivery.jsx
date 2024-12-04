@@ -45,7 +45,7 @@ const Delivery = () => {
   }, []);
   const fetchCustomers = async (loggedUser) => {
     try {
-      const response = await axios.get('http://localhost:3001/api/customers',{
+      const response = await axios.get('https://enterprisebillingsystem.onrender.com/api/customers',{
         params:{loggedUser}
       });
       setCustomers(response.data);

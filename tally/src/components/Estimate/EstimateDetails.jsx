@@ -23,7 +23,7 @@ const EstimateDetails = () => {
   }, [id]);
   const fetchEstimate = async (loggedUser) => {
     try {
-      const response = await axios.get('http://localhost:3001/api/estimates',{
+      const response = await axios.get('https://enterprisebillingsystem.onrender.com/api/estimates',{
         params:{loggedUser}
       });
       // Find the estimate based on the ID from the params

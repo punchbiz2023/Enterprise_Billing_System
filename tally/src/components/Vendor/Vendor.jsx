@@ -29,7 +29,7 @@ const Vendor = () => {
 
     const fetchVendors = async (loggedUser) => {
         try {
-            const response = await axios.get('http://localhost:3001/api/vendor',{
+            const response = await axios.get('https://enterprisebillingsystem.onrender.com/api/vendor',{
                 params:{loggedUser}
             });
             if (response.data) {
@@ -53,7 +53,7 @@ const Vendor = () => {
         if (selectedVendors.length <= 0) return;
 
         try {
-            await axios.delete('http://localhost:3001/api/vendor', { data: { ids: selectedVendors } });
+            await axios.delete('https://enterprisebillingsystem.onrender.com/api/vendor', { data: { ids: selectedVendors } });
             fetchVendors(loggedUser);  // Refresh vendor list after deletion
             setSelectedVendors([]);  // Clear selected vendors
             setShowCheckboxes(false); // Hide checkboxes after deletion

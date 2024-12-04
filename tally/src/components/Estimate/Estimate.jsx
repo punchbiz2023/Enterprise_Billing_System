@@ -54,7 +54,7 @@ const Estimate = () => {
 
   const fetchSalespeople = async (loggedUser) => {
     try {
-      const response = await axios.get('http://localhost:3001/api/salespersons',
+      const response = await axios.get('https://enterprisebillingsystem.onrender.com/api/salespersons',
         {
           params: { loggedUser }
         }
@@ -66,7 +66,7 @@ const Estimate = () => {
   };
   const fetchProjects = async (loggedUser) => {
     try {
-      const response = await axios.get('http://localhost:3001/api/projects',
+      const response = await axios.get('https://enterprisebillingsystem.onrender.com/api/projects',
         {
           params: { loggedUser }
         }
@@ -80,7 +80,7 @@ const Estimate = () => {
 
   const fetchCustomers = async (loggedUser) => {
     try {
-      const response = await axios.get('http://localhost:3001/api/customers',
+      const response = await axios.get('https://enterprisebillingsystem.onrender.com/api/customers',
         {
           params: { loggedUser }
         }
@@ -104,7 +104,7 @@ const Estimate = () => {
     const taxrate = "18%"; // Example, retrieve this from form inputs
 
     try {
-      const response = await axios.post('http://localhost:3001/api/estimates', {
+      const response = await axios.post('https://enterprisebillingsystem.onrender.com/api/estimates', {
         customer,
         quoteNumber,
         reference,
@@ -155,7 +155,7 @@ const Estimate = () => {
 
   const fetchItems = async (loggedUser) => {
     try {
-      const response = await axios.get('http://localhost:3001/api/items',
+      const response = await axios.get('https://enterprisebillingsystem.onrender.com/api/items',
         {
           params: { loggedUser }
         }

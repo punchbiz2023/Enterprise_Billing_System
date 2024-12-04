@@ -29,7 +29,7 @@ const PurchaseOrderTable = () => {
     }, [loggedUser]);
     const fetchOrders = async (loggedUser) => {
         try {
-            const response = await axios.get('http://localhost:3001/api/purchaseorder',{
+            const response = await axios.get('https://enterprisebillingsystem.onrender.com/api/purchaseorder',{
                 params:{loggedUser}
             });
             if (response.data) {
@@ -53,7 +53,7 @@ const PurchaseOrderTable = () => {
         if (selectedOrder.length <= 0) return;
 
         try {
-            await axios.delete('http://localhost:3001/api/purchaseorder', { data: { ids: selectedOrder } });
+            await axios.delete('https://enterprisebillingsystem.onrender.com/api/purchaseorder', { data: { ids: selectedOrder } });
             fetchOrders(loggedUser);
             setSelectedOrder([]);
             setShowCheckboxes(false); 

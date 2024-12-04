@@ -31,7 +31,7 @@ const ExpenseForm = () => {
 
   const fetchVendors = async (loggedUser) => {
     try {
-      const response = await axios.get('http://localhost:3001/api/vendor',{
+      const response = await axios.get('https://enterprisebillingsystem.onrender.com/api/vendor',{
         params:{loggedUser}
       });
       if (response.data) {
@@ -45,7 +45,7 @@ const ExpenseForm = () => {
 
   const fetchCustomers = async (loggedUser) => {
     try {
-      const response = await axios.get('http://localhost:3001/api/customers',{
+      const response = await axios.get('https://enterprisebillingsystem.onrender.com/api/customers',{
         params:{loggedUser}
       });
       if (response.data) {

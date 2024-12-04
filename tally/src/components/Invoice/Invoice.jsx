@@ -28,7 +28,7 @@ const Invoice = () => {
 
   const fetchInvoice = async (loggedUser) => {
     try {
-      const response = await axios.get('http://localhost:3001/api/invoice',{
+      const response = await axios.get('https://enterprisebillingsystem.onrender.com/api/invoice',{
         params:{loggedUser}
       });
       if (response.data) {
@@ -52,7 +52,7 @@ const Invoice = () => {
     if (selectedInvoice.length <= 0) return;
 
     try {
-      await axios.delete('http://localhost:3001/api/invoice', { data: { ids: selectedInvoice } });
+      await axios.delete('https://enterprisebillingsystem.onrender.com/api/invoice', { data: { ids: selectedInvoice } });
       fetchInvoice(loggedUser);
       setSelectedInvoice([]);
       setShowCheckboxes(false); // Hide checkboxes after deletion

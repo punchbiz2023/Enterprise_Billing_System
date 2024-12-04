@@ -44,7 +44,7 @@ const CreditNotes = () => {
   }, []);
   const fetchSalespeople = async (loggedUser) => {
     try {
-      const response = await axios.get('http://localhost:3001/api/salespersons',{
+      const response = await axios.get('https://enterprisebillingsystem.onrender.com/api/salespersons',{
         params:{loggedUser}
       });
       setSalespersons(response.data);
@@ -56,7 +56,7 @@ const CreditNotes = () => {
 
   const fetchCustomers = async (loggedUser) => {
     try {
-      const response = await axios.get('http://localhost:3001/api/customers',{
+      const response = await axios.get('https://enterprisebillingsystem.onrender.com/api/customers',{
         params:{loggedUser}
       });
       const customersWithState = response.data.map((cust) => ({
@@ -84,7 +84,7 @@ const CreditNotes = () => {
 
   const fetchItems = async (loggedUser) => {
     try {
-      const response = await axios.get('http://localhost:3001/api/items',{
+      const response = await axios.get('https://enterprisebillingsystem.onrender.com/api/items',{
         params:{loggedUser}
       });
       setAvailableItems(response.data);
@@ -117,7 +117,7 @@ const CreditNotes = () => {
     const data = {...creditDetails,loggedUser}
 
     try {
-      const response = await axios.post('http://localhost:3001/api/creditnote', data);
+      const response = await axios.post('https://enterprisebillingsystem.onrender.com/api/creditnote', data);
       // console.log("Post success");
 
       navigate('/dashboard/sales/credit')

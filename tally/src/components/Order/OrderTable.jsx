@@ -26,7 +26,7 @@ const OrderTable = () => {
     const fetchOrders = async (loggedUser) => {
         try {
             // console.log(order.state);
-            const response = await axios.get('http://localhost:3001/api/salesorder',{
+            const response = await axios.get('https://enterprisebillingsystem.onrender.com/api/salesorder',{
                 params:{loggedUser}
             });
             if (response.data) {
@@ -53,7 +53,7 @@ const OrderTable = () => {
         if (selectedOrder.length <= 0) return;
 
         try {
-            await axios.delete('http://localhost:3001/api/salesorder', { data: { ids: selectedOrder } });
+            await axios.delete('https://enterprisebillingsystem.onrender.com/api/salesorder', { data: { ids: selectedOrder } });
             fetchOrders(loggedUser);
             setSelectedOrder([]);
             setShowCheckboxes(false); // Hide checkboxes after deletion

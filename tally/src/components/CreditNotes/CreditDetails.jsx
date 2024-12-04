@@ -23,7 +23,7 @@ const CreditDetails = () => {
   }, [loggedUser]);
   const fetchNote = async () => {
     try {
-      const response = await axios.get(`http://localhost:3001/api/creditnote`, {
+      const response = await axios.get(`https://enterprisebillingsystem.onrender.com/api/creditnote`, {
         params: { loggedUser }
       });
 

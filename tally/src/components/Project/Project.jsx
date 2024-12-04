@@ -35,7 +35,7 @@ function Project() {
   }, []);
   const fetchCustomers = async (loggedUser) => {
     try {
-      const response = await axios.get('http://localhost:3001/api/customers', {
+      const response = await axios.get('https://enterprisebillingsystem.onrender.com/api/customers', {
         params: { loggedUser }
       });
       setAvailableCustomers(response.data);
@@ -87,7 +87,7 @@ function Project() {
     const data = { ...projectData, loggedUser }
 
     try {
-      await axios.post('http://localhost:3001/api/projects', data);
+      await axios.post('https://enterprisebillingsystem.onrender.com/api/projects', data);
       alert('Project saved successfully!');
       navigate('/dashboard/sales/estimate/form');
     } catch (error) {

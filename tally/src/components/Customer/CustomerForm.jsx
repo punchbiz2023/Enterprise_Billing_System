@@ -71,7 +71,7 @@ const AddCustomer = () => {
             // console.log(customerData);
 
             // Post the customer data to the backend
-            const response = await axios.post('http://localhost:3001/api/customers', customerData);
+            const response = await axios.post('https://enterprisebillingsystem.onrender.com/api/customers', customerData);
             console.log(response.data);
 
             navigate('/dashboard/sales/customers');

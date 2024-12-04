@@ -40,7 +40,7 @@ const SignUp = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:3001/api/sign-up', formDataToSend, {
+      const response = await axios.post('https://enterprisebillingsystem.onrender.com/api/sign-up', formDataToSend, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       if (response.status === 201) {

@@ -76,7 +76,7 @@ const InvoiceForm = () => {
 
   const fetchSalespeople = async (loggedUser) => {
     try {
-      const response = await axios.get('http://localhost:3001/api/salespersons', {
+      const response = await axios.get('https://enterprisebillingsystem.onrender.com/api/salespersons', {
         params: { loggedUser }
       });
       setSalespersons(response.data);
@@ -87,7 +87,7 @@ const InvoiceForm = () => {
 
   const fetchCustomers = async (loggedUser) => {
     try {
-      const response = await axios.get('http://localhost:3001/api/customers', {
+      const response = await axios.get('https://enterprisebillingsystem.onrender.com/api/customers', {
         params: { loggedUser }
       });
       const customersWithState = response.data.map((cust) => ({
@@ -154,7 +154,7 @@ const InvoiceForm = () => {
     const invData = { ...invoiceData, loggedUser }
 
     try {
-      const response = await axios.post('http://localhost:3001/api/invoice', invData);
+      const response = await axios.post('https://enterprisebillingsystem.onrender.com/api/invoice', invData);
       // console.log('Invoice submitted successfully', response.data);
       navigate('/dashboard/sales/invoice')
     } catch (error) {
@@ -165,7 +165,7 @@ const InvoiceForm = () => {
 
   const fetchItems = async (loggedUser) => {
     try {
-      const response = await axios.get('http://localhost:3001/api/items', {
+      const response = await axios.get('https://enterprisebillingsystem.onrender.com/api/items', {
         params: { loggedUser }
       });
       setAvailableItems(response.data);

@@ -46,7 +46,7 @@ const BillForm = () => {
     }, [loggedUser]);
     const fetchVendors = async (loggedUser) => {
         try {
-            const response = await axios.get('http://localhost:3001/api/vendor', {
+            const response = await axios.get('https://enterprisebillingsystem.onrender.com/api/vendor', {
                 params: { loggedUser }
             });
             setVendors(response.data);
@@ -127,7 +127,7 @@ const BillForm = () => {
         const data = { ...billData, loggedUser }
 
         try {
-            const response = await axios.post('http://localhost:3001/api/bill', data, {
+            const response = await axios.post('https://enterprisebillingsystem.onrender.com/api/bill', data, {
                 headers: {
                     'Content-Type': 'application/json',
                 },

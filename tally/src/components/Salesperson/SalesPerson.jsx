@@ -29,10 +29,10 @@ const SalesPerson = () => {
     try {
       if (editId) {
         // Update existing salesperson
-        await axios.put(`http://localhost:3001/api/salespersons/${editId}`, { name, email, loggedUser });
+        await axios.put(`https://enterprisebillingsystem.onrender.com/api/salespersons/${editId}`, { name, email, loggedUser });
       } else {
         // Create new salesperson
-        await axios.post('http://localhost:3001/api/salespersons', { name, email, loggedUser });
+        await axios.post('https://enterprisebillingsystem.onrender.com/api/salespersons', { name, email, loggedUser });
       }
       setName('');
       setEmail('');
@@ -47,7 +47,7 @@ const SalesPerson = () => {
   const handleDelete = async () => {
     if (editId) {
       try {
-        await axios.delete(`http://localhost:3001/api/salespersons/${editId}`);
+        await axios.delete(`https://enterprisebillingsystem.onrender.com/api/salespersons/${editId}`);
         setName('');
         setEmail('');
         setEditId(null);

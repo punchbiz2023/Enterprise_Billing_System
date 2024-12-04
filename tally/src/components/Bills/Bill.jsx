@@ -26,7 +26,7 @@ const Bill = () => {
 
     const fetchBills = async (loggedUser) => {
         try {
-            const response = await axios.get('http://localhost:3001/api/bill',{
+            const response = await axios.get('https://enterprisebillingsystem.onrender.com/api/bill',{
                 params:{loggedUser}
             });
             if (response.data) {
@@ -50,7 +50,7 @@ const Bill = () => {
         if (selectedBill.length <= 0) return;
 
         try {
-            await axios.delete('http://localhost:3001/api/bill', { data: { ids: selectedBill } });
+            await axios.delete('https://enterprisebillingsystem.onrender.com/api/bill', { data: { ids: selectedBill } });
             fetchBills(loggedUser);
             setSelectedBill([]);
             setShowCheckboxes(false); // Hide checkboxes after deletion

@@ -23,7 +23,7 @@ const CustomerDetails = () => {
   }, [id]);
     const fetchCustomer = async (loggedUser) => {
       try {
-        const response = await axios.get('http://localhost:3001/api/customers',{
+        const response = await axios.get('https://enterprisebillingsystem.onrender.com/api/customers',{
           params:{loggedUser}
         });
         // Find the customer based on the ID from the params

@@ -30,7 +30,7 @@ const Inventory = () => {
 
     const fetchInventory = async (loggedUser) => {
         try {
-            const response = await axios.get('http://localhost:3001/api/inventory',{
+            const response = await axios.get('https://enterprisebillingsystem.onrender.com/api/inventory',{
                 params:{loggedUser}
             });
             if (response.data) {
@@ -43,7 +43,7 @@ const Inventory = () => {
     };
     const fetchSalesOrder = async (loggedUser) => {
         try {
-            const response = await axios.get('http://localhost:3001/api/salesorder',{
+            const response = await axios.get('https://enterprisebillingsystem.onrender.com/api/salesorder',{
                 params:{loggedUser}
             });
             if (response.data) {
@@ -67,7 +67,7 @@ const Inventory = () => {
         if (selectedInventory.length <= 0) return;
 
         try {
-            await axios.delete('http://localhost:3001/api/inventory', { data: { ids: selectedInventory } });
+            await axios.delete('https://enterprisebillingsystem.onrender.com/api/inventory', { data: { ids: selectedInventory } });
             fetchInventory(loggedUser);
             setSelectedInventory([]);
             setShowCheckboxes(false); // Hide checkboxes after deletion

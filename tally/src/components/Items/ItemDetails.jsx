@@ -25,7 +25,7 @@ const ItemDetails = () => {
   const fetchItem = async (loggedUser) => {
     console.log(`Fetching item with id: ${id}`); // Check if id is being logged correctly
     try {
-      const response = await axios.get('http://localhost:3001/api/items', {
+      const response = await axios.get('https://enterprisebillingsystem.onrender.com/api/items', {
         params: { loggedUser }
       });
       console.log(response.data); // Check if the data is fetched

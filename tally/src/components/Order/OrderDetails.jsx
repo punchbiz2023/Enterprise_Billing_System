@@ -24,7 +24,7 @@ const OrderDetails = () => {
     }, [id]);
     const fetchSalesOrder = async (loggedUser) => {
         try {
-            const response = await axios.get('http://localhost:3001/api/salesorder',{
+            const response = await axios.get('https://enterprisebillingsystem.onrender.com/api/salesorder',{
                 params:{loggedUser}
             });
             // Find the sales order based on the ID from the params

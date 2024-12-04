@@ -50,21 +50,15 @@ function MainLayout({ children }) {
     </>
   );
 }
-
-// Layout without Header and Navbar
 function AuthLayout({ children }) {
   return <div>{children}</div>;
 }
-
 function App() {
   return (
     <Router>
       <Routes>
-        {/* Routes without Header and Navbar */}
         <Route path="/" element={<AuthLayout><Login /></AuthLayout>} />
         <Route path="/sign-up" element={<AuthLayout><SignUp /></AuthLayout>} />
-
-        {/* Routes with Header and Navbar */}
         <Route path="/dashboard" element={<MainLayout><Dashboard /></MainLayout>} />
         <Route path="/dashboard/items" element={<MainLayout><Items /></MainLayout>} />
         <Route path="/dashboard/items/form" element={<MainLayout><ItemForm /></MainLayout>} />
@@ -107,5 +101,4 @@ function App() {
     </Router>
   );
 }
-
 export default App;

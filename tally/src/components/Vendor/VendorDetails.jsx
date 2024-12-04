@@ -27,7 +27,7 @@ const VendorDetails = () => {
   const fetchVendor = async (loggedUser) => {
 
     try {
-      const response = await axios.get('http://localhost:3001/api/vendor', {
+      const response = await axios.get('https://enterprisebillingsystem.onrender.com/api/vendor', {
         params: { loggedUser }
       });
       const fetchedVendor = response.data.find(Vendor => Vendor.sno === parseInt(id));
