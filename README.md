@@ -5,3 +5,4 @@ npm install react-chartjs-2 chart.js
 npm install @react-pdf/renderer
 
 npm install xlsx
+
