@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import { Link, useNavigate } from 'react-router-dom';
-import SidePanel from '../Sales/Sidepanel.jsx';
+import SidePanel from '../Sales/sidepanel.jsx';
 
 const Order = () => {
   const [salespersons, setSalespersons] = useState([]);
